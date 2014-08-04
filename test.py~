@@ -1,7 +1,7 @@
 print "Test"
 print "Test test tes tthis is a test of the git test."
 
-print "                     ,- _,-'""`-._
+print """                     ,- _,-'""`-._
                \    / ,'dHHb   |/ `-.
                     _,-'|"`-.  `- / /  HHHH---<_____`.
                       ,-'  ""\    `. -'_ \  `HHP   /\    ,'
@@ -14,5 +14,5 @@ print "                     ,- _,-'""`-._
                                                                  \""\""""""\"/
                                                                                 `--\  \\  \
                                                                                                            \  \\  \  Krogg
-                                                                                                                               `-.__.'"
+                                                                                                                               `-.__.'"""
 
