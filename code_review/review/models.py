@@ -35,7 +35,7 @@ repo_format_help_text = """
     """
 
 
-class User(models.Model):
+class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
 
@@ -159,7 +159,8 @@ class Assignment(models.Model):
 class AssignmentSubmission(models.Model):
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
-    by = models.ForeignKey(User)
+    # by = models.ForeignKey(User)
+    by = models.ForeignKey(ReviewUser)
     submission_repository = models.TextField()
     submission_for = models.ForeignKey(Assignment, related_name="submissions")
     error_occurred = models.BooleanField(default=False)
@@ -187,7 +188,8 @@ class AssignmentSubmission(models.Model):
 class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
 
-    user = models.ForeignKey(User)
+    # user = models.ForeignKey(User)
+    user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
 
     created = models.DateTimeField(auto_now_add=True)
