@@ -1,20 +1,32 @@
 from django.contrib import admin
 
-from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from review.models import ReviewUser
+from review.models import *
 
 class ReviewUserInline(admin.StackedInline):
-        model = ReviewUser
-        list_display = ("user_uuid", "djangoUser")
-        verbose_name_plural = 'user'
+    model = ReviewUser
+    readonly_fields = ('user_uuid', )
+    fields = ("djangoUser", 'user_uuid', )
+    verbose_name_plural = 'user'
+
+    def callable(self, ru):
+        return ru.user_uuid
 
 class UserAdmin(admin.ModelAdmin):
-
-        inlines = (ReviewUserInline, )    
-       
+    #    list_ldisplay = ("user_uuid", "djangoUser")
+    model = User
+    inlines = (ReviewUserInline, )
+    list_display = ("username", "email", "is_staff", "is_superuser")
+    
+    
+class ReviewUserAdmin(admin.ModelAdmin):
+    model = ReviewUser
+    readonly_fields = ('user_uuid', )
+    fields = ("djangoUser", 'user_uuid',)
+    list_display = ('djangoUser', 'user_uuid')
         
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-admin.site.register(ReviewUser)
+admin.site.register(ReviewUser, ReviewUserAdmin)

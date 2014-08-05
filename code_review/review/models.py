@@ -40,7 +40,7 @@ class ReviewUser(models.Model):
     djangoUser = models.OneToOneField(Django_User, unique=True)
 
     def __unicode__(self):
-        return "%s" % (self.djangoUser.username,)
+        return "%s" % (self.djangoUser.username)
 
 
 class SourceFolder(models.Model):

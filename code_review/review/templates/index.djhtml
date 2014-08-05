@@ -1,0 +1,19 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+	<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
+    </head>
+    <body>
+
+      <div class="content">
+	{% block content %}
+	  
+	{% endblock %}
+      </div>
+      
+    </body>
+</html>
