@@ -1,5 +1,9 @@
 from django.contrib import admin
-from review.models import Test
+from review.models import User
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("user_uuid", "djangoUser")
+    
 
-admin.site.register(Test)
+admin.site.register(User, UserAdmin)
+
