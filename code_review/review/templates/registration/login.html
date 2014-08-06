@@ -19,8 +19,13 @@
     </tr>
   </table>
 
-  <input type="submit" value="login" />
+  <input type="submit" value="Login" />
+
   <input type="hidden" name="next" value="{% url 'index' %}" />
+</form>
+
+<form action="{% url 'register' %}">
+  <input type="submit" name="register" value="Register" />
 </form>
 
 {% endblock %}

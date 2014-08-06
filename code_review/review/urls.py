@@ -10,6 +10,6 @@ urlpatterns = patterns('',
                            name='login_redirect'),
                        url(r'logout/$', 'django.contrib.auth.views.logout',
                            {'next_page': '/review/'}, name='logout'),
-
+                       url(r'reigster/$', views.index, name='register'),
                        
 )
