@@ -1,5 +1,12 @@
 {% extends 'base.djhtml' %}
 
 {% block content %}
-  <p>Well uhh...you logged in.</p>
+
+  
+  {% if user.is_superuser %}
+
+    <p>Congrats, you have admin priviledges</p>
+  {% endif%}
+
+  <p>Well uhh...you logged in..</p>
 {% endblock %}

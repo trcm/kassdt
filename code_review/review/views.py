@@ -26,7 +26,8 @@ def loginUser(request):
         password = request.POST['password']
 
         user = authenticate(username=username, password=password)
-
+        print username
+        print user
         if user is not None:
             login(request, user)
             print "logged in"
