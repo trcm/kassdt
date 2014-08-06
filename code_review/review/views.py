@@ -4,7 +4,7 @@ from django.http import HttpResponse
 # authentication libraries
 # base django user system
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from django.contrib.auth.decorators import login_required
 
@@ -36,4 +36,8 @@ def loginUser(request):
 
     return redirect('/review/login_redirect/')
 
-
+def logout(request):
+    logout(request)
+    return HttpResponse("logout")
+    # return redirect('/review/')
+    
