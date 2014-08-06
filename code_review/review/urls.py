@@ -8,7 +8,8 @@ urlpatterns = patterns('',
                        url(r'login_redirect/$', 'django.contrib.auth.views.login',
                            {'template_name':  'login.djhtml'},
                            name='login_redirect'),
-                       url(r'logout/$', 'django.contrib.auth.views.logout', name='logout'),
+                       url(r'logout/$', 'django.contrib.auth.views.logout',
+                           {'next_page': '/review/'}, name='logout'),
 
                        
 )
