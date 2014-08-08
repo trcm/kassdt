@@ -43,7 +43,15 @@ class ReviewUser(models.Model):
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
+# creating a course code model to which will have a many to many relationship 
+# with the user model.  This should allow use to allocate users to courses
 
+class Course(models.Model):
+    course_uuid = UUIDField()
+    # course_code = models.Charfield(maxlength=6)
+
+    def __unicode__(self):
+        return "%s" % (self.course_code)
 
         
 class SourceFolder(models.Model):
@@ -86,7 +94,6 @@ class SourceFile(models.Model):
             return self.file.read()
         finally:
             self.file.close()
-
 
 
 
