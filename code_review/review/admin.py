@@ -31,7 +31,7 @@ class ReviewUserAdmin(admin.ModelAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReviewUser, ReviewUserAdmin)
-
+admin.site.register(Course)
 admin.site.register(SourceFolder)
 admin.site.register(SourceFile)
 admin.site.register(SubmissionTest)

@@ -46,9 +46,11 @@ class ReviewUser(models.Model):
 # creating a course code model to which will have a many to many relationship 
 # with the user model.  This should allow use to allocate users to courses
 
+
 class Course(models.Model):
     course_uuid = UUIDField()
-    # course_code = models.Charfield(maxlength=6)
+    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=50, blank=False, null=False, default="Intro to learning")
 
     def __unicode__(self):
         return "%s" % (self.course_code)
@@ -137,16 +139,13 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
+    course_code = models.ForeignKey('Course', default=Course.objects.get(course_code="ABCD1234"))
     assignment_uuid = UUIDField()
     name = models.TextField()
-
     repository_format = models.TextField(help_text=repo_format_help_text)
-
     first_display_date = models.DateTimeField(default=lambda: timezone.now())
-
     submission_open_date = models.DateTimeField(default=lambda: timezone.now())
     submission_close_date = models.DateTimeField()
-
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
 
