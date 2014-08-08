@@ -1,0 +1,8 @@
+from models import Course
+import settings
+
+settings.configure()
+
+f = open('courses.in', 'r')
+
+print f
