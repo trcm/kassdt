@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'review',
     'south',
+    'ims_lti_py',
 )
 
 MIDDLEWARE_CLASSES = (
