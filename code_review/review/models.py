@@ -38,11 +38,14 @@ repo_format_help_text = """
 class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
-
+    isStaff = models.BooleanField(default=False)
+    
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
 
+
+        
 class SourceFolder(models.Model):
     folder_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
