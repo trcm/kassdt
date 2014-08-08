@@ -8,4 +8,5 @@ urlpatterns = patterns('',
                        # url(r'^$', 'code_review.views.home', name='home'),
                        # url(r'^blog/', include('blog.urls')),
                        url(r'^admin/', include(admin.site.urls)),
+                       url(r'^lti/', include('lti.urls')),
 )
