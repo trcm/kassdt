@@ -1,0 +1,15 @@
+{% extends 'index.djhtml' %}
+
+
+{% block content %}
+
+  <form method="post" id="login" action="/review/login/">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" autofocus/>
+    <input type="password" name="password" placeholder="Password" />
+    <input type="submit" name="submit" value="Login" />
+  </form>
+
+  <button action="/review/register/">Register</button>
+  
+{% endblock %}
