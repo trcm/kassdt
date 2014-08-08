@@ -39,6 +39,7 @@ class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
+    courses = models.ManyToManyField('Course')
     
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
@@ -50,8 +51,8 @@ class ReviewUser(models.Model):
 class Course(models.Model):
     course_uuid = UUIDField()
     course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
-    course_name = models.CharField(max_length=50, blank=False, null=False, default="Intro to learning")
-
+    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    students = models.ManyToManyField('ReviewUser')
     def __unicode__(self):
         return "%s" % (self.course_code)
 
