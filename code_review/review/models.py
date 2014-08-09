@@ -140,7 +140,8 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
-    course_code = models.ForeignKey('Course', default=Course.objects.get(course_code="ABCD1234"))
+    course_code = models.ForeignKey('Course',
+                                    default=Course.objects.get(course_code="ABCD1234"))
     assignment_uuid = UUIDField()
     name = models.TextField()
     repository_format = models.TextField(help_text=repo_format_help_text)
