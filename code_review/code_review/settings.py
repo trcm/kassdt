@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'review',
     'south',
     'ims_lti_py',
+    'githandler',
 )
 
 MIDDLEWARE_CLASSES = (
