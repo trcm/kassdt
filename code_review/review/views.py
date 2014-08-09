@@ -8,10 +8,12 @@ from django.contrib.auth import authenticate, login, logout
 
 # we can use this as a pre condition for any method that requires the user to be logged in
 # which will probably be all of them.  You can see below that the index method uses this
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from review.models import *
 
+def staffTest(User):
+    return User.is_staff
 
 # this is the basic index view, it required login before the user can do any
 # as you can see at the moment this shows nothing other than a logout button
@@ -49,4 +51,21 @@ def logout(request):
     logout(request)
     return HttpResponse("logout")
     # return redirect('/review/')
+
+
+# This will redirect the admin user to the admin panel.
+# It will also list all the courses they're currently
+@login_required
+@user_passes_test(staffTest)
+def adminRedirect(request):
+
+    context = {}
     
+    # get the current assignments for the subject, subject choosing will be added later
+
+    c = Course.objects.get(course_code="ABCD1234")
+    assignments = c.assignments.all()
+    context['assignments'] = assignments
+
+    
+    return render(request, 'admin.html', context)
