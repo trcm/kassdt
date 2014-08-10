@@ -23,11 +23,11 @@ def staffTest(User):
 def index(request):
     # whatever stuff we're goign to show in the index page needs to
     # generated here
-    
+
     return render(request, 'index.djhtml', {'name': 'tom'})
 
 def loginUser(request):
-    pass 
+    pass
 
 # simply logs the user out
 def logout(request):
@@ -41,26 +41,25 @@ def logout(request):
 @login_required
 @user_passes_test(staffTest)
 def adminRedirect(request):
-
     context = {}
-    
     # get the current assignments for the subject, subject choosing will be added later
 
     c = Course.objects.get(course_code="ABCD1234")
     assignments = c.assignments.all()
     context['assignments'] = assignments
     context['course'] = c
-    
-    
+
     return render(request, 'admin.html', context)
 
-# 
+# gets the course code for the current course being used and
+# creates a form for creating a new assignment, redirects to the
+# assignment create page
 
-    
+
 @login_required
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
-    
+
     context = {}
 
     # grab course code from the url and convert to a string from unicode
@@ -75,14 +74,16 @@ def create_assignment(request, course_code):
     # add all the data to thte context dict
     context['form'] = form
     context['course'] = c
-    
-    
+
+
     return render(request, 'admin/new_assignment.html', context)
 
 
-## Validates the data from the assignment creation form.
-## If the data is valid then it creates the assignment,
-## otherwise the user is kicked back to the form to fix the data
+# Validates the data from the assignment creation form.
+# If the data is valid then it creates the assignment,
+# otherwise the user is kicked back to the form to fix the data
+
+
 def validateAssignment(request):
     form = None
     context = {}
@@ -94,6 +95,7 @@ def validateAssignment(request):
         print request.POST['course_code']
         if form.is_valid():
             try:
+                # gets the cleaned data from the post request
                 print "Creating assignment"
                 course = Course.objects.get(id=request.POST['course_code'])
                 name = form.cleaned_data['name']
@@ -116,10 +118,8 @@ def validateAssignment(request):
                 print "DREADED EXCEPTION"
                 print AssError.args
             return HttpResponseRedirect('/review/course_admin/')
-    
-            
+
     context['form'] = form
     context['course'] = Course.objects.get(id=request.POST['course_code'])
-    
-    return render(request, 'admin/new_assignment.html', context)
 
+    return render(request, 'admin/new_assignment.html', context)
