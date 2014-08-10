@@ -10,4 +10,5 @@ urlpatterns = patterns('',
                        url(r'^$', include('review.urls')),
                        url(r'^review/', include('review.urls')),
                        url(r'^admin/', include(admin.site.urls)),
+                       url(r'^lti/', include('lti.urls')),
 )
