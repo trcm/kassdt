@@ -54,6 +54,8 @@ def adminRedirect(request):
     
     return render(request, 'admin.html', context)
 
+# 
+
     
 @login_required
 @user_passes_test(staffTest)
@@ -78,10 +80,14 @@ def create_assignment(request, course_code):
     return render(request, 'admin/new_assignment.html', context)
 
 
+## Validates the data from the assignment creation form.
+## If the data is valid then it creates the assignment,
+## otherwise the user is kicked back to the form to fix the data
 def validateAssignment(request):
     form = None
     context = {}
-    
+
+    # gets the data from the post request
     if request.method == "POST":
         print request
         form = AssignmentForm(request.POST)
@@ -106,11 +112,10 @@ def validateAssignment(request):
                                                 review_close_date=review_close_date)
                 ass.save()
             except Exception as AssError:
+                # prints the exception
                 print "DREADED EXCEPTION"
                 print AssError.args
-                
-                
-                return render(request)
+            return HttpResponseRedirect('/review/course_admin/')
     
             
     context['form'] = form
