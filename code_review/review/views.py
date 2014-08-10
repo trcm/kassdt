@@ -110,7 +110,7 @@ def validateAssignment(request):
                 print AssError.args
                 
                 
-            return HttpResponse("success")
+                return render(request)
     
             
     context['form'] = form
