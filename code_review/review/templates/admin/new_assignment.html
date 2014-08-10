@@ -1,0 +1,19 @@
+{% extends 'base.djhtml' %}
+
+{% block content %}
+
+<h1>New {{ course.course_code }} Assignment</h1>
+
+<form method="post" action="{% url 'generate_assignment' %}">
+  {% csrf_token %}
+  {% for field in form %}
+<ul>
+  <li> {{ field.errors }} {{ field.label_tag }} {{ field }}</li>
+</ul>
+
+  {% endfor %}
+  <input type="submit" name="Submit" value="Submit" />
+</form>
+
+
+{% endblock %}
