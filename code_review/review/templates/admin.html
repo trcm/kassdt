@@ -1,0 +1,26 @@
+{% extends 'base.djhtml' %}
+
+{% block content %}
+
+<h1>Admin Panel</h1>
+
+<h2>Assignments</h2>
+
+<h3><a>Create New</a></h3>
+
+<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
+
+{% if assignments %}
+<ul>
+  {% for assignment in assignments %}
+  <li><a href="Assignment">{{ assignment.name }} - {{ assignment.submission_close_date }}</a></li>
+  {% endfor %}
+</ul>
+
+{% else %}
+<p><strong>No assignments</strong></p>
+{% endif%}
+
+<h2>Settings</h2>
+
+{% endblock %}

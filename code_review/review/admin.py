@@ -25,6 +25,7 @@ class ReviewUserAdmin(admin.ModelAdmin):
     readonly_fields = ('user_uuid', )
     fields = ("djangoUser", 'user_uuid', 'courses')
     list_display = ('djangoUser', 'user_uuid', 'isStaff')
+    filter_horizontal = ('courses', )
 
 class CourseAdmin(admin.ModelAdmin):
     model = Course
