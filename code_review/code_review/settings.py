@@ -62,8 +62,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'review',
     'south',
-    'ims_lti_py',
     'githandler',
+    # 'ims_lti_py',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -92,6 +92,16 @@ DATABASES = {
     }
 }
 
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -114,4 +124,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
 TEMPLATE_PATH = (os.path.join(BASE_DIR, 'templates/'), )
-

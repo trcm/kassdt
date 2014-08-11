@@ -4,7 +4,8 @@ from django.db import models
 from django_extensions.db.fields import UUIDField
 from django.contrib.auth.models import User as Django_User
 from django.utils import timezone
-
+from django.contrib.auth.models import User
+from django import forms
 c = lambda x: "<code>" + x + "</code>"
 repo_format_format_vars = [
     ("user_uuid",
@@ -35,15 +36,30 @@ repo_format_help_text = """
     """
 
 
+class studentUser(User):
+    char = models.CharField(max_length=100)
+    
+
 class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
+    courses = models.ManyToManyField('Course')
     
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
+# creating a course code model to which will have a many to many relationship 
+# with the user model.  This should allow use to allocate users to courses
 
+
+class Course(models.Model):
+    course_uuid = UUIDField()
+    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    students = models.ManyToManyField('ReviewUser')
+    def __unicode__(self):
+        return "%s" % (self.course_code)
 
         
 class SourceFolder(models.Model):
@@ -88,6 +104,36 @@ class SourceFile(models.Model):
             self.file.close()
 
 
+#Testing creating own form for user addition
+class createUserForm(User):
+    username = forms.CharField(max_length = 20, min_length = 6)
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    password1 = forms.CharField(max_length = 100, widget=forms.PasswordInput())
+    password2 = forms.CharField(max_length = 30, widget=forms.PasswordInput())
+    email = forms.EmailField(required=False)
+
+    def clean_username(self): # check if username dos not exist before
+        try:
+            User.objects.get(username=self.clean) #get user from user model
+        except User.DoesNotExist :
+            return username.clean
+
+        raise forms.ValidationError("this user exist already")
+
+    def clean(self): # check if password 1 and password2 match each other
+        if 'password1' and 'password2':#check if both pass first validation
+            if self.clean != self.clean: # check if they match each other
+                raise forms.ValidationError("passwords dont match each other")
+
+            return 'password1'
+
+        def save(self):
+            new_user=User.objects.create_user(username = self.clean_username,
+                    email=self.clean, first_name=self.clean,
+                    last_name=self.clean, password=self.clean,
+                    )
+            return new_user
 
 
 class SubmissionTestResults(models.Model):
@@ -119,7 +165,7 @@ class SubmissionTest(models.Model):
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
-                                  (self.test_pass_count, self.test_count))
+                    (self.test_pass_count, self.test_count))
             super(SubmissionTest, self).clean()
 
     def get_result(self):
@@ -130,16 +176,15 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
+    course_code = models.ForeignKey('Course',
+            default=Course.objects.get(course_code="ABCD1234"),
+            related_name="assignments")
     assignment_uuid = UUIDField()
     name = models.TextField()
-
     repository_format = models.TextField(help_text=repo_format_help_text)
-
     first_display_date = models.DateTimeField(default=lambda: timezone.now())
-
     submission_open_date = models.DateTimeField(default=lambda: timezone.now())
     submission_close_date = models.DateTimeField()
-
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
 
@@ -156,7 +201,7 @@ class Assignment(models.Model):
             "submission_close_date": self.submission_close_date,
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
-        })
+            })
 
 
 class AssignmentSubmission(models.Model):
@@ -182,10 +227,10 @@ class AssignmentSubmission(models.Model):
             "submission_for": self.submission_for,
             "error_occurred": self.error_occurred,
             "root_folder": self.root_folder,
-        })
+            })
 
 
-### BEGIN ANNOTATION STORAGE ###
+        ### BEGIN ANNOTATION STORAGE ###
 
 
 class SourceAnnotation(models.Model):
