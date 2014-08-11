@@ -26,6 +26,24 @@ def clone(url, directory):
 def root_folder_name(asmtSubmission):
    return "test_submission"
 
+
+def traverse_tree(tree):
+    """
+	Recurvise tree traversal 
+	Does NOT work AT ALL at the moment, is WIP.
+    """
+    if tree.type == 'tree':
+	if tree.blobs:
+	    # At this point, the db object for this tree must exist. 
+	    for file in blobs:
+		# Create source file using db obj corresponding to this tree as its parent.
+	    
+	if tree.trees: 
+	    for tree in tree.trees:
+		traverse_tree(tree)
+	
+    return 
+
 """
     :asmtSubmission AssignmentSubmission the student's submission; 
     when this method is called it will have lots of nulls. 
