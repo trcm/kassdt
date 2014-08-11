@@ -35,9 +35,6 @@ repo_format_help_text = """
         ; which will produce """ + c("https://www.source-hosting.com/joe_blogs/ass1/") + """ for the user "joe_blogs".
     """
 
-class student(User):
-    name = models.CharField(max_length=100)
-
 
 
 class ReviewUser(models.Model):
