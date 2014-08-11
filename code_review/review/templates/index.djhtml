@@ -8,6 +8,7 @@
   {% if user.is_superuser %}
     <p>Congrats, you have admin priviledges</p>
     <a href="/admin">Sudo</a>
+    <a href="/review/course_admin">Course Admin Page</a>
   {% endif%}
 
   <p>Well uhh...you logged in..</p>

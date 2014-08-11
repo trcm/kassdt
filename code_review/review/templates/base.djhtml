@@ -2,26 +2,26 @@
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Code Review</title>
-	<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Code Review</title>
+    <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "js/jquery-ui/jquery-ui.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "js/jquery-timepicker/jquery.timepicker.css" %}" type="text/css" media="screen" />
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}">Logout</a>
+    {% endif%}
+    
+    <div class="content">
+      {% block content %}
+      {% endblock %}
+    </div>
 
-      
-      {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}">Logout</a>
-      {% endif%}
-
-      
-      <div class="content">
-	{% block content %}
-	  
-	{% endblock %}
-      </div>
-
-      <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
-      <script type="text/javascript" src="{% static "js/site.js" %}"></script>
-    </body>
+    <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/site.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-timepicker/jquery.timepicker.min.js" %}"></script>
+  </body>
 </html>
