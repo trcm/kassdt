@@ -26,22 +26,55 @@ def clone(url, directory):
 def root_folder_name(asmtSubmission):
    return "test_submission"
 
+def add_source_folder(name, parent):
+    return SourceFolder.get_or_create(name=name, parent=parent)
 
-def traverse_tree(tree):
+def add_source_file(name, folder, srcPath):
     """
-	Recurvise tree traversal 
-	Does NOT work AT ALL at the moment, is WIP.
-    """
-    if tree.type == 'tree':
-	if tree.blobs:
-	    # At this point, the db object for this tree must exist. 
-	    for file in blobs:
-		# Create source file using db obj corresponding to this tree as its parent.
-	    
-	if tree.trees: 
-	    for tree in tree.trees:
-		traverse_tree(tree)
+	We note SourceFile has a FileField, which only stores the upload
+	path; it will append the given path in the upload_to attribute to the
+	root directory given by MEDIA_ROOT in settings. 
 	
+	So once we clone the repo to some assignment directory, we simply
+	look at the file structure within the repo to determine srcPath. 
+
+	:name String name of file
+	:folder SourceFolder the folder containing thisfile. 
+	:srcPath String the path to this file, relative to MEDIA_ROOT.
+    """
+    f = FileField(upload_to=srcPath)
+    return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
+
+def traverse_tree(tree, thisFolder, path):
+    """
+	Recurvise tree traversal; creates the appropriate
+	database objects for all folders and files which are
+	children of tree. 
+
+	Need to create root folder then call traverse_tree
+	on that.
+	
+	:tree git.objects.Tree the Tree to traverse. 
+	:thisFolder SourceFolder corresponding to tree. 
+	:path String the path (relative to MEDIA_ROOT) to the folder represented
+	by this tree; path does not contain this folder.
+    """
+
+    # Get files directly underneath this folder.
+    blobs = tree.blobs()
+    thisFolderName = tree.name
+    # Add this folder to the path. 
+    path = path + "/" + thisFolderName
+
+    for blob in blobs:
+	add_source_file(blob.name, thisFolder, path)
+    
+    # Get folders directly underneath this folder.
+    folders = tree.trees
+    for folder in folders:
+	srcFolderObj = add_source_folder(thisFolderName, thisFolder)[0]
+	traverse_tree(folder, srcFolderObj, path)
+    
     return 
 
 """
@@ -54,7 +87,7 @@ def traverse_tree(tree):
 	submission_for
 
     :directory String the path to which to clone this student's
-    repo.
+    repo, relative to MEDIA_ROOT.
 """
 def populate_db(asmtSubmission, directory):
 
@@ -63,24 +96,7 @@ def populate_db(asmtSubmission, directory):
     # Get the root tree, which has all the folders.
     root = repo.tree()
     # Name the source folder something like assignment-student-submission#
-    SourceFolder.objects.get_or_create(name=root_folder_name(asmtSubmission), parent='')
+    rootFolder = SourceFolder.objects.get_or_create(name=root_folder_name(asmtSubmission), parent='')
 
-    # Iterate over folders, create corresponding SourceFolder objects.
-    # There should be an easy, existing method to iterate over them.
-    # Iterate over files, create corresponding SourceFile objects.
-    # traverse() method without arguments does a breadth first.
-    # To make it do depth first, use argument branch_first=False.
-    # See git.objects.util.Traversable for more info. 
-    traversable = folders.traverse(branch_first=False)
-    
-    parent_folder = asmtSubmission.root_folder
-    for node in traversable:
-	# Folder
-	if node.type == "tree":
-	    print("Currently processing folder %s\n", %(node.name)) 
-	    SourceFolder.objects.get_or_create(name=node.name, parent=parent_folder)
-	else if node.type == 'blob':
-	    print("Currently processing file %s\n", %(node.name))
-	    # TODO workout how to convert blob object into something FileField is going to like.
-	    SourceFile.objects.get_or_create(folder=parent_folder, name=blob.name, file=...)
-
+    # Now make the rest of the SourceFolder and SourceFile objects.
+    traverse_tree(root, rootFolder, directory)
