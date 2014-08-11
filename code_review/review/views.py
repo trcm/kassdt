@@ -21,10 +21,20 @@ def staffTest(User):
 # as I haven't added any content to it yet
 @login_required(login_url='/review/login_redirect/')
 def index(request):
+    context = {}
+    
     # whatever stuff we're goign to show in the index page needs to
     # generated here
+    U = User.objects.get(id=request.user.id)
+    context['user'] = U
+    try:
+        courses = U.reviewuser.courses.all()
+        context['courses'] = courses
 
-    return render(request, 'index.djhtml', {'name': 'tom'})
+    except Exception as UserExcept:
+        print UserExcept.args
+        
+    return render(request, 'course.html', context)
 
 def loginUser(request):
     pass
@@ -35,22 +45,19 @@ def logout(request):
     return HttpResponse("logout")
     # return redirect('/review/')
 
-
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
 @login_required
-@user_passes_test(staffTest)
-def adminRedirect(request):
+# @user_passes_test(staffTest)
+def adminRedirect(request, course_code):
     context = {}
     # get the current assignments for the subject, subject choosing will be added later
-
     c = Course.objects.get(course_code="ABCD1234")
     assignments = c.assignments.all()
     context['assignments'] = assignments
     context['course'] = c
 
     return render(request, 'admin.html', context)
-
 # gets the course code for the current course being used and
 # creates a form for creating a new assignment, redirects to the
 # assignment create page

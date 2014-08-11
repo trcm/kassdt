@@ -1,0 +1,30 @@
+{% extends 'base.djhtml' %}
+
+{% block content %}
+
+{% if user.is_superuser %}
+<p>Congrats, you have admin priviledges</p>
+<a href="/admin">Sudo</a>
+<a href="/review/course_admin">Course Admin Page</a>
+{% endif%}
+
+<ul>
+{% for course in courses %}
+  <li><a href="{% url 'adminRedirect' course.course_code %}">{{ course }}</a></li>
+{% endfor %}
+  
+</ul>
+
+<p>Well uhh...you logged in..</p>
+
+{% if user.reviewuser %}
+{{ user.reviewuser.user_uuid }}
+{% endif%}
+
+{% block assignments %}
+
+{% endblock %}
+
+
+{% endblock %}
+
