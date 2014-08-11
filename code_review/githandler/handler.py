@@ -13,7 +13,8 @@ def clone(url, directory):
 	return the Repo object.
 	
 	:url String 
-	:directory String 
+	:directory String absolute path to the directory to which
+	to clone this repo; directory must be empty folder.
     """
     return Repo.clone_from(url, directory)
 
