@@ -5,7 +5,7 @@ from django_extensions.db.fields import UUIDField
 from django.contrib.auth.models import User as Django_User
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+from django import forms
 c = lambda x: "<code>" + x + "</code>"
 repo_format_format_vars = [
     ("user_uuid",
@@ -36,6 +36,9 @@ repo_format_help_text = """
     """
 
 
+class studentUser(User):
+    char = models.CharField(max_length=100)
+    
 
 class ReviewUser(models.Model):
     user_uuid = UUIDField()
@@ -101,6 +104,37 @@ class SourceFile(models.Model):
             self.file.close()
 
 
+#Testing creating own form for user addition
+class createUserForm(User):
+    username = forms.CharField(max_length = 20, min_length = 6)
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    password1 = forms.CharField(max_length = 100, widget=forms.PasswordInput())
+    password2 = forms.CharField(max_length = 30, widget=forms.PasswordInput())
+    email = forms.EmailField(required=False)
+
+    def clean_username(self): # check if username dos not exist before
+        try:
+            User.objects.get(username=self.clean) #get user from user model
+        except User.DoesNotExist :
+            return username.clean
+
+        raise forms.ValidationError("this user exist already")
+
+    def clean(self): # check if password 1 and password2 match each other
+        if 'password1' and 'password2':#check if both pass first validation
+            if self.clean != self.clean: # check if they match each other
+                raise forms.ValidationError("passwords dont match each other")
+
+            return 'password1'
+
+        def save(self):
+            new_user=User.objects.create_user(username = self.clean_username,
+                    email=self.clean, first_name=self.clean,
+                    last_name=self.clean, password=self.clean,
+                    )
+            return new_user
+
 
 class SubmissionTestResults(models.Model):
     tests_completed = models.NullBooleanField()
@@ -131,7 +165,7 @@ class SubmissionTest(models.Model):
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
-                                  (self.test_pass_count, self.test_count))
+                    (self.test_pass_count, self.test_count))
             super(SubmissionTest, self).clean()
 
     def get_result(self):
@@ -143,8 +177,8 @@ class SubmissionTest(models.Model):
 
 class Assignment(models.Model):
     course_code = models.ForeignKey('Course',
-                                    default=Course.objects.get(course_code="ABCD1234"),
-                                    related_name="assignments")
+            default=Course.objects.get(course_code="ABCD1234"),
+            related_name="assignments")
     assignment_uuid = UUIDField()
     name = models.TextField()
     repository_format = models.TextField(help_text=repo_format_help_text)
@@ -167,7 +201,7 @@ class Assignment(models.Model):
             "submission_close_date": self.submission_close_date,
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
-        })
+            })
 
 
 class AssignmentSubmission(models.Model):
@@ -193,10 +227,10 @@ class AssignmentSubmission(models.Model):
             "submission_for": self.submission_for,
             "error_occurred": self.error_occurred,
             "root_folder": self.root_folder,
-        })
+            })
 
 
-### BEGIN ANNOTATION STORAGE ###
+        ### BEGIN ANNOTATION STORAGE ###
 
 
 class SourceAnnotation(models.Model):

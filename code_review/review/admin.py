@@ -3,6 +3,7 @@ from django.contrib import admin
 #from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from review.models import *
+from django import forms
 
 class ReviewUserInline(admin.StackedInline):
     model = ReviewUser
@@ -18,8 +19,8 @@ class UserAdmin(admin.ModelAdmin):
     model = User
     inlines = (ReviewUserInline, )
     list_display = ("username", "email", "is_staff", "is_superuser")
-    
-    
+
+
 class ReviewUserAdmin(admin.ModelAdmin):
     model = ReviewUser
     readonly_fields = ('user_uuid', )
@@ -32,10 +33,11 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('course_code', 'course_name')
     fields = ('course_code', 'course_name', 'students')
     search_fields = ('course_code', )
-    
+
 # adds models for editing in the admin page    
 admin.site.unregister(User)
 
+admin.site.register(createUserForm,UserAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReviewUser, ReviewUserAdmin)
 admin.site.register(Course, CourseAdmin)
