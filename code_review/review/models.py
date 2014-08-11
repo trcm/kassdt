@@ -4,6 +4,7 @@ from django.db import models
 from django_extensions.db.fields import UUIDField
 from django.contrib.auth.models import User as Django_User
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 c = lambda x: "<code>" + x + "</code>"
 repo_format_format_vars = [
@@ -33,6 +34,10 @@ repo_format_help_text = """
     c("https://www.source-hosting.com/{username}/ass1/") + """
         ; which will produce """ + c("https://www.source-hosting.com/joe_blogs/ass1/") + """ for the user "joe_blogs".
     """
+
+class student(User):
+    name = models.CharField(max_length=100)
+
 
 
 class ReviewUser(models.Model):
