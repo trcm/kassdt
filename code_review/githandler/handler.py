@@ -8,6 +8,7 @@ from git import *
 from review.models import *
 import os.path
 from django.db import models 
+from django.conf import settings
 
 def clone(url, directory):
     """
@@ -27,9 +28,13 @@ def clone(url, directory):
     Right now it's just spitting out hardcoded name. 
 """
 def root_folder_name(asmtSubmission):
-   return "test_submission"
+   return "test_student_repo"
 
 def add_source_folder(name, parent):
+    """
+	:name String
+	:parent SourceFolder
+    """
     return SourceFolder.objects.get_or_create(name=name, parent=parent)
 
 def add_source_file(name, folder, srcPath):
@@ -45,7 +50,7 @@ def add_source_file(name, folder, srcPath):
 	:folder SourceFolder the folder containing thisfile. 
 	:srcPath String the path to this file, relative to MEDIA_ROOT.
     """
-    f = models.FileField(upload_to=srcPath)
+    f = srcPath
     return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
 
 def traverse_tree(tree, thisFolder, path):
@@ -91,11 +96,19 @@ def traverse_tree(tree, thisFolder, path):
 	submission_for
 
     :directory String the path to which to clone this student's
-    repo, relative to MEDIA_ROOT.
+    repo, relative to MEDIA_ROOT. This should be the directory in which
+    the student assignments are stored, rather than this student's repo;
+    i.e., directory should be something like "DECO3801/asmt1" rather than
+    "DECO3801/asmt1/studentA_submission1"
 """
 def populate_db(asmtSubmission, directory):
     rootFolderName = root_folder_name(asmtSubmission)
+    
+    #  rootFolderPath is absolute path, necessary for cloning; 
+    # to get this correct, we need to join to MEDIA_ROOT.
     rootFolderPath = os.path.join(directory, rootFolderName)
+    rootFolderPath = os.path.join(settings.MEDIA_ROOT, rootFolderPath)
+    print(rootFolderPath)
 
     repo = clone(asmtSubmission.submission_repository, rootFolderPath)
     
@@ -103,6 +116,11 @@ def populate_db(asmtSubmission, directory):
     root = repo.tree()
     # Name the source folder something like assignment-student-submission#
     rootFolder = add_source_folder(rootFolderName, None)[0]
-
+    # Update the repo folder in the AssignmentSubmission object.
+    asmtSubmission.root_folder = rootFolder
+    asmtSubmission.save()
+    print("directory (rel to MEDIA_ROOT) is %s" %directory)
+    # Get repo root directory relative to MEDIA_ROOT
+    relativeRoot = os.path.join(directory, rootFolderName)
     # Now make the rest of the SourceFolder and SourceFile objects.
-    traverse_tree(root, rootFolder, directory)
+    traverse_tree(root, rootFolder, relativeRoot)
