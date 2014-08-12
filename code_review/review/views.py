@@ -103,6 +103,8 @@ def validateAssignment(request):
         if form.is_valid():
             try:
                 # gets the cleaned data from the post request
+                
+                # Just to check the code is working
                 print "Creating assignment"
                 course = Course.objects.get(id=request.POST['course_code'])
                 name = form.cleaned_data['name']
@@ -112,6 +114,7 @@ def validateAssignment(request):
                 submission_close_date = form.cleaned_data['submission_close_date']
                 review_open_date = form.cleaned_data['review_open_date']
                 review_close_date = form.cleaned_data['review_close_date']
+                
                 ass = Assignment.objects.create(course_code=course, name=name,
                                                 repository_format=repository_format,
                                                 first_display_date=first_display_date,
