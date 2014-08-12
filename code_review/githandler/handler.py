@@ -6,6 +6,8 @@
 
 from git import *
 from review.models import *
+import os.path
+from django.db import models 
 
 def clone(url, directory):
     """
@@ -28,7 +30,7 @@ def root_folder_name(asmtSubmission):
    return "test_submission"
 
 def add_source_folder(name, parent):
-    return SourceFolder.get_or_create(name=name, parent=parent)
+    return SourceFolder.objects.get_or_create(name=name, parent=parent)
 
 def add_source_file(name, folder, srcPath):
     """
@@ -43,7 +45,7 @@ def add_source_file(name, folder, srcPath):
 	:folder SourceFolder the folder containing thisfile. 
 	:srcPath String the path to this file, relative to MEDIA_ROOT.
     """
-    f = FileField(upload_to=srcPath)
+    f = models.FileField(upload_to=srcPath)
     return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
 
 def traverse_tree(tree, thisFolder, path):
@@ -62,10 +64,11 @@ def traverse_tree(tree, thisFolder, path):
     """
 
     # Get files directly underneath this folder.
-    blobs = tree.blobs()
+    blobs = tree.blobs
     thisFolderName = tree.name
     # Add this folder to the path. 
-    path = path + "/" + thisFolderName
+    path = os.path.join(path, thisFolderName)
+    print(path)
 
     for blob in blobs:
 	add_source_file(blob.name, thisFolder, path)
@@ -73,7 +76,7 @@ def traverse_tree(tree, thisFolder, path):
     # Get folders directly underneath this folder.
     folders = tree.trees
     for folder in folders:
-	srcFolderObj = add_source_folder(thisFolderName, thisFolder)[0]
+	srcFolderObj = add_source_folder(folder.name, thisFolder)[0]
 	traverse_tree(folder, srcFolderObj, path)
     
     return 
@@ -91,13 +94,15 @@ def traverse_tree(tree, thisFolder, path):
     repo, relative to MEDIA_ROOT.
 """
 def populate_db(asmtSubmission, directory):
+    rootFolderName = root_folder_name(asmtSubmission)
+    rootFolderPath = os.path.join(directory, rootFolderName)
 
-    repo = clone(asmtSubmission.submission_repository, directory)
+    repo = clone(asmtSubmission.submission_repository, rootFolderPath)
     
     # Get the root tree, which has all the folders.
     root = repo.tree()
     # Name the source folder something like assignment-student-submission#
-    rootFolder = SourceFolder.objects.get_or_create(name=root_folder_name(asmtSubmission), parent='')
+    rootFolder = add_source_folder(rootFolderName, None)[0]
 
     # Now make the rest of the SourceFolder and SourceFile objects.
     traverse_tree(root, rootFolder, directory)
