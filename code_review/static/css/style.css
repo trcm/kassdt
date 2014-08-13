@@ -1,11 +1,7 @@
-body {
-
+#adminList {
+  margin-bottom: 20px;
 }
 
-#courseList {
-
-}
-
-#assignmentList {
-
+#adminList li {
+  display: inline;
 }

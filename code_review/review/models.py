@@ -38,18 +38,18 @@ repo_format_help_text = """
 
 class studentUser(User):
     char = models.CharField(max_length=100)
-    
+
 
 class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
     courses = models.ManyToManyField('Course')
-    
+
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
-# creating a course code model to which will have a many to many relationship 
+# creating a course code model to which will have a many to many relationship
 # with the user model.  This should allow use to allocate users to courses
 
 
@@ -61,7 +61,7 @@ class Course(models.Model):
     def __unicode__(self):
         return "%s" % (self.course_code)
 
-        
+
 class SourceFolder(models.Model):
     folder_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
@@ -177,8 +177,8 @@ class SubmissionTest(models.Model):
 
 class Assignment(models.Model):
     course_code = models.ForeignKey('Course',
-            default=Course.objects.get(course_code="ABCD1234"),
-            related_name="assignments")
+                                    default=Course.objects.get(id=1),
+                                    related_name="assignments")
     assignment_uuid = UUIDField()
     name = models.TextField()
     repository_format = models.TextField(help_text=repo_format_help_text)
@@ -278,4 +278,3 @@ def get_user_for_django_user(usr):
     model_user = User.objects.get_or_create(djangoUser=usr)
 
     return model_user[0]
-
