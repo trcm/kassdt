@@ -8,23 +8,21 @@
 <a href="/review/course_admin">Course Admin Page</a>
 {% endif%}
 
-<ul>
-{% for course in courses %}
+
+{% if courses %}
+<ul id="courseList">
+  {% for course in courses %}
   <li><a href="{% url 'adminRedirect' course.course_code %}">{{ course }}</a></li>
-{% endfor %}
-  
+  {% endfor %}
 </ul>
 
-<p>Well uhh...you logged in..</p>
-
-{% if user.reviewuser %}
-{{ user.reviewuser.user_uuid }}
+{% else %}
+<p>No courses</p>
 {% endif%}
 
-{% block assignments %}
+<div id="assignmentList">
+  {% block assignments %}
+  {% endblock %}
+</div>
 
 {% endblock %}
-
-
-{% endblock %}
-

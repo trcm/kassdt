@@ -10,7 +10,7 @@ class ReviewUserInline(admin.StackedInline):
     readonly_fields = ('user_uuid', )
     fields = ("djangoUser", 'user_uuid', 'courses')
     verbose_name_plural = 'user'
-
+    filter_horizontal = ('courses',)
     def callable(self, ru):
         return ru.user_uuid
 

@@ -2,9 +2,7 @@
 
 {% block assignments %}
 
-<h1>Admin Panel</h1>
-
-<h2>Assignments</h2>
+<h1>Assignments</h1>
 
 {% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
@@ -21,6 +19,9 @@
 <p><strong>No assignments</strong></p>
 {% endif%}
 
+{% if user.is_superuser %}
 <h2>Settings</h2>
+{% endif %}
+
 
 {% endblock %}

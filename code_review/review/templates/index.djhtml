@@ -12,11 +12,5 @@
   {% endif%}
 
   <p>Well uhh...you logged in..</p>
-
-  
-  {% if user.reviewuser %}
-    {{ user.reviewuser.user_uuid }}
-  {% endif%}
-
   
 {% endblock %}
