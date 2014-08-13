@@ -39,6 +39,7 @@ def index(request):
     
     return render(request, 'course.html', context)
 
+
 def loginUser(request):
     pass
 
@@ -51,6 +52,8 @@ def logout(request):
 
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
+
+
 @login_required
 # @user_passes_test(staffTest)
 def adminRedirect(request, course_code):
