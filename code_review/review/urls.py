@@ -19,6 +19,7 @@ urlpatterns = patterns('',
                            {'next_page': '/review/'}, name='logout'),
                        # Furture route to register new users.  This probably won't be used
                        url(r'register/$', views.index, name='register'),
+                       url(r'course_admin/$', views.index, name='default'),
                        url(r'course_admin/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.adminRedirect, name='adminRedirect'),
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',

@@ -2,15 +2,8 @@
 
 {% block content %}
 
-{% if user.is_superuser %}
-<p>Congrats, you have admin priviledges</p>
-<a href="/admin">Sudo</a>
-<a href="/review/course_admin">Course Admin Page</a>
-{% endif%}
-
-
 {% if courses %}
-<ul id="courseList">
+<ul id="courseList" class="col-md-2">
   {% for course in courses %}
   <li><a href="{% url 'adminRedirect' course.course_code %}">{{ course }}</a></li>
   {% endfor %}
@@ -20,7 +13,7 @@
 <p>No courses</p>
 {% endif%}
 
-<div id="assignmentList">
+<div id="assignmentList" class="col-md-8">
   {% block assignments %}
   {% endblock %}
 </div>
