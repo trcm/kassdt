@@ -1,11 +1,19 @@
 body {
 
 }
+#adminTest {
+  margin-bottom: 10px;
+}
+
+#adminTest li {
+  display: inline;
+}
 
 #courseList {
 
 }
 
 #assignmentList {
+
 
 }
