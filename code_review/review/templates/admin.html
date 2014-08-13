@@ -1,14 +1,12 @@
-{% extends 'base.djhtml' %}
+{% extends 'course.html' %}
 
-{% block content %}
+{% block assignments %}
 
-<h1>Admin Panel</h1>
+<h1>{{ course.course_code }} Assignments</h1>
 
-<h2>Assignments</h2>
-
-<h3><a>Create New</a></h3>
-
+{% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
+{% endif%}
 
 {% if assignments %}
 <ul>
@@ -21,6 +19,9 @@
 <p><strong>No assignments</strong></p>
 {% endif%}
 
+{% if user.is_superuser %}
 <h2>Settings</h2>
+{% endif %}
+
 
 {% endblock %}
