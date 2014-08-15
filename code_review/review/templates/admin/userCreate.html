@@ -2,6 +2,12 @@
 
 {% block content %}
 
+
+{% if error %}
+<p id=error>{{ error }}</p>
+{% endif%}
+
+
 <form method="POST" action="/review/validateUser/">
   {% csrf_token %}
   {% for field in form %}

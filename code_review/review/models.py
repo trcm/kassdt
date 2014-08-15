@@ -40,7 +40,8 @@ class ReviewUser(models.Model):
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
     courses = models.ManyToManyField('Course')
-
+    firstLogin = models.BooleanField(default=True)
+    
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 

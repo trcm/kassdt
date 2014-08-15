@@ -188,6 +188,9 @@ def validateAssignment(request):
 
     return render(request, 'admin/new_assignment.html', context)
 
+# validates the data for user createion, pretty much the same as the view above
+# but for users.  Also creates a new review user for the user
+    
 @login_required
 @user_passes_test(staffTest)
 def validateUser(request):
@@ -213,12 +216,16 @@ def validateUser(request):
                                               is_staff=is_staff)
 
                 newRUser = ReviewUser.objects.create(djangoUser=newUser,
-                                          isStaff=is_staff)
+                                                     isStaff=is_staff)
+                print User.objects.filter(username=username).count()
+                
                 try:
                     newUser.save()
                     newRUser.save()
                 except Exception as r:
                     print r.args
+                    context['error'] = "Errr Something went wrong, Tom fix this"
+                    return render(request, 'admin/userCreate.html', context)
                     
                 context['users'] = User.objects.all()
                 return render(request, 'admin/userList.html', context)
