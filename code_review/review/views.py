@@ -113,7 +113,6 @@ def create_assignment(request, course_code):
 def validateAssignment(request):
     form = None
     context = {}
-
     # gets the data from the post request
     if request.method == "POST":
         print request
