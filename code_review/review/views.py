@@ -235,3 +235,32 @@ def validateUser(request):
     context['form'] = form
     return render(request, 'admin/userCreate.html', context)
     
+
+@login_required
+@user_passes_test(staffTest)
+def validateCourse(request):
+    form = None
+    context = {}
+
+    if request.method = "POST":
+        form = CourseCreationForm(request.POST)
+        
+        if form.is_valid():
+            try:
+                course_code = form.cleaned_data['course_code']
+                course_name = form.cleaned_data['course_name']
+                newCourse = Course.objects.reate(course_code=course_code,
+                        course_name=course_name)
+                try:
+                    newCourse.save()
+                except:
+                    return render(request, '/admin/courseCreate.html', context)
+
+                context['courses'] = Course.objects.all()
+                return render(request, 'admin/courseList.html', context)
+                
+            except as ValidationError:
+                print ValidationError.args
+
+    context['form'] = form
+    return render(request, '/admin/courseCreate.html', context) 
