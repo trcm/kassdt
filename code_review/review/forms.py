@@ -34,3 +34,34 @@ class UserCreationForm(ModelForm):
             'password': PasswordInput(),
             'is_staff': forms.CheckboxInput()
         }
+#Testing creating own form for user addition
+class createUserForm(User):
+    username = forms.CharField(max_length = 20, min_length = 6)
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    password1 = forms.CharField(max_length = 100, widget=forms.PasswordInput())
+    password2 = forms.CharField(max_length = 30, widget=forms.PasswordInput())
+    email = forms.EmailField(required=False)
+
+    def clean_username(self): # check if username dos not exist before
+        try:
+            User.objects.get(username=self.clean) #get user from user model
+        except User.DoesNotExist :
+            return username.clean
+
+        raise forms.ValidationError("this user exist already")
+
+    def clean(self): # check if password 1 and password2 match each other
+        if 'password1' and 'password2':#check if both pass first validation
+            if self.clean != self.clean: # check if they match each other
+                raise forms.ValidationError("passwords dont match each other")
+
+            return 'password1'
+
+        def save(self):
+            new_user=User.objects.create_user(username = self.clean_username,
+                    email=self.clean, first_name=self.clean,
+                    last_name=self.clean, password=self.clean,
+                    )
+            return new_user
+

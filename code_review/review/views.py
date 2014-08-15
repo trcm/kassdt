@@ -211,12 +211,16 @@ def validateUser(request):
                                               email=email,
                                               password=password,
                                               is_staff=is_staff)
-                newUser.save()
-                newRUser = ReviewUser.objects.create(Django_User=newUser,
-                                          isStaff=is_staff)
-                newRUser.save()
 
-                
+                newRUser = ReviewUser.objects.create(djangoUser=newUser,
+                                          isStaff=is_staff)
+                try:
+                    newUser.save()
+                    newRUser.save()
+                except Exception as r:
+                    print r.args
+                    
+                context['users'] = User.objects.all()
                 return render(request, 'admin/userList.html', context)
             except Exception as ValidationError:
                 print ValidationError.args
