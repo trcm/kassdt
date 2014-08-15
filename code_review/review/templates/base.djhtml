@@ -16,6 +16,8 @@
 	{% if user.is_superuser %}
 	  <li><a href="/admin">Sudo</a> | </li>
 	  <li><a href="/review/course_admin">Course Admin Page</a> | </li>
+          <li><a href="/review/users">Users</a> | </li>
+          <li><a href="/review/courses">Courses</a> | </li>
 	{% endif%}
 	
 	{% if user.is_authenticated %}

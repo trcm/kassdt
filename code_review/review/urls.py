@@ -19,14 +19,18 @@ urlpatterns = patterns('',
                            {'next_page': '/review/'}, name='logout'),
                        # Furture route to register new users.  This probably won't be used
                        url(r'register/$', views.index, name='register'),
-                       url(r'password_change/$', 'django.contrib.auth.views.password_change',
-                           name='password_change'),
-                       url(r'password_change_done/$', 'django.contrib.auth.views.password_change_done',
-                           name='password_change_done'),
+                       # routes for viewing users and courses for superuser
+                       url(r'courses/$', views.courseAdmin, name='courseList'),
+                       url(r'users/$', views.userAdmin, name='userList'),
+                       # course administration routes
                        url(r'course_admin/$', views.index, name='default'),
                        url(r'course_admin/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.adminRedirect, name='adminRedirect'),
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.create_assignment, name='create_assignment'),
                        url(r'generate_assignment/$', views.validateAssignment, name='generate_assignment'),
+
+                       #creation urls
+                       url(r'create/user/$', views.createUser, name='create_user'),
+                       url(r'validateUser/$', views.validateUser, name='validate_user')
 )

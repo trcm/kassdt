@@ -1,4 +1,6 @@
-from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget
+from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput
+from django.contrib.auth.forms import SetPasswordForm
+from django.forms import *
 from django.forms.extras.widgets import SelectDateWidget
 from models import *
 
@@ -16,4 +18,19 @@ class AssignmentForm(ModelForm):
             'submission_close_date': SplitDateTimeWidget(),
             'review_open_date': SplitDateTimeWidget(),
             'review_close_date': SplitDateTimeWidget()
+        }
+
+class UserCreationForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ('username',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'password',
+                  'is_staff')
+
+        widgets = {
+            'password': PasswordInput(),
+            'is_staff': forms.CheckboxInput()
         }

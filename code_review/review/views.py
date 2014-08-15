@@ -3,8 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 # authentication libraries
 # base django user system
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 # we can use this as a pre condition for any method that requires the user to be logged in
 # which will probably be all of them.  You can see below that the index method uses this
@@ -15,39 +16,8 @@ from review.models import *
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm
+from forms import AssignmentForm, UserCreationForm
 
-
-# this is the basic index view, it required login before the user can do any
-# as you can see at the moment this shows nothing other than a logout button
-# as I haven't added any content to it yet
-@login_required(login_url='/review/login_redirect/')
-def index(request):
-    context = {}
-
-    # whatever stuff we're goign to show in the index page needs to
-    # generated here
-    U = User.objects.get(id=request.user.id)
-    context['user'] = U
-    
-    try:
-        courses = U.reviewuser.courses.all()
-        context['courses'] = courses
-        return render(request, 'course.html', context)
-    except Exception as UserExcept:
-        print UserExcept.args
-    
-    return render(request, 'course.html', context)
-
-def loginUser(request):
-    pass
-
-
-# simply logs the user out
-def logout(request):
-    logout(request)
-    return HttpResponse("logout")
-    # return redirect('/review/')
 
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
@@ -101,12 +71,80 @@ def create_assignment(request, course_code):
 
     return render(request, 'admin/new_assignment.html', context)
 
+# course administration alternative instead of using the django backend
+
+
+@login_required
+@user_passes_test(staffTest)
+def createUser(request):
+    context = {}
+    userForm = UserCreationForm()
+    context['form'] = userForm
+
+    return render(request, 'admin/userCreate.html', context)
+
+
+@login_required
+@user_passes_test(staffTest)
+def courseAdmin(request):
+    context = {}
+    courses = Course.objects.all()
+    context['courses'] = courses
+
+    return render(request, 'admin/courseList.html', context)
+
+
+# user administration alternative instead of using the django backend
+
+@login_required
+@user_passes_test(staffTest)
+def userAdmin(request):
+    context = {}
+    users = User.objects.all()
+    context['users'] = users
+
+    return render(request, 'admin/userList.html', context)
+
+
+# this is the basic index view, it required login before the user can do any
+# as you can see at the moment this shows nothing other than a logout button
+# as I haven't added any content to it yet
+@login_required(login_url='/review/login_redirect/')
+def index(request):
+    context = {}
+
+    # whatever stuff we're goign to show in the index page needs to
+    # generated here
+    U = User.objects.get(id=request.user.id)
+    context['user'] = U
+
+    try:
+        courses = U.reviewuser.courses.all()
+        context['courses'] = courses
+        return render(request, 'course.html', context)
+    except Exception as UserExcept:
+        print UserExcept.args
+
+    return render(request, 'course.html', context)
+
+
+def loginUser(request):
+    pass
+
+
+# simply logs the user out
+def logout(request):
+    logout(request)
+    return HttpResponse("logout")
+    # return redirect('/review/')
+
 
 # Validates the data from the assignment creation form.
 # If the data is valid then it creates the assignment,
 # otherwise the user is kicked back to the form to fix the data
 
-
+@login_required
+@user_passes_test(staffTest)
 def validateAssignment(request):
     form = None
     context = {}
@@ -149,3 +187,40 @@ def validateAssignment(request):
     context['course'] = Course.objects.get(id=request.POST['course_code'])
 
     return render(request, 'admin/new_assignment.html', context)
+
+@login_required
+@user_passes_test(staffTest)
+def validateUser(request):
+    form = None
+    context = {}
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            try:
+                username = form.cleaned_data['username']
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
+                password = form.cleaned_data['password']
+                is_staff = form.cleaned_data['is_staff']
+                newUser = User.objects.create(username=username,
+                                              first_name=first_name,
+                                              last_name=last_name,
+                                              email=email,
+                                              password=password,
+                                              is_staff=is_staff)
+                newUser.save()
+                newRUser = ReviewUser.objects.create(Django_User=newUser,
+                                          isStaff=is_staff)
+                newRUser.save()
+
+                
+                return render(request, 'admin/userList.html', context)
+            except Exception as ValidationError:
+                print ValidationError.args
+
+    context['form'] = form
+    return render(request, 'admin/userCreate.html', context)
+    
