@@ -1,0 +1,22 @@
+{% extends 'base.djhtml' %}
+
+{% block content %}
+
+
+{% if error %}
+<p id=error>{{ error }}</p>
+{% endif%}
+
+
+<form method="POST" action="/review/validateUser/">
+  {% csrf_token %}
+  {% for field in form %}
+  <p>
+    {{ field.errors }}
+    {{ field.label_tag }} {{ field }}
+  </p>
+  {% endfor %}
+  <input type="submit" name="submit" value="Submit" />
+</form>
+
+{% endblock %}
