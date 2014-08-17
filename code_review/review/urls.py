@@ -38,9 +38,6 @@ urlpatterns = patterns('',
                            views.validateAssignment,
                            name='generate_assignment'),
 		      
-		      #Student homepage
-		      url(r'homepage/$', views.student_homepage, name='student_homepage'),
-
                        #creation urls
                        url(r'create/user/$', views.createUser, name='create_user'),
                        url(r'validateUser/$', views.validateUser, name='validate_user')

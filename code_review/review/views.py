@@ -44,7 +44,6 @@ def index(request):
 def loginUser(request):
     pass
 
-
 # simply logs the user out
 def logout(request):
     logout(request)
@@ -79,10 +78,6 @@ def adminRedirect(request, course_code):
         raise Http404
 
     return render(request, 'admin.html', context)
-
-@login_required
-def student_homepage(request):
-    return HttpResponse("This is a student's homepage.")
 
 # gets the course code for the current course being used and
 # creates a form for creating a new assignment, redirects to the
