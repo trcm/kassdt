@@ -31,6 +31,9 @@ urlpatterns = patterns('',
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
+		      
+		      #Student homepage
+		      url(r'homepage/$', views.student_homepage, name='student_homepage'),
 )
 
 
