@@ -242,7 +242,7 @@ def validateCourse(request):
     form = None
     context = {}
 
-    if request.method = "POST":
+    if request.method == "POST":
         form = CourseCreationForm(request.POST)
         
         if form.is_valid():
@@ -259,7 +259,7 @@ def validateCourse(request):
                 context['courses'] = Course.objects.all()
                 return render(request, 'admin/courseList.html', context)
                 
-            except as ValidationError:
+            except Exception as ValidationError:
                 print ValidationError.args
 
     context['form'] = form
