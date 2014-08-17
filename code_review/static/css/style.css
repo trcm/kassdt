@@ -1,5 +1,5 @@
-body {
-
+#adminList {
+  margin-bottom: 20px;
 }
 #adminTest {
   margin-bottom: 10px;
@@ -9,11 +9,4 @@ body {
   display: inline;
 }
 
-#courseList {
 
-}
-
-#assignmentList {
-
-
-}

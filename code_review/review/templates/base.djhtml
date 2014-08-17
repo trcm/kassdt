@@ -14,19 +14,16 @@
     <div id="adminTest">
       <ul>
 	{% if user.is_superuser %}
-	  <li><a href="/admin">Sudo | </a></li>
-	  <li><a href="/review/course_admin">Course Admin Page | </a></li>
+	  <li><a href="/admin">Sudo</a> | </li>
+	  <li><a href="/review/course_admin">Course Admin Page</a> | </li>
 	{% endif%}
 	{% if user.is_authenticated %}
 	  <li><a href="{% url 'logout' %}">Logout</a></li>
       {% endif%}
-
-
       </ul>
-      
-
-
     </div>
+    
+
     <div class="content">
       {% block content %}
       {% endblock %}

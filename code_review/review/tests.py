@@ -45,21 +45,20 @@ class UserTests(TestCase):
          group = Group.objects.get(name='student')
          self.assertIn(group, user.groups.all())
 
-    #Ensures that a user with an invalid username is not created
+    # #Ensures that a user with an invalid username is not created
     def test_user_valid(self):
         setup_group(self)
         invalid_user(self)
         #This is not how this test will run once these checks have been added
         #to user creation code as then the exception will be thrown upon the
         #attempt to create the user
-            try:
-                user = User.objects.get(username="invalid    ")
-                self.assertFalse(True, "A User with an invalid username was created")
-            except ObjectDoesNotExist:
-                self.assertFalse(False)
+        try:
+            user = User.objects.get(username="invalid    ")
+            self.assertFalse(True, "A User with an invalid username was created")
+        except ObjectDoesNotExist:
+            self.assertFalse(False)
 
-
-    #This is the way user tests will be set as well once changes are made
+    # #This is the way user tests will be set as well once changes are made
     def test_password_valid(self):
         setup_group(self)
         username="test"
