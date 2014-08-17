@@ -62,7 +62,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'review',
     'south',
-    'githandler',
     # 'ims_lti_py',
 )
 
