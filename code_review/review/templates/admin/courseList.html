@@ -1,0 +1,13 @@
+{% extends 'base.djhtml' %}
+
+{% block content %}
+
+<h3><a href="/review/create/course">Create New Course</a></h3>
+
+<ul>
+  {% for course in courses  %}
+  <li>{{ course.course_code }} - {{ course.course_name }} - {{ course.assignments.count }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

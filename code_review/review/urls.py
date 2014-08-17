@@ -22,15 +22,26 @@ urlpatterns = patterns('',
                        url(r'register/$', views.index, name='register'),
 
                        # course admin urls
+
+                       # routes for viewing users and courses for superuser
+                       url(r'courses/$', views.courseAdmin, name='courseList'),
+                       url(r'users/$', views.userAdmin, name='userList'),
+                       # course administration routes
+
                        url(r'course_admin/$', views.index, name='default'),
                        url(r'course_admin/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.adminRedirect, name='adminRedirect'),
                        # assignment generation
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
-                           views.create_assignment, name='create_assignment'),
+
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
+
+
+                       #creation urls
+                       url(r'create/user/$', views.createUser, name='create_user'),
+                       url(r'validateUser/$', views.validateUser, name='validate_user')
 )
 
 
