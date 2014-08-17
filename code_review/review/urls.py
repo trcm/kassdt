@@ -33,7 +33,7 @@ urlpatterns = patterns('',
                            views.adminRedirect, name='adminRedirect'),
                        # assignment generation
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
-
+                            views.create_assignment, name='create_assignemnt'),
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
