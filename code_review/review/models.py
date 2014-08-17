@@ -228,8 +228,6 @@ class SourceAnnotationTag(models.Model):
 
     tag = models.TextField()
 
-class FakeTestModel(models.Model):
-    attrb = models.TextField()
 
 ## Utility Methods ##
 
