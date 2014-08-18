@@ -41,7 +41,6 @@ def index(request):
     
     return render(request, 'course.html', context)
 
-
 def loginUser(request):
     pass
 
@@ -305,7 +304,7 @@ def student_homepage(request):
     U = User.objects.get(id=request.user.id)
     context['user'] = U
     context['open_assignments'] = get_open_assignments(U)
-    return render(request, 'test_homepage.html', context)
+    return render(request, 'student_homepage.html', context)
     
 def get_open_assignments(user):
     '''
