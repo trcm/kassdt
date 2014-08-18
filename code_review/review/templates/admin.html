@@ -10,8 +10,13 @@
 
 {% if assignments %}
 <ul>
+  <div id="assignmentPanelTitle">
+    <h4 id="assignmentNameTitle">Assignment Name:</h4> 
+    <h4 id="dueDate">Due Date: </h4>
+  <div id="assignmentDetails">
   {% for assignment in assignments %}
-  <li><a href="Assignment">{{ assignment.name }} - {{ assignment.submission_close_date }}</a></li>
+    <li><a href="Assignment" id="assignmentNameId">{{ assignment.name }}</a>
+    <p id="assignmentTime">{{ assignment.submission_close_date }}</p></li>
   {% endfor %}
 </ul>
 
