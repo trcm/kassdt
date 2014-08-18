@@ -12,18 +12,6 @@
     <link rel="stylesheet" href="{% static "js/jquery-timepicker/jquery.timepicker.css" %}" type="text/css" media="screen" />
   </head>
   <body>
-    <div id="adminTest">
-      <ul>
-	{% if user.is_superuser %}
-	  <li><a href="/admin">Sudo</a> | </li>
-	  <li><a href="/review/course_admin">Course Admin Page</a> | </li>
-          <li><a href="/review/users">Users</a> | </li>
-          <li><a href="/review/courses">Courses</a> | </li>
-	{% endif%}
-	{% if user.is_authenticated %}
-	  <li><a href="{% url 'logout' %}">Logout</a></li>
-      {% endif%}
-      </ul>
     </div>
 
     <div class="content">

@@ -1,32 +1,33 @@
 {% extends 'course.html' %}
 
 {% block assignments %}
+<div id="assignmentPane">
+  <h1>{{ course.course_code }} Assignments</h1>
 
-<h1>{{ course.course_code }} Assignments</h1>
+  {% if user.is_superuser %}
+  <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
+  {% endif%}
 
-{% if user.is_superuser %}
-<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
-{% endif%}
-
-{% if assignments %}
-<ul>
-  <div id="assignmentPanelTitle">
-    <h4 id="assignmentNameTitle">Assignment Name:</h4> 
-    <h4 id="dueDate">Due Date: </h4>
-  <div id="assignmentDetails">
-  {% for assignment in assignments %}
+  {% if assignments %}
+  <ul>
+    <div id="assignmentPanelTitle">
+      <h4 id="assignmentNameTitle">Assignment Name:</h4> 
+      <h4 id="dueDate">Due Date: </h4>
+    <div id="assignmentDetails">
+    {% for assignment in assignments %}
     <li><a href="Assignment" id="assignmentNameId">{{ assignment.name }}</a>
     <p id="assignmentTime">{{ assignment.submission_close_date }}</p></li>
-  {% endfor %}
-</ul>
+  
+    {% endfor %}
+  </ul>
 
-{% else %}
-<p><strong>No assignments</strong></p>
-{% endif%}
+  {% else %}
+  <p><strong>No assignments</strong></p>
+  {% endif%}
 
-{% if user.is_superuser %}
-<h2>Settings</h2>
-{% endif %}
+  {% if user.is_superuser %}
+  <h2>Settings</h2>
+  {% endif %}
 
-
+</div>
 {% endblock %}
