@@ -25,6 +25,17 @@ from django.utils import timezone
 # as I haven't added any content to it yet
 @login_required(login_url='/review/login_redirect/')
 def index(request):
+    '''
+    return student_homepage(request)
+    user = User.objects.get(id=request.user.id)
+    if user.isStaff:
+	context = {}
+	context['user'] = user
+	context['courses'] = user.reviewuser.courses.all()
+	return render(request, 'course.html', context)
+    else:
+	return student_homepage(request)
+
     context = {}
 
     # whatever stuff we're goign to show in the index page needs to
@@ -40,7 +51,7 @@ def index(request):
         print UserExcept.args
     
     return render(request, 'course.html', context)
-
+    '''
 def loginUser(request):
     pass
 
@@ -304,6 +315,8 @@ def student_homepage(request):
     U = User.objects.get(id=request.user.id)
     context['user'] = U
     context['open_assignments'] = get_open_assignments(U)
+    # For the course template which we inherit from
+    context['courses'] = U.reviewuser.courses.all()
     return render(request, 'student_homepage.html', context)
     
 def get_open_assignments(user):

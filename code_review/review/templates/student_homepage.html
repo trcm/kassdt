@@ -1,29 +1,10 @@
-{% extends 'base.djhtml' %}
+{% extends 'course.html' %}
 
-{% block content %}
-<div class="containter">
-  <div class="row">
-    {% if courses %}
-    <ul id="courseList" class="col-md-2">
-      {% for course in courses %}
-      <li><a href="{% url 'adminRedirect' course.course_code %}">{{ course }}</a></li>
-      <li>Hello there</li>
-      {% endfor %}
-    </ul>
-
-    {% else %}
-    <p>No courses</p>
-    {% endif%}
-    
-    Hello!
-
-    <div id="assignmentList" class="col-md-8">
-      {% block assignments %}
+{% block assignments %}
+<div id="assignmentList" class="col-md-8">
+	<h1>Upcoming assignments</h1>
 	{% for asmt in open_assignments %}
-	    <li> <a href="{% url asmt.name %}">{{ asmt }}</a></li>
+	    <li> {{ asmt.name }}</a></li>
 	{% endfor %}
-      {% endblock %}
-    </div>
-  </div>
 </div>
 {% endblock %}

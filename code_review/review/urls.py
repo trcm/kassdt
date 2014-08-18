@@ -43,7 +43,7 @@ urlpatterns = patterns('',
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
-		      
+		       
                        #creation urls
                        # User and course creation
                        url(r'create/user/$', views.createUser, name='create_user'),
