@@ -42,7 +42,7 @@ for r in users:
             except Exception as e:
                 print e.args
                 print e.message
-		break;
+                break
     else:
         print newUser[0].username
     
