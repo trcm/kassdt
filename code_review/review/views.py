@@ -72,6 +72,7 @@ def coursePage(request, course_code):
     try:
         print "Getting courses"
         courses = U.reviewuser.courses.all()
+        print courses
         context['courses'] = courses
         return render(request, 'course_page.html', context)
     except Exception as UserExcept:

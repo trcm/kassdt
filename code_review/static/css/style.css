@@ -1,12 +1,6 @@
 #adminList {
   margin-bottom: 20px;
 }
-#adminTest {
-  margin-bottom: 10px;
-}
-
-#adminTest li {
+#adminList li {
   display: inline;
 }
-
-

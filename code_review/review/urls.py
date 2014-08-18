@@ -34,12 +34,12 @@ urlpatterns = patterns('',
 
                        # individual course pages
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
-                           views.coursePage, name='course_page'),
+                           views.coursePage, name='coursePage'),
 
                        # Assignment creation and validation
-
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
-                           views.create_assignment, name='create_assignemnt'),
+                           views.create_assignment, name='create_assignment'),
+
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),

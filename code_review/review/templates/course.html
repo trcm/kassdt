@@ -7,7 +7,7 @@
     {% if courses %}
     <ul id="courseList" class="col-md-2">
       {% for course in courses %}
-      <li><a href="{% url 'course_page' course.course_code %}">{{ course }}</a></li>
+      <li><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></li>
       {% endfor %}
     </ul>
     {% else %}

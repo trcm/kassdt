@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="{% static "js/jquery-timepicker/jquery.timepicker.css" %}" type="text/css" media="screen" />
   </head>
   <body>
-    <div id="adminTest">
+
+    <div id="adminList">
       <ul>
 	{% if user.is_superuser %}
 	  <li><a href="/admin">Sudo</a> | </li>
