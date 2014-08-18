@@ -1,18 +1,36 @@
 {% extends 'base.djhtml' %}
 
 {% block content %}
-<div class="containter">
-  <div class="row">
 
-    {% if courses %}
-    <ul id="courseList" class="col-md-2">
-      {% for course in courses %}
-      <li><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No courses</p>
+<div class="container" id="navBar">
+  <nav class="navmenu navmenu-default col-md-2" role="navigation">
+
+    <ul class="nav navmenu-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Courses:<b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav" role="menu">
+          {% for course in courses %}
+            <li><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></li>
+          {% endfor %}
+          </ul>
+        </li>
+        {% if user.is_superuser %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav" role="menu">
+            <li><a href="/admin">Sudo</a> | </li>
+            <li><a href="/review/course_admin">Course Admin Page</a> | </li>
+            <li><a href="/review/users">Users</a> | </li>
+            <li><a href="/review/courses">Courses</a> | </li>
+        </ul>
+      </li>
     {% endif%}
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+
+    {% endif%}
+    </ul>
+  </nav>
 
 
     <div id="assignmentList" class="col-md-8">
