@@ -284,7 +284,7 @@ def get_open_assignments(user):
     '''
     :user User 
 
-    return List[Assignment]
+    return List[(Course, Assignment)]
     '''
     timenow = timezone.now()
     openAsmts = []
@@ -294,6 +294,6 @@ def get_open_assignments(user):
 	assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
 	for assignment in assignments: 
 	    if(assignment.submission_open_date < timenow and assignment.submission_close_date > timenow):
-		openAsmts.append(assignment)
+		openAsmts.append((course, assignment))
     
     return openAsmts
