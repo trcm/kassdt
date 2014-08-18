@@ -1,0 +1,27 @@
+{% extends 'course.html' %}
+
+{% block assignments %}
+    <div id="assignmentList" class="col-md-8">
+	<h1>Upcoming assignments</h1>
+	{% if open_assignments %}
+	    <table cellpadding="10">
+	    <tr>
+		<th> Course </th>
+		<th> Assignment Name </th>
+		<th> Submissions Open: </th>
+		<th> Submissions Close: </th>
+	    </tr>
+	    {% for asmt in open_assignments %}
+		<tr> 
+		    <td>{{ asmt.0.course_code }}</td>
+		    <td>{{ asmt.1.name }}</td>
+		    <td>{{ asmt.1.submission_open_date }}</td>
+		    <td>{{ asmt.1.submission_close_date }}</td>
+		</tr>
+	    {% endfor %}
+	    </table>
+	{% else %}
+	    <h2>No upcoming assignments</h2>
+	{% endif %}
+    </div>
+{% endblock %}

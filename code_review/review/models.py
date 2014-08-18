@@ -4,7 +4,8 @@ from django.db import models
 from django_extensions.db.fields import UUIDField
 from django.contrib.auth.models import User as Django_User
 from django.utils import timezone
-
+from django.contrib.auth.models import User
+from django import forms
 c = lambda x: "<code>" + x + "</code>"
 repo_format_format_vars = [
     ("user_uuid",
@@ -34,13 +35,27 @@ repo_format_help_text = """
         ; which will produce """ + c("https://www.source-hosting.com/joe_blogs/ass1/") + """ for the user "joe_blogs".
     """
 
-
-class User(models.Model):
+class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
-
+    isStaff = models.BooleanField(default=False)
+    courses = models.ManyToManyField('Course')
+    firstLogin = models.BooleanField(default=True)
+    
     def __unicode__(self):
-        return "%s" % (self.djangoUser.username,)
+        return "%s" % (self.djangoUser.username)
+
+# creating a course code model to which will have a many to many relationship
+# with the user model.  This should allow use to allocate users to courses
+
+
+class Course(models.Model):
+    course_uuid = UUIDField()
+    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    students = models.ManyToManyField('ReviewUser')
+    def __unicode__(self):
+        return "%s" % (self.course_code)
 
 
 class SourceFolder(models.Model):
@@ -86,7 +101,6 @@ class SourceFile(models.Model):
 
 
 
-
 class SubmissionTestResults(models.Model):
     tests_completed = models.NullBooleanField()
 
@@ -116,7 +130,7 @@ class SubmissionTest(models.Model):
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
-                                  (self.test_pass_count, self.test_count))
+                    (self.test_pass_count, self.test_count))
             super(SubmissionTest, self).clean()
 
     def get_result(self):
@@ -127,16 +141,15 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
+    course_code = models.ForeignKey('Course',
+                                    default=Course.objects.get(id=1),
+                                    related_name="assignments")
     assignment_uuid = UUIDField()
     name = models.TextField()
-
     repository_format = models.TextField(help_text=repo_format_help_text)
-
     first_display_date = models.DateTimeField(default=lambda: timezone.now())
-
     submission_open_date = models.DateTimeField(default=lambda: timezone.now())
     submission_close_date = models.DateTimeField()
-
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
 
@@ -153,13 +166,14 @@ class Assignment(models.Model):
             "submission_close_date": self.submission_close_date,
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
-        })
+            })
 
 
 class AssignmentSubmission(models.Model):
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
-    by = models.ForeignKey(User)
+    # by = models.ForeignKey(User)
+    by = models.ForeignKey(ReviewUser)
     submission_repository = models.TextField()
     submission_for = models.ForeignKey(Assignment, related_name="submissions")
     error_occurred = models.BooleanField(default=False)
@@ -178,16 +192,17 @@ class AssignmentSubmission(models.Model):
             "submission_for": self.submission_for,
             "error_occurred": self.error_occurred,
             "root_folder": self.root_folder,
-        })
+            })
 
 
-### BEGIN ANNOTATION STORAGE ###
+        ### BEGIN ANNOTATION STORAGE ###
 
 
 class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
 
-    user = models.ForeignKey(User)
+    # user = models.ForeignKey(User)
+    user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
 
     created = models.DateTimeField(auto_now_add=True)
@@ -228,4 +243,3 @@ def get_user_for_django_user(usr):
     model_user = User.objects.get_or_create(djangoUser=usr)
 
     return model_user[0]
-

@@ -1,0 +1,14 @@
+{% extends 'base.djhtml' %}
+
+
+{% block content %}
+
+<h3><a href="/review/create/user">Create New User</a></h3>
+
+<ul>
+{% for user in users %}
+  <li>{{ user.username }} | {{ user.first_name }} {{ user.last_name }} | {{ user.email  }} | {{ user.is_superuser }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

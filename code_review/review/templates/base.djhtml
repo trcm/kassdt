@@ -1,0 +1,28 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Code Review</title>
+    <link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" type="text/css" media="screen" />
+    <link href="{% static "css/jasny-bootstrap.min.css" %}"  rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{% static "js/jquery-ui/jquery-ui.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "js/jquery-timepicker/jquery.timepicker.css" %}" type="text/css" media="screen" />
+  </head>
+  <body>
+
+    <div class="content">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/site.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-ui/jquery-ui.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery-timepicker/jquery.timepicker.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jasny-bootstrap.min.js" %}"></script>
+  </body>
+</html>
