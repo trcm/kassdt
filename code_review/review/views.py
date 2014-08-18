@@ -25,32 +25,24 @@ from django.utils import timezone
 # as I haven't added any content to it yet
 @login_required(login_url='/review/login_redirect/')
 def index(request):
-    '''
-    return student_homepage(request)
-    user = User.objects.get(id=request.user.id)
-    if user.isStaff:
-	context = {}
-	context['user'] = user
-	context['courses'] = user.reviewuser.courses.all()
-	return render(request, 'course.html', context)
-    else:
-	return student_homepage(request)
-
     context = {}
 
     # whatever stuff we're goign to show in the index page needs to
     # generated here
     U = User.objects.get(id=request.user.id)
     context['user'] = U
-    try:
-        courses = U.reviewuser.courses.all()
-        context['courses'] = courses
-        return render(request, 'course.html', context)
-    except Exception as UserExcept:
-        print UserExcept.args
+    if U.reviewuser.isStaff:
+	try:
+	    courses = U.reviewuser.courses.all()
+	    context['courses'] = courses
+	    return render(request, 'course.html', context)
+	except Exception as UserExcept:
+	    print UserExcept.args
+    else: # user is student
+	return student_homepage(request)
 
     return render(request, 'course.html', context)
-    '''
+
 def loginUser(request):
     pass
 

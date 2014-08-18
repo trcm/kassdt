@@ -1,10 +1,10 @@
 {% extends 'course.html' %}
 
 {% block assignments %}
-<div id="assignmentList" class="col-md-8">
+    <div id="assignmentList" class="col-md-8">
 	<h1>Upcoming assignments</h1>
 	{% for asmt in open_assignments %}
 	    <li> {{ asmt.name }}</a></li>
 	{% endfor %}
-</div>
+    </div>
 {% endblock %}
