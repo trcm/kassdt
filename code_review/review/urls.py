@@ -40,7 +40,8 @@ urlpatterns = patterns('',
 		      
                        #creation urls
                        url(r'create/user/$', views.createUser, name='create_user'),
-                       url(r'validateUser/$', views.validateUser, name='validate_user')
+                       url(r'validateUser/$', views.validateUser, name='validate_user'),
+		       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
 )
 
 
