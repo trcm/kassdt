@@ -58,7 +58,7 @@ def logout(request):
 
 @login_required
 # @user_passes_test(staffTest)
-def adminRedirect(request, course_code):
+def coursePage(request, course_code):
     context = {}
     # get the current assignments for the subject, subject choosing
     # will be added later
@@ -73,12 +73,12 @@ def adminRedirect(request, course_code):
         print "Getting courses"
         courses = U.reviewuser.courses.all()
         context['courses'] = courses
-        return render(request, 'admin.html', context)
+        return render(request, 'course_page.html', context)
     except Exception as UserExcept:
         print UserExcept.args
         raise Http404
 
-    return render(request, 'admin.html', context)
+    return render(request, 'course_page.html', context)
 
 # gets the course code for the current course being used and
 # creates a form for creating a new assignment, redirects to the
@@ -152,7 +152,6 @@ def index(request):
     # generated here
     U = User.objects.get(id=request.user.id)
     context['user'] = U
-
     try:
         courses = U.reviewuser.courses.all()
         context['courses'] = courses
@@ -224,7 +223,8 @@ def validateAssignment(request):
 
 # validates the data for user createion, pretty much the same as the view above
 # but for users.  Also creates a new review user for the user
-    
+
+
 @login_required
 @user_passes_test(staffTest)
 def validateUser(request):
@@ -252,7 +252,7 @@ def validateUser(request):
                 newRUser = ReviewUser.objects.create(djangoUser=newUser,
                                                      isStaff=is_staff)
                 print User.objects.filter(username=username).count()
-                
+
                 try:
                     newUser.save()
                     newRUser.save()
@@ -260,7 +260,7 @@ def validateUser(request):
                     print r.args
                     context['error'] = "Errr Something went wrong, Tom fix this"
                     return render(request, 'admin/userCreate.html', context)
-                    
+
                 context['users'] = User.objects.all()
                 return render(request, 'admin/userList.html', context)
             except Exception as ValidationError:
@@ -268,7 +268,7 @@ def validateUser(request):
 
     context['form'] = form
     return render(request, 'admin/userCreate.html', context)
-    
+
 
 @login_required
 @user_passes_test(staffTest)
@@ -278,13 +278,13 @@ def validateCourse(request):
 
     if request.method == "POST":
         form = CourseCreationForm(request.POST)
-        
+
         if form.is_valid():
             try:
                 course_code = form.cleaned_data['course_code']
                 course_name = form.cleaned_data['course_name']
                 newCourse = Course.objects.reate(course_code=course_code,
-                        course_name=course_name)
+                                                 course_name=course_name)
                 try:
                     newCourse.save()
                 except:
@@ -292,9 +292,11 @@ def validateCourse(request):
 
                 context['courses'] = Course.objects.all()
                 return render(request, 'admin/courseList.html', context)
-                
+
             except Exception as ValidationError:
                 print ValidationError.args
 
     context['form'] = form
-    return render(request, '/admin/courseCreate.html', context) 
+    return render(request, '/admin/courseCreate.html', context)
+
+

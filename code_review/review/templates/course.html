@@ -3,16 +3,17 @@
 {% block content %}
 <div class="containter">
   <div class="row">
+
     {% if courses %}
     <ul id="courseList" class="col-md-2">
       {% for course in courses %}
-      <li><a href="{% url 'adminRedirect' course.course_code %}">{{ course }}</a></li>
+      <li><a href="{% url 'course_page' course.course_code %}">{{ course }}</a></li>
       {% endfor %}
     </ul>
-
     {% else %}
     <p>No courses</p>
     {% endif%}
+
 
     <div id="assignmentList" class="col-md-8">
       {% block assignments %}
