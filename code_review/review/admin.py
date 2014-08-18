@@ -39,6 +39,10 @@ class CourseAdmin(admin.ModelAdmin):
     fields = ('course_code', 'course_name', 'students')
     search_fields = ('course_code', )
 
+class AssignmentAdmin(admin.ModelAdmin):
+    model = Assignment
+    list_display = ('course_code', 'name', 'first_display_date', 'submission_close_date')
+    
 # adds models for editing in the admin page
 admin.site.unregister(User)
 
@@ -51,7 +55,7 @@ admin.site.register(SourceFolder)
 admin.site.register(SourceFile)
 admin.site.register(SubmissionTest)
 admin.site.register(SubmissionTestResults)
-admin.site.register(Assignment)
+admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(AssignmentSubmission)
 admin.site.register(SourceAnnotation)
 admin.site.register(SourceAnnotationRange)

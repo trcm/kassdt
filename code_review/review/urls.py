@@ -5,6 +5,7 @@ from review import views
 urlpatterns = patterns('',
                        # Default view, routes to the index page
                        url(r'^$', views.index, name='index'),
+                       
                        # will redirect to the login_redirect if the user isn't
                        # authenticated.  This can probably be removed
                        # url(r'login/$', views.loginUser, name='login'),

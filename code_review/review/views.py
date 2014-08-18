@@ -42,14 +42,13 @@ def index(request):
     # generated here
     U = User.objects.get(id=request.user.id)
     context['user'] = U
-    
     try:
         courses = U.reviewuser.courses.all()
         context['courses'] = courses
         return render(request, 'course.html', context)
     except Exception as UserExcept:
         print UserExcept.args
-    
+
     return render(request, 'course.html', context)
     '''
 def loginUser(request):
@@ -60,7 +59,6 @@ def logout(request):
     logout(request)
     return HttpResponse("logout")
     # return redirect('/review/')
-
 
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
@@ -151,36 +149,7 @@ def userAdmin(request):
     return render(request, 'admin/userList.html', context)
 
 
-# this is the basic index view, it required login before the user can do any
-# as you can see at the moment this shows nothing other than a logout button
-# as I haven't added any content to it yet
-@login_required(login_url='/review/login_redirect/')
-def index(request):
-    context = {}
 
-    # whatever stuff we're goign to show in the index page needs to
-    # generated here
-    U = User.objects.get(id=request.user.id)
-    context['user'] = U
-    try:
-        courses = U.reviewuser.courses.all()
-        context['courses'] = courses
-        return render(request, 'course.html', context)
-    except Exception as UserExcept:
-        print UserExcept.args
-
-    return render(request, 'course.html', context)
-
-
-def loginUser(request):
-    pass
-
-
-# simply logs the user out
-def logout(request):
-    logout(request)
-    return HttpResponse("logout")
-    # return redirect('/review/')
 
 
 # Validates the data from the assignment creation form.
