@@ -18,6 +18,7 @@ from helpers import staffTest
 # imports the form for assignment creation
 from forms import AssignmentForm, UserCreationForm
 
+from django.utils import timezone
 
 # this is the basic index view, it required login before the user can do any
 # as you can see at the moment this shows nothing other than a logout button
@@ -297,3 +298,29 @@ def validateCourse(request):
 
     context['form'] = form
     return render(request, '/admin/courseCreate.html', context) 
+
+@login_required
+def student_homepage(request):
+    context = {} 
+    U = User.objects.get(id=request.user.id)
+    context['user'] = U
+    context['open_assignments'] = get_open_assignments(U)
+    return render(request, 'test_homepage.html', context)
+    
+def get_open_assignments(user):
+    '''
+    :user User 
+
+    return List[Assignment]
+    '''
+    timenow = timezone.now()
+    openAsmts = []
+    courses = user.reviewuser.courses.all()
+    for course in courses:
+	# Get assignments in the course 
+	assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
+	for assignment in assignments: 
+	    if(assignment.submission_open_date < timenow and assignment.submission_close_date > timenow):
+		openAsmts.append(assignment)
+    
+    return openAsmts
