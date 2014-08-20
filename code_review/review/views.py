@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 # authentication libraries
 # base django user system
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import password_change
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -29,7 +30,14 @@ def index(request):
 
     # whatever stuff we're goign to show in the index page needs to
     # generated here
-    U = User.objects.get(id=request.user.id)
+    U = get_object_or_404(User, id=request.user.id)
+    print U.reviewuser.firstLogin
+    # U = User.objects.get(id=request.user.id)
+    if U.reviewuser.firstLogin is True:
+        return password_change(request,
+                               template_name='registration/password_change_form.html',
+                               post_change_redirect='/review/password_redirect')
+        
     context['user'] = U
     if U.reviewuser.isStaff:
 	try:
@@ -52,6 +60,18 @@ def logout(request):
     return HttpResponse("logout")
     # return redirect('/review/')
 
+def passwordChangeHandler(request):
+    context = {}
+
+    # Gets the User and Review User, changes first login to False
+    U = get_object_or_404(User, id=request.user.id)
+    ru = ReviewUser.objects.get(djangoUser=U)
+    ru.firstLogin = False
+    ru.save()
+
+    #redirect to the index page
+    return HttpResponseRedirect("/review/")
+    
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
 

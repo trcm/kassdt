@@ -18,8 +18,11 @@ urlpatterns = patterns('',
 
                        # Uses djangos logout view to logout the user and redirect them to
                        # the index page
-
-                       url(r'logout/$', 'django.contrib.auth.views.logout',
+                       url(r'password_redirect/$',
+                           views.passwordChangeHandler,
+                           name="passwordHandler"),
+                       url(r'logout/$',
+                           'django.contrib.auth.views.logout',
                            {'next_page': '/review/'}, name='logout'),
                        # Furture route to register new users.  This probably won't be used
                        url(r'register/$', views.index, name='register'),
