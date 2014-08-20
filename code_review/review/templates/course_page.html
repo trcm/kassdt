@@ -1,4 +1,4 @@
-{% extends 'course.html' %}
+{% extends 'sidebar.html' %}
 
 {% block assignments %}
 
@@ -9,15 +9,24 @@
 {% endif%}
 
 {% if assignments %}
-<ul>
+<table>
+  <tr>
+    <th>Assignment Name:</th>
+    <th>Submission Open Date:</th>
+    <th>Due Date</th>
+  </tr>
   {% for assignment in assignments %}
-  <li><a href="Assignment">{{ assignment.name }} - {{ assignment.submission_close_date }}</a></li>
-  {% endfor %}
-</ul>
 
-{% else %}
-<p><strong>No assignments</strong></p>
-{% endif%}
+  <tr>
+    <td>{{ assignment.name}}</td>
+    <td>{{ assignment.submission_open_date }}</td>
+    <td>{{ assignment.submission_close_date }}</td>
+  </tr>
+  {% endfor %}
+
+  {% else %}
+  <p><strong>No assignments</strong></p>
+  {% endif%}
 
 {% if user.is_superuser %}
 <h2>Settings</h2>
