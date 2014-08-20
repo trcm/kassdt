@@ -53,7 +53,7 @@ class Course(models.Model):
     course_uuid = UUIDField()
     course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
     course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
-    students = models.ManyToManyField('ReviewUser')
+    s = models.ManyToManyField('ReviewUser')
     def __unicode__(self):
         return "%s" % (self.course_code)
 

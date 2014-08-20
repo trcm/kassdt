@@ -8,28 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'studentUser'
-        # db.create_table(u'review_studentuser', (
-        #     (u'user_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),
-        #     ('char', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        # ))
-        # db.send_create_signal(u'review', ['studentUser'])
+        # Removing M2M table for field students on 'Course'
+        db.delete_table(db.shorten_name(u'review_course_students'))
 
-        # Adding model 'createUserForm'
-        # db.create_table(u'review_createuserform', (
-        #     (u'user_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),
-        # ))
-        # db.send_create_signal(u'review', ['createUserForm']
-        pass
-
+        # Adding M2M table for field s on 'Course'
+        m2m_table_name = db.shorten_name(u'review_course_s')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('course', models.ForeignKey(orm[u'review.course'], null=False)),
+            ('reviewuser', models.ForeignKey(orm[u'review.reviewuser'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['course_id', 'reviewuser_id'])
 
 
     def backwards(self, orm):
-        # Deleting model 'studentUser'
-        db.delete_table(u'review_studentuser')
+        # Adding M2M table for field students on 'Course'
+        m2m_table_name = db.shorten_name(u'review_course_students')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('course', models.ForeignKey(orm[u'review.course'], null=False)),
+            ('reviewuser', models.ForeignKey(orm[u'review.reviewuser'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['course_id', 'reviewuser_id'])
 
-        # Deleting model 'createUserForm'
-        db.delete_table(u'review_createuserform')
+        # Removing M2M table for field s on 'Course'
+        db.delete_table(db.shorten_name(u'review_course_s'))
 
 
     models = {
@@ -73,14 +76,14 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Assignment'},
             'assignment_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             'course_code': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'assignments'", 'to': u"orm['review.Course']"}),
-            'first_display_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 13, 0, 0)'}),
+            'first_display_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 20, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
             'repository_format': ('django.db.models.fields.TextField', [], {}),
             'review_close_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'review_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 13, 0, 0)'}),
+            'review_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 20, 0, 0)'}),
             'submission_close_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'submission_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 13, 0, 0)'})
+            'submission_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 20, 0, 0)'})
         },
         u'review.assignmentsubmission': {
             'Meta': {'object_name': 'AssignmentSubmission'},
@@ -88,7 +91,7 @@ class Migration(SchemaMigration):
             'error_occurred': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'root_folder': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'assignment'", 'unique': 'True', 'null': 'True', 'to': u"orm['review.SourceFolder']"}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 13, 0, 0)'}),
+            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 8, 20, 0, 0)'}),
             'submission_for': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'submissions'", 'to': u"orm['review.Assignment']"}),
             'submission_repository': ('django.db.models.fields.TextField', [], {}),
             'submission_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
@@ -100,16 +103,13 @@ class Migration(SchemaMigration):
             'course_name': ('django.db.models.fields.CharField', [], {'default': "'Intro to learning'", 'max_length': '100'}),
             'course_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'students': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['review.ReviewUser']", 'symmetrical': 'False'})
-        },
-        u'review.createuserform': {
-            'Meta': {'object_name': 'createUserForm', '_ormbases': [u'auth.User']},
-            u'user_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True', 'primary_key': 'True'})
+            's': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['review.ReviewUser']", 'symmetrical': 'False'})
         },
         u'review.reviewuser': {
             'Meta': {'object_name': 'ReviewUser'},
             'courses': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['review.Course']", 'symmetrical': 'False'}),
             'djangoUser': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True'}),
+            'firstLogin': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'isStaff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'})
@@ -154,11 +154,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'folders'", 'null': 'True', 'to': u"orm['review.SourceFolder']"})
-        },
-        u'review.studentuser': {
-            'Meta': {'object_name': 'studentUser', '_ormbases': [u'auth.User']},
-            'char': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'user_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True', 'primary_key': 'True'})
         },
         u'review.submissiontest': {
             'Meta': {'object_name': 'SubmissionTest'},
