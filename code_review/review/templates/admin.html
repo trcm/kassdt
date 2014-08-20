@@ -9,18 +9,19 @@
   {% endif%}
 
   {% if assignments %}
-  <ul>
-    <div id="assignmentPanelTitle">
-      <h4 id="assignmentNameTitle">Assignment Name:</h4> 
-      <h4 id="dueDate">Due Date: </h4>
-    <div id="assignmentDetails">
+  <table>
+    <tr>
+      <th>Assignment Name:</th>
+      <th>Submission Open Date:</th>
+      <th>Due Date</th>
+    </tr>
     {% for assignment in assignments %}
-    <li><a href="Assignment" id="assignmentNameId">{{ assignment.name }}</a>
-    <p id="assignmentTime">{{ assignment.submission_close_date }}</p></li>
-  
+    <tr>
+      <td>{{ assignment.name}}</td>
+      <td>{{ assignment.submission_open_date }}</td>
+      <td>{{ assignment.submission_close_date }}</td>
+    </tr>
     {% endfor %}
-  </ul>
-
   {% else %}
   <p><strong>No assignments</strong></p>
   {% endif%}
