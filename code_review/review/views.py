@@ -32,16 +32,16 @@ def index(request):
     U = User.objects.get(id=request.user.id)
     context['user'] = U
     if U.reviewuser.isStaff:
-	try:
-	    courses = U.reviewuser.courses.all()
-	    context['courses'] = courses
-	    return render(request, 'course.html', context)
-	except Exception as UserExcept:
-	    print UserExcept.args
-    else: # user is student
-	return student_homepage(request)
+        try:
+            courses = U.reviewuser.courses.all()
+            context['courses'] = courses
+            return render(request, 'sidebar.html', context)
+        except Exception as UserExcept:
+            print UserExcept.args
+    else:  # user is student
+        return student_homepage(request)
 
-    return render(request, 'course.html', context)
+    return render(request, 'sidebar.html', context)
 
 def loginUser(request):
     pass
