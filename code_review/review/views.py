@@ -56,7 +56,7 @@ def logout(request):
 # It will also list all the courses they're currently
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 # @user_passes_test(staffTest)
 def coursePage(request, course_code):
     context = {}
@@ -85,7 +85,7 @@ def coursePage(request, course_code):
 # assignment create page
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
 
@@ -109,7 +109,7 @@ def create_assignment(request, course_code):
 # course administration alternative instead of using the django backend
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def createUser(request):
     context = {}
@@ -119,7 +119,7 @@ def createUser(request):
     return render(request, 'admin/userCreate.html', context)
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def courseAdmin(request):
     context = {}
@@ -131,7 +131,7 @@ def courseAdmin(request):
 
 # user administration alternative instead of using the django backend
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def userAdmin(request):
     context = {}
@@ -148,7 +148,7 @@ def userAdmin(request):
 # If the data is valid then it creates the assignment,
 # otherwise the user is kicked back to the form to fix the data
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateAssignment(request):
     form = None
@@ -196,7 +196,7 @@ def validateAssignment(request):
 # but for users.  Also creates a new review user for the user
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateUser(request):
     form = None
@@ -241,7 +241,7 @@ def validateUser(request):
     return render(request, 'admin/userCreate.html', context)
 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateCourse(request):
     form = None
@@ -270,7 +270,7 @@ def validateCourse(request):
     context['form'] = form
     return render(request, '/admin/courseCreate.html', context) 
 
-@login_required
+@login_required(login_url='/review/login_redirect/')
 def student_homepage(request):
     context = {} 
     U = User.objects.get(id=request.user.id)
