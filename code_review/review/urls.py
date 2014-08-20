@@ -5,7 +5,6 @@ from review import views
 urlpatterns = patterns('',
                        # Default view, routes to the index page
                        url(r'^$', views.index, name='index'),
-                       
                        # will redirect to the login_redirect if the user isn't
                        # authenticated.  This can probably be removed
                        # url(r'login/$', views.loginUser, name='login'),
@@ -15,42 +14,45 @@ urlpatterns = patterns('',
                            'django.contrib.auth.views.login',
                            {'template_name':  'login.html'},
                            name='login_redirect'),
-
                        # Uses djangos logout view to logout the user and redirect them to
                        # the index page
                        url(r'password_redirect/$',
                            views.passwordChangeHandler,
                            name="passwordHandler"),
+                       url(r'password_reset/$',
+                           views.passwordReset,
+                           name="password_reset"),
+                       url(r'password_reset_done/$',
+                           'django.contrib.auth.views.password_reset_done',
+                           name="password_reset_done"),
+                       url(r'password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+                           'django.contrib.auth.views.password_reset_confirm',
+                           {'post_reset_redirect': '/review/'},
+                           name="password_reset_confirm"),
                        url(r'logout/$',
                            'django.contrib.auth.views.logout',
                            {'next_page': '/review/'}, name='logout'),
                        # Furture route to register new users.  This probably won't be used
                        url(r'register/$', views.index, name='register'),
-
-
                        # routes for viewing users and courses for superuser
                        url(r'courses/$', views.courseAdmin, name='courseList'),
                        url(r'users/$', views.userAdmin, name='userList'),
-
                        # course administration routes
-
                        url(r'course_admin/$', views.index, name='default'),
-
                        # individual course pages
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.coursePage, name='coursePage'),
-
                        # Assignment creation and validation
                        url(r'create_assignment/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.create_assignment, name='create_assignment'),
-
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
-		       
                        #creation urls
                        # User and course creation
                        url(r'create/user/$', views.createUser, name='create_user'),
                        url(r'validateUser/$', views.validateUser, name='validate_user'),
-		       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
+                       url(r'student_homepage/$',
+                           views.student_homepage,
+                           name='student_homepage'),
 )

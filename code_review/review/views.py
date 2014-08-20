@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 # authentication libraries
 # base django user system
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import password_change
+from django.contrib.auth.views import password_change, password_reset
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -60,6 +60,10 @@ def logout(request):
     return HttpResponse("logout")
     # return redirect('/review/')
 
+# handler to change the review user firstlogin flg to true
+# after the user has changed their password after their
+# first login
+    
 def passwordChangeHandler(request):
     context = {}
 
@@ -71,6 +75,13 @@ def passwordChangeHandler(request):
 
     #redirect to the index page
     return HttpResponseRedirect("/review/")
+
+# Handler to first the password reset process
+    
+def passwordReset(request):
+    print "Reset"
+    return password_reset(request)
+    
     
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
