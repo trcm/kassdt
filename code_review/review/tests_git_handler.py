@@ -22,7 +22,19 @@ class RepoTests(TestCase):
         pass
 
     def test_public_populate_db(self):
+        # Get the Repo object
         url = "https://github.com/avadendas/public_test_repo.git"
-        directory = os.path.join(settings.MEDIA_ROOT, "githandler_test")
-        directory = os.path.join(directory, strftime("%Y-%m-%d_%H:%M:%S"))
-        repo = Repo.clone_from(url, directory)
+        # Needed for call to populate_db
+        relDir = os.path.join("githandler_test", strftime("%Y-%m-%d_%H:%M:%S"))
+        directory = os.path.join(settings.MEDIA_ROOT, relDir)
+        
+        # Create some fake assignments 
+        user = User.objects.create_user('Alex')
+        user = ReviewUser.objects.create(djangoUser=user)
+        course = Course.objects.create(course_code='TEST1234')
+        asmt = Assignment.objects.create(course_code=course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
+        sub = AssignmentSubmission.objects.create(by=user, submission_for=asmt)
+        sub.submission_repository = url
+
+        # Do it! 
+        populate_db(sub, relDir)
