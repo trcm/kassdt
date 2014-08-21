@@ -54,4 +54,8 @@ urlpatterns = patterns('',
                         # Assignment page
                         url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.*)/$',
                             views.assignment_page, name='assignment_page'),
+
+                        # Assignment submission
+                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.*)/submit/$',
+                            views.submit_assignment, name='submit_assignment'),
 )

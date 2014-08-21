@@ -1,0 +1,21 @@
+{% extends 'sidebar.html' %}
+
+{% block assignments %}
+
+<!-- This page can only be called if an assignment exists, obviously -->
+<h1>Submit {{ asmt.name }}</h1>
+
+{% if user.is_superuser %}
+<!-- Add stuff to allow superuser to edit assignment -->
+
+{% endif%}
+
+{% if user.is_superuser %}
+<h2>Settings</h2>
+{% endif %}
+
+    <form id="assignment_submission_form" method="post" action="{% url 'submit_assignment' course.course_code asmt.name submit %}">
+        <input type='submit' name='submit' value='Submit Assignment' />
+    </form>
+
+{% endblock %}

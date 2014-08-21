@@ -353,9 +353,17 @@ def submit_assignment(request, course_code, asmt):
 
             sub.save()
                                                 
-    
             context['form'] = form
             context['course'] = course
             context['asmt'] = assignment
             context['courses'] = courseList
+        else:
+            print form.errors
+
+    else: # not POST
+        form = AssignmentSubmissionForm()
+
+    return render(request, 'assignment_submission.html', context)
+
+            
     

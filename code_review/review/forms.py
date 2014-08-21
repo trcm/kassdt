@@ -4,6 +4,16 @@ from django.forms import *
 from django.forms.extras.widgets import SelectDateWidget
 from models import *
 
+class AssignmentSubmissionForm(ModelForm):
+    submission_repository = forms.URLField()
+    
+    def clean_url(self):
+        cleaned_data = self.cleaned_data
+        
+    class Meta:
+        model = AssignmentSubmission
+        fields = ['submission_repository']
+
 
 class AssignmentForm(ModelForm):
     class Meta:
