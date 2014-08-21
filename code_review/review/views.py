@@ -297,3 +297,24 @@ def get_open_assignments(user):
 		openAsmts.append((course, assignment))
     
     return openAsmts
+
+def assignment_page(request, course_code, asmt):
+    '''
+    :course_code Course.course_code
+    :asmt Assignment
+    '''
+    context = {}
+   
+    U = User.objects.get(id=request.user.id)
+    courseList = U.reviewuser.courses.all()
+    courseCode = course_code.encode('ascii', 'ignore')
+    course = Course.objects.get(course_code=courseCode)
+    asmtName = asmt.encode('ascii', 'ignore')
+    assignment = Assignment.objects.get(name=asmtName)
+    
+    context['user'] = U
+    context['course'] = course
+    context['asmt'] = assignment
+    context['courses'] = courseList
+    
+    return render(request, 'assignment_page.html', context)
