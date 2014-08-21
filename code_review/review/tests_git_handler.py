@@ -25,9 +25,14 @@ class RepoTests(TestCase):
         self.course = Course.objects.create(course_code='TEST1234')
         self.asmt = Assignment.objects.create(course_code=self.course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
         self.sub = AssignmentSubmission.objects.create(by=self.user, submission_for=self.asmt)
-        
+    
+    '''
+        Test precondition: ssh has been setup correctly.
+        Which really means this test is pretty meaningless, because the problems are
+        going to happen with ssh not being set up correctly.
+    '''
     def test_private_populate_db(self):
-        url = "https://github.com/avadendas/public_test_repo.git"
+        url = "git@github.com:avadendas/private_test_repo.git"
         sub = self.sub
         sub.submission_repository = url
         

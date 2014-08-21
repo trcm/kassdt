@@ -22,7 +22,12 @@
     <td>{{ assignment.name}}</td>
     <td>{{ assignment.submission_open_date }}</td>
     <td>{{ assignment.submission_close_date }}</td>
-    <td><button type="button">View</button>
+    <td>
+       <form action="{% url 'assignment_page' course.course_code assignment.name %}">
+            <input type="submit" value="View Assignment">
+        </form>
+    </td>
+    
   </tr>
   {% endfor %}
 

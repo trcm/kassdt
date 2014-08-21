@@ -14,5 +14,17 @@
 <h2>Settings</h2>
 {% endif %}
 
+<b>Submission Opens at: </b> {{ asmt.submission_open_date }} <br>
+<b>Assignment due at: </b> {{ asmt.submission_close_date }} <br>
+<b>Review opens at: </b> {{ asmt.review_open_date }} <br>
+<b>Review closes at: </b> {{ asmt.review_close_date }} <br>
+<b>Value of canSubmit: </b> {{ canSubmit }} <br>
+
+{% if canSubmit %}
+Can submit assignment.<br>
+{% else %}
+Submissions closed now <br>
+{% endif %}
+
 
 {% endblock %}
