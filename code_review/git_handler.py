@@ -1,7 +1,6 @@
 """
-    NB silly Alex did not realise you can't just run django stuff with
-    Python... need to start the shell with python manage.py shell
-    Then inside the shell, run execfile("filename").
+Helper functions to clone git repos.
+Currently only tested on public repos. 
 """
 
 from git import *
@@ -9,6 +8,7 @@ from review.models import *
 import os.path
 from django.db import models 
 from django.conf import settings
+from time import strftime
 
 def clone(url, directory):
     """
@@ -22,13 +22,29 @@ def clone(url, directory):
     return Repo.clone_from(url, directory)
 
 """
-    Given an AssignmentSubmission object, generate a name for the 
+    Given an AssignmentSubmission object, generate a path for the 
     root folder using the student's id, assignment, and submission number.
-    
-    Right now it's just spitting out hardcoded name. 
+    The intended use is that this the path to the local copy of the 
+    repository relative to MEDIA_ROOT.
+
+    Return "<user_uuid>_"%Y-%m-%d_%H-%M-%S"
+
+    :asmtSubmission AssignmentSubmission
 """
 def root_folder_name(asmtSubmission):
-   return "test_student_repo"
+    ''''
+    asmt = asmtSubmission.submission_for
+    course = asmt.course_code
+    courseCode = course.course_code
+    '''
+    
+    userID = asmtSubmission.by.djangoUser.username
+    
+    # If multiple submissions permitted, need to be able to distinguish
+    # So add the current time down to the second.
+    userID = userID + "_" + strftime("%Y-%m-%d_%H-%M-%S")
+    
+    return userID 
 
 def add_source_folder(name, parent):
     """
