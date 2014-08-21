@@ -293,7 +293,7 @@ def get_open_assignments(user):
 	# Get assignments in the course 
 	assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
 	for assignment in assignments: 
-	    if(assignment.submission_open_date < timenow and assignment.submission_close_date > timenow):
+	    if(can_submit(assignment)):
 		openAsmts.append((course, assignment))
     
     return openAsmts
@@ -318,3 +318,44 @@ def assignment_page(request, course_code, asmt):
     context['courses'] = courseList
     
     return render(request, 'assignment_page.html', context)
+
+def can_submit(asmt):
+    '''
+        :asmt Assignment
+        
+        Return True if allowed to submit asmt now
+        False otherwise
+    '''
+    now = timezone.now()
+    return now < asmt.submission_close_date and now > asmt.submission_open_date
+
+def submit_assignment(request, course_code, asmt):
+    
+    # Duplicated code... not good.
+    context = {} 
+
+    if request.method == 'POST':
+        form = AssignmentSubmissionForm(request.POST)
+        if form.is_valid():
+            form.save(commit==True)
+
+            U = User.objects.get(id=request.user.id)
+            courseList = U.reviewuser.courses.all()
+            courseCode = course_code.encode('ascii', 'ignore')
+            course = Course.objects.get(course_code=courseCode)
+            asmtName = asmt.encode('ascii', 'ignore')
+            assignment = Assignment.objects.get(name=asmtName)
+
+            repo = form.POST['submission_repository']
+            # Create AssignmentSubmission object
+            sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
+                                                submission_for=assignment)
+
+            sub.save()
+                                                
+    
+            context['form'] = form
+            context['course'] = course
+            context['asmt'] = assignment
+            context['courses'] = courseList
+    
