@@ -14,6 +14,7 @@
     <th>Assignment Name:</th>
     <th>Submission Open Date:</th>
     <th>Due Date</th>
+    <th>View</th>
   </tr>
   {% for assignment in assignments %}
 
@@ -21,6 +22,7 @@
     <td>{{ assignment.name}}</td>
     <td>{{ assignment.submission_open_date }}</td>
     <td>{{ assignment.submission_close_date }}</td>
+    <td><button type="button">View</button>
   </tr>
   {% endfor %}
 
