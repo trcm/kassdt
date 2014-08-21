@@ -18,17 +18,17 @@ from git import *
 from time import strftime
 
 class RepoTests(TestCase):
-    def test_pass(self):
-        pass
-
-    def test_private_populate_db(self):
+    def setUp(self):
         # Create some fake assignments 
-        user = User.objects.create_user('Alex')
-        user = ReviewUser.objects.create(djangoUser=user)
-        course = Course.objects.create(course_code='TEST1234')
-        asmt = Assignment.objects.create(course_code=course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
-        sub = AssignmentSubmission.objects.create(by=user, submission_for=asmt)
+        self.user = User.objects.create_user('Alex')
+        self.user = ReviewUser.objects.create(djangoUser=self.user)
+        self.course = Course.objects.create(course_code='TEST1234')
+        self.asmt = Assignment.objects.create(course_code=self.course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
+        self.sub = AssignmentSubmission.objects.create(by=self.user, submission_for=self.asmt)
+        
+    def test_private_populate_db(self):
         url = "https://github.com/avadendas/public_test_repo.git"
+        sub = self.sub
         sub.submission_repository = url
         
         # Get the Repo object
@@ -84,12 +84,8 @@ class RepoTests(TestCase):
         
     def test_public_populate_db(self):
         # Create some fake assignments 
-        user = User.objects.create_user('Alex')
-        user = ReviewUser.objects.create(djangoUser=user)
-        course = Course.objects.create(course_code='TEST1234')
-        asmt = Assignment.objects.create(course_code=course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
-        sub = AssignmentSubmission.objects.create(by=user, submission_for=asmt)
         url = "https://github.com/avadendas/public_test_repo.git"
+        sub = self.sub
         sub.submission_repository = url
         
         # Get the Repo object
