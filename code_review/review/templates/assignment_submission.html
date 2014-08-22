@@ -14,8 +14,11 @@
 <h2>Settings</h2>
 {% endif %}
 
-    <form id="assignment_submission_form" method="post" action="{% url 'submit_assignment' course.course_code asmt.name submit %}">
-        <input type='submit' name='submit' value='Submit Assignment' />
-    </form>
+<form id="submit_assignment" method="post" action="review/{{course.course_code}}/{{asmt.name}}/submit/">
+    {% for field in form.visible_fields %}
+        {{ field }}
+        <input type="submit" value="Submit Assignment">
+    {% endfor %}
+</form>
 
 {% endblock %}

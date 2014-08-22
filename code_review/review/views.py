@@ -16,7 +16,7 @@ from review.models import *
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm
 
 from django.utils import timezone
 
@@ -333,7 +333,7 @@ def submit_assignment(request, course_code, asmt):
     
     # Duplicated code... not good.
     context = {} 
-
+     
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST)
         if form.is_valid():
@@ -353,7 +353,6 @@ def submit_assignment(request, course_code, asmt):
 
             sub.save()
                                                 
-            context['form'] = form
             context['course'] = course
             context['asmt'] = assignment
             context['courses'] = courseList
@@ -362,7 +361,9 @@ def submit_assignment(request, course_code, asmt):
 
     else: # not POST
         form = AssignmentSubmissionForm()
-
+    
+    context['form'] = form
+    
     return render(request, 'assignment_submission.html', context)
 
             

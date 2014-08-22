@@ -50,12 +50,13 @@ urlpatterns = patterns('',
                        url(r'create/user/$', views.createUser, name='create_user'),
                        url(r'validateUser/$', views.validateUser, name='validate_user'),
 		       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
+                       
+                       # Assignment submission
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
+                            views.submit_assignment, name='submit_assignment'),
 
                         # Assignment page
-                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.*)/$',
+                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
                             views.assignment_page, name='assignment_page'),
 
-                        # Assignment submission
-                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.*)/submit/$',
-                            views.submit_assignment, name='submit_assignment'),
 )
