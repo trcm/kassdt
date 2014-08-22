@@ -14,11 +14,13 @@
 <h2>Settings</h2>
 {% endif %}
 
-<form id="submit_assignment" method="post" action="review/{{course.course_code}}/{{asmt.name}}/submit/">
-    {% for field in form.visible_fields %}
-        {{ field }}
-        <input type="submit" value="Submit Assignment">
-    {% endfor %}
+<form id="submit_assignment" method="post" action="">
+    {% csrf_token %}
+    {{ course.code_code }}
+    {{ asmt.name }}
+    <b> Repository URL </b><br>
+    {{ form.submission_repository }}
+    <input type="submit" value="Submit Assignment">
 </form>
 
 {% endblock %}

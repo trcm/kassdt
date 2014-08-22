@@ -20,6 +20,10 @@ from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm
 
 from django.utils import timezone
 
+from git_handler import *
+import os
+import os.path
+
 # this is the basic index view, it required login before the user can do any
 # as you can see at the moment this shows nothing other than a logout button
 # as I haven't added any content to it yet
@@ -333,29 +337,29 @@ def submit_assignment(request, course_code, asmt):
     
     # Duplicated code... not good.
     context = {} 
+    U = User.objects.get(id=request.user.id)
+    courseList = U.reviewuser.courses.all()
+    courseCode = course_code.encode('ascii', 'ignore')
+    course = Course.objects.get(course_code=courseCode)
+    asmtName = asmt.encode('ascii', 'ignore')
+    assignment = Assignment.objects.get(name=asmtName)
      
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST)
         if form.is_valid():
-            form.save(commit==True)
+            # form.save(commit=True)
 
-            U = User.objects.get(id=request.user.id)
-            courseList = U.reviewuser.courses.all()
-            courseCode = course_code.encode('ascii', 'ignore')
-            course = Course.objects.get(course_code=courseCode)
-            asmtName = asmt.encode('ascii', 'ignore')
-            assignment = Assignment.objects.get(name=asmtName)
-
-            repo = form.POST['submission_repository']
+            repo = request.POST['submission_repository']
             # Create AssignmentSubmission object
             sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
                                                 submission_for=assignment)
 
             sub.save()
-                                                
-            context['course'] = course
-            context['asmt'] = assignment
-            context['courses'] = courseList
+            
+            # Populate databse. 
+            relDir = os.path.join(courseCode, asmtName)
+            populate_db(sub, relDir)
+
         else:
             print form.errors
 
@@ -363,6 +367,9 @@ def submit_assignment(request, course_code, asmt):
         form = AssignmentSubmissionForm()
     
     context['form'] = form
+    context['course'] = course
+    context['asmt'] = assignment
+    context['courses'] = courseList
     
     return render(request, 'assignment_submission.html', context)
 
