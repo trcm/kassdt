@@ -18,12 +18,13 @@
 <b>Assignment due at: </b> {{ asmt.submission_close_date }} <br>
 <b>Review opens at: </b> {{ asmt.review_open_date }} <br>
 <b>Review closes at: </b> {{ asmt.review_close_date }} <br>
-<b>Value of canSubmit: </b> {{ canSubmit }} <br>
 
 {% if canSubmit %}
-Can submit assignment.<br>
+<form action="submit/">
+    <input type="submit" value="Submit Assignment">
+</form>
 {% else %}
-Submissions closed now <br>
+Submissions are closed now <br>
 {% endif %}
 
 

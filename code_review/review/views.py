@@ -320,6 +320,7 @@ def assignment_page(request, course_code, asmt):
     context['course'] = course
     context['asmt'] = assignment
     context['courses'] = courseList
+    context['canSubmit'] = can_submit(assignment)
     
     return render(request, 'assignment_page.html', context)
 
