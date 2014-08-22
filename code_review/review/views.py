@@ -348,30 +348,30 @@ def submit_assignment(request, course_code, asmt):
         form = AssignmentSubmissionForm(request.POST)
         if form.is_valid():
             # form.save(commit=True)
-
             repo = request.POST['submission_repository']
             # Create AssignmentSubmission object
             sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
                                                 submission_for=assignment)
-
             sub.save()
             
             # Populate databse. 
             relDir = os.path.join(courseCode, asmtName)
             populate_db(sub, relDir)
-
+            # User will be shown confirmation.
+            template = 'submission_confirmation.html'
         else:
             print form.errors
 
-    else: # not POST
+    else: # not POST; show the submission page.
         form = AssignmentSubmissionForm()
+        template = 'assignment_submission.html'
     
     context['form'] = form
     context['course'] = course
     context['asmt'] = assignment
     context['courses'] = courseList
     
-    return render(request, 'assignment_submission.html', context)
+    return render(request, template, context)
 
             
     

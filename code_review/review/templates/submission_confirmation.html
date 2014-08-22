@@ -1,0 +1,13 @@
+{% extends 'sidebar.html' %}
+
+{% block assignments %}
+
+<!-- Page called to tell user that submission has been successful -->
+
+{% if user.is_superuser %}
+<h2>Settings</h2>
+{% endif %}
+
+<h1>Submission Confirmed</h2>
+<h2>Your submission for {{ course.course_code }} assignment {{ asmt.name }} has been sucessfully submitted! </h2>
+{% endblock %}
