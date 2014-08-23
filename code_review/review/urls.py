@@ -5,7 +5,7 @@ from review import views
 urlpatterns = patterns('',
                        # Default view, routes to the index page
                        url(r'^$', views.index, name='index'),
-                       
+
                        # will redirect to the login_redirect if the user isn't
                        # authenticated.  This can probably be removed
                        # url(r'login/$', views.loginUser, name='login'),
@@ -44,19 +44,19 @@ urlpatterns = patterns('',
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
-		       
-                       #creation urls
+
+                       # creation urls
                        # User and course creation
                        url(r'create/user/$', views.createUser, name='create_user'),
                        url(r'validateUser/$', views.validateUser, name='validate_user'),
-		       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
-                       
+                       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
+
                        # Assignment submission
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
-                            views.submit_assignment, name='submit_assignment'),
+                           views.submit_assignment, name='submit_assignment'),
 
-                        # Assignment page
-                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
-                            views.assignment_page, name='assignment_page'),
+                       # Assignment page
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
+                           views.assignment_page, name='assignment_page'),
 
 )

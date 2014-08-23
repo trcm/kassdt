@@ -41,7 +41,7 @@ class ReviewUser(models.Model):
     isStaff = models.BooleanField(default=False)
     courses = models.ManyToManyField('Course')
     firstLogin = models.BooleanField(default=True)
-    
+
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
@@ -172,7 +172,6 @@ class Assignment(models.Model):
 class AssignmentSubmission(models.Model):
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
-    # by = models.ForeignKey(User)
     by = models.ForeignKey(ReviewUser)
     submission_repository = models.TextField()
     submission_for = models.ForeignKey(Assignment, related_name="submissions")
@@ -200,11 +199,8 @@ class AssignmentSubmission(models.Model):
 
 class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
-
-    # user = models.ForeignKey(User)
     user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
-
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
@@ -216,7 +212,6 @@ class SourceAnnotation(models.Model):
 
 class SourceAnnotationRange(models.Model):
     range_annotation = models.ForeignKey(SourceAnnotation, related_name="ranges")
-
     start = models.TextField()
     end = models.TextField()
     startOffset = models.PositiveIntegerField()
