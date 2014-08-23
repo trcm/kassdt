@@ -47,8 +47,10 @@ def index(request):
 
     return render(request, 'sidebar.html', context)
 
+
 def loginUser(request):
     pass
+
 
 # simply logs the user out
 def logout(request):
@@ -378,13 +380,52 @@ def submit_assignment(request, course_code, asmt):
 @login_required(login_url='/review/login_redirect/')
 def create_annotation(request):
     """
-    Creates an annotation for the user.  Needs to get most of its 
-    information from the http request sent by the AJAX function. 
-    
+    Creates an annotation for the user.  Needs to get most of its
+    information from the http request sent by the AJAX function.
+    Needs a post request to work.
+
+    I'm going to assume that the add annotation is a form, so i'll
+    use the django form methods for getting data
     """
-    pass
+    context = {}
+    # I'm making the assumption that the form has fields for
+    # the text, and both the starting and end ranges.
+    form = annotationForm(request.POST)
+
+    if request.method == 'POST' and form.is_valid():
+        try:
+            # get the user id and the source id
+            U = User.objects.get(id=request.user.id)
+            S = Source.objects.get(id=request.source.id)
+            annotation_text = form.cleaned_data['annotation_text']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            annotation = SourceAnnotation.objects.create(
+                user=U,
+                source=s,
+                text=annotation_text,
+                quote=annotation_text[:30]+(annotation_text[30:] and '..')
+            )
+            annotation.save()
+            print "annotation saved"
+            range = SourceAnnotationRange.objects.create(
+                range_annotation=annotation,
+                start=start,
+                end=end,
+                # I'm not sure what they used offsets for but i'll make
+                # them the sam as the start and the end
+                startOffset=start,
+                endoOffset=end
+            )
+            range.save()
+            print "range saved"
+        except Exception as e:
+            print e.message
 
 @login_required(login_url='/review/login_redirect/')
-def retrieve_annotation(request, submission_uuid):
+def retrieve_submission(request, submission_uuid):
+    """
+    Retrieves a submission from the database and returns both it
+    and all its annotations to a template
+    """
     pass
-    
