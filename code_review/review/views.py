@@ -11,6 +11,11 @@ from django.contrib.auth.forms import UserCreationForm
 # which will probably be all of them.  You can see below that the index method uses this
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+# used to make django objects into json
+from django.core import serializers
+from django.forms.models import model_to_dict
+import json
+
 from review.models import *
 
 from helpers import staffTest
@@ -21,6 +26,7 @@ from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm
 from django.utils import timezone
 
 from git_handler import *
+
 import os
 import os.path
 
@@ -391,7 +397,8 @@ def create_annotation(request):
     # I'm making the assumption that the form has fields for
     # the text, and both the starting and end ranges.
     form = annotationForm(request.POST)
-
+    annotation = None
+    range = None
     if request.method == 'POST' and form.is_valid():
         try:
             # get the user id and the source id
@@ -422,6 +429,14 @@ def create_annotation(request):
         except Exception as e:
             print e.message
 
+        # not sure what you'll want to return here because I don't know
+        # the format of the template but i'll return the data as a json object
+        # with the annotation data and the range data combined
+
+        context = model_to_dict(annotation).items() + model_to_dict(range).item()
+        print context
+        return HttpResponse(context)
+            
 @login_required(login_url='/review/login_redirect/')
 def retrieve_submission(request, submission_uuid):
     """
