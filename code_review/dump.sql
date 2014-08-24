@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.37, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.15  Distrib 10.0.12-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: code_review
 -- ------------------------------------------------------
--- Server version	5.5.37-1
+-- Server version	10.0.12-MariaDB-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -120,7 +120,7 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +129,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'bcrypt_sha256$$2a$12$kr4w2xy4gVheC7r8llLFwOdAFsqXBCtLruqM37jdZ4cZnwmUM00EK','2014-08-15 07:32:46',1,'admin','Super','User','admin@admin.com',1,1,'2014-08-09 12:38:53'),(2,'bcrypt_sha256$$2a$12$SJumCUhed.LfAQP3UPWv3eJW.7zD1T1RVZsiZ4yFqndBORXpB830G','2014-08-13 11:48:11',0,'tom','Tom','Midson','midson.trc@gmail.com',0,1,'2014-08-09 12:44:45'),(3,'bcrypt_sha256$$2a$12$888KxgQek4HpX2tAoHZqgOdwcnNHBBmzReRCoJaA5LW8ozeF1qUhO','2014-08-15 05:12:05',0,'kieran','Kieran','Eames','eames@eames.com',0,1,'2014-08-15 05:12:05'),(8,'fdsa','2014-08-15 13:22:48',0,'fdsa','fdsa','fdsa','amin@admin.com',1,1,'2014-08-15 13:22:48'),(23,'bcrypt_sha256$$2a$12$uAoe.99H/WdVlKFqJK81seHi9Ju6L4T9Gzwr4/a/WHeI5OKPUKJJ.','2014-08-15 14:29:12',0,'s0123456','','','',0,1,'2014-08-15 14:29:12'),(24,'bcrypt_sha256$$2a$12$vsjUw3/nk45U3X8c.roaR.ROjB6lroc4t3aY.FUpqKSS3iUzxEK7.','2014-08-15 14:29:13',0,'s1234567','','','',0,1,'2014-08-15 14:29:13');
+INSERT INTO `auth_user` VALUES (1,'bcrypt_sha256$$2a$12$kr4w2xy4gVheC7r8llLFwOdAFsqXBCtLruqM37jdZ4cZnwmUM00EK','2014-08-24 09:21:36',1,'admin','Super','User','admin@admin.com',1,1,'2014-08-09 12:38:53'),(2,'bcrypt_sha256$$2a$12$SJumCUhed.LfAQP3UPWv3eJW.7zD1T1RVZsiZ4yFqndBORXpB830G','2014-08-22 12:13:17',0,'tom','Tom','Midson','midson.trc@gmail.com',0,1,'2014-08-09 12:44:45'),(3,'bcrypt_sha256$$2a$12$888KxgQek4HpX2tAoHZqgOdwcnNHBBmzReRCoJaA5LW8ozeF1qUhO','2014-08-15 05:12:05',0,'kieran','Kieran','Eames','eames@eames.com',0,1,'2014-08-15 05:12:05'),(8,'fdsa','2014-08-15 13:22:48',0,'fdsa','fdsa','fdsa','amin@admin.com',1,1,'2014-08-15 13:22:48'),(23,'bcrypt_sha256$$2a$12$uAoe.99H/WdVlKFqJK81seHi9Ju6L4T9Gzwr4/a/WHeI5OKPUKJJ.','2014-08-18 10:58:00',0,'s0123456','','','',0,1,'2014-08-15 14:29:12'),(24,'bcrypt_sha256$$2a$12$vsjUw3/nk45U3X8c.roaR.ROjB6lroc4t3aY.FUpqKSS3iUzxEK7.','2014-08-15 14:29:13',0,'s1234567','','','',0,1,'2014-08-15 14:29:13'),(25,'bcrypt_sha256$$2a$12$y6E5Dig1S22OMxjV36i1/ObmSk1TENivPZpSUZ9y4n78aRlzWA2pm','2014-08-22 12:17:42',0,'test','','','',0,1,'2014-08-22 12:15:20');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -213,7 +213,7 @@ CREATE TABLE `django_admin_log` (
   KEY `django_admin_log_37ef4eb4` (`content_type_id`),
   CONSTRAINT `content_type_id_refs_id_93d2d1f8` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `user_id_refs_id_c0d12874` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,7 +222,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
-INSERT INTO `django_admin_log` VALUES (1,'2014-08-09 12:45:38',1,3,'1','staff',1,''),(2,'2014-08-09 12:46:21',1,3,'2','student',1,''),(3,'2014-08-09 12:46:36',1,4,'2','tom',1,''),(4,'2014-08-10 02:44:38',1,14,'1','(cfafd9e3-8555-416e-a42e-583b9a405d61)Learning 1',1,''),(5,'2014-08-10 10:24:17',1,14,'3','(dd48420a-cfc9-4007-9c3e-9ae68552c488)fdsa',3,''),(6,'2014-08-10 10:24:17',1,14,'2','(2fbf28d6-c2eb-43ad-9115-0fe053d02f37)fdsa',3,''),(7,'2014-08-11 05:08:30',1,4,'2','tom',2,'Changed password.'),(8,'2014-08-11 05:30:37',1,8,'2','admin',1,''),(9,'2014-08-13 11:50:01',1,8,'2','admin',2,'Changed courses.'),(10,'2014-08-14 05:30:47',1,4,'2','tom',2,'Changed password.'),(11,'2014-08-14 05:31:45',1,4,'2','tom',2,'No fields changed.'),(12,'2014-08-14 05:34:18',1,4,'2','tom',2,'No fields changed.'),(13,'2014-08-14 05:36:37',1,4,'2','tom',2,'No fields changed.'),(14,'2014-08-14 05:41:37',1,4,'2','tom',2,'No fields changed.'),(15,'2014-08-14 05:42:36',1,4,'2','tom',2,'No fields changed.'),(16,'2014-08-14 05:42:43',1,4,'2','tom',2,'Changed password.'),(17,'2014-08-14 06:33:16',1,4,'1','admin',2,'Changed courses for review user \"admin\".'),(18,'2014-08-14 06:33:23',1,4,'1','admin',2,'Changed courses for review user \"admin\".'),(19,'2014-08-15 05:11:10',1,4,'2','tom',2,'Changed password.'),(20,'2014-08-15 05:11:45',1,4,'2','tom',2,'Changed password.'),(21,'2014-08-15 05:12:06',1,4,'3','kieran',1,''),(22,'2014-08-15 07:44:18',1,4,'2','tom',2,'Changed email.'),(23,'2014-08-15 07:44:46',1,4,'3','kieran',2,'Changed first_name, last_name and email.'),(24,'2014-08-15 07:44:58',1,4,'1','admin',2,'Changed first_name, last_name and email.'),(25,'2014-08-15 13:19:23',1,4,'4','fdsa',3,''),(26,'2014-08-15 13:21:07',1,4,'5','fdsa',3,''),(27,'2014-08-15 13:21:44',1,4,'6','fdsa',3,''),(28,'2014-08-15 13:22:45',1,4,'7','fdsa',3,''),(29,'2014-08-15 14:17:19',1,4,'9','s0123456',3,''),(30,'2014-08-15 14:17:19',1,4,'10','s1234567',3,''),(31,'2014-08-15 14:20:04',1,4,'11','s0123456',3,''),(32,'2014-08-15 14:20:04',1,4,'12','s1234567',3,''),(33,'2014-08-15 14:21:02',1,4,'15','s0123456',3,''),(34,'2014-08-15 14:21:02',1,4,'16','s1234567',3,''),(35,'2014-08-15 14:24:55',1,4,'17','s0123456',3,''),(36,'2014-08-15 14:24:55',1,4,'18','s1234567',3,''),(37,'2014-08-15 14:26:17',1,8,'11','s0123456',3,''),(38,'2014-08-15 14:26:28',1,4,'19','s0123456',3,''),(39,'2014-08-15 14:26:28',1,4,'20','s1234567',3,''),(40,'2014-08-15 14:29:02',1,4,'21','s0123456',3,''),(41,'2014-08-15 14:29:02',1,4,'22','s1234567',3,'');
+INSERT INTO `django_admin_log` VALUES (1,'2014-08-09 12:45:38',1,3,'1','staff',1,''),(2,'2014-08-09 12:46:21',1,3,'2','student',1,''),(3,'2014-08-09 12:46:36',1,4,'2','tom',1,''),(4,'2014-08-10 02:44:38',1,14,'1','(cfafd9e3-8555-416e-a42e-583b9a405d61)Learning 1',1,''),(5,'2014-08-10 10:24:17',1,14,'3','(dd48420a-cfc9-4007-9c3e-9ae68552c488)fdsa',3,''),(6,'2014-08-10 10:24:17',1,14,'2','(2fbf28d6-c2eb-43ad-9115-0fe053d02f37)fdsa',3,''),(7,'2014-08-11 05:08:30',1,4,'2','tom',2,'Changed password.'),(8,'2014-08-11 05:30:37',1,8,'2','admin',1,''),(9,'2014-08-13 11:50:01',1,8,'2','admin',2,'Changed courses.'),(10,'2014-08-14 05:30:47',1,4,'2','tom',2,'Changed password.'),(11,'2014-08-14 05:31:45',1,4,'2','tom',2,'No fields changed.'),(12,'2014-08-14 05:34:18',1,4,'2','tom',2,'No fields changed.'),(13,'2014-08-14 05:36:37',1,4,'2','tom',2,'No fields changed.'),(14,'2014-08-14 05:41:37',1,4,'2','tom',2,'No fields changed.'),(15,'2014-08-14 05:42:36',1,4,'2','tom',2,'No fields changed.'),(16,'2014-08-14 05:42:43',1,4,'2','tom',2,'Changed password.'),(17,'2014-08-14 06:33:16',1,4,'1','admin',2,'Changed courses for review user \"admin\".'),(18,'2014-08-14 06:33:23',1,4,'1','admin',2,'Changed courses for review user \"admin\".'),(19,'2014-08-15 05:11:10',1,4,'2','tom',2,'Changed password.'),(20,'2014-08-15 05:11:45',1,4,'2','tom',2,'Changed password.'),(21,'2014-08-15 05:12:06',1,4,'3','kieran',1,''),(22,'2014-08-15 07:44:18',1,4,'2','tom',2,'Changed email.'),(23,'2014-08-15 07:44:46',1,4,'3','kieran',2,'Changed first_name, last_name and email.'),(24,'2014-08-15 07:44:58',1,4,'1','admin',2,'Changed first_name, last_name and email.'),(25,'2014-08-15 13:19:23',1,4,'4','fdsa',3,''),(26,'2014-08-15 13:21:07',1,4,'5','fdsa',3,''),(27,'2014-08-15 13:21:44',1,4,'6','fdsa',3,''),(28,'2014-08-15 13:22:45',1,4,'7','fdsa',3,''),(29,'2014-08-15 14:17:19',1,4,'9','s0123456',3,''),(30,'2014-08-15 14:17:19',1,4,'10','s1234567',3,''),(31,'2014-08-15 14:20:04',1,4,'11','s0123456',3,''),(32,'2014-08-15 14:20:04',1,4,'12','s1234567',3,''),(33,'2014-08-15 14:21:02',1,4,'15','s0123456',3,''),(34,'2014-08-15 14:21:02',1,4,'16','s1234567',3,''),(35,'2014-08-15 14:24:55',1,4,'17','s0123456',3,''),(36,'2014-08-15 14:24:55',1,4,'18','s1234567',3,''),(37,'2014-08-15 14:26:17',1,8,'11','s0123456',3,''),(38,'2014-08-15 14:26:28',1,4,'19','s0123456',3,''),(39,'2014-08-15 14:26:28',1,4,'20','s1234567',3,''),(40,'2014-08-15 14:29:02',1,4,'21','s0123456',3,''),(41,'2014-08-15 14:29:02',1,4,'22','s1234567',3,''),(42,'2014-08-22 12:15:21',1,4,'25','test',1,''),(43,'2014-08-22 12:15:30',1,8,'17','test',2,'No fields changed.');
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,7 +275,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('6e674mu8w0mtr20hfouss75leyzy819n','YWQ4MWU2MDRjZmJhYWQ3NDZjOTZkYmFiM2QyMWIxMjkwOTlmNjA5MTp7fQ==','2014-08-24 10:07:30'),('ein0uddfyvwxcwl1ygr32hvkqbna1hjm','YWQ4MWU2MDRjZmJhYWQ3NDZjOTZkYmFiM2QyMWIxMjkwOTlmNjA5MTp7fQ==','2014-08-23 12:58:42'),('fj6lesv4gaq5hl0hj498bib3lcrfd167','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-27 11:49:42'),('mk25e1jnim39y938po8bt0a8jqezg6uk','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-29 07:32:46'),('n7k98336mti0p2eg30d4mqmb6t8u53vu','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-24 02:00:02');
+INSERT INTO `django_session` VALUES ('2ix3qke60cdwyuoekx4kim3qcht1e9sl','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-09-07 09:21:36'),('6e674mu8w0mtr20hfouss75leyzy819n','YWQ4MWU2MDRjZmJhYWQ3NDZjOTZkYmFiM2QyMWIxMjkwOTlmNjA5MTp7fQ==','2014-08-24 10:07:30'),('ein0uddfyvwxcwl1ygr32hvkqbna1hjm','YWQ4MWU2MDRjZmJhYWQ3NDZjOTZkYmFiM2QyMWIxMjkwOTlmNjA5MTp7fQ==','2014-08-23 12:58:42'),('fj6lesv4gaq5hl0hj498bib3lcrfd167','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-27 11:49:42'),('mk25e1jnim39y938po8bt0a8jqezg6uk','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-29 07:32:46'),('n7k98336mti0p2eg30d4mqmb6t8u53vu','MzI0OGYzZGYxMDA1MGRmY2M5YjM5MTE5ZjJhYjY2MTVmMzQwYTY5MDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6MX0=','2014-08-24 02:00:02');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -378,32 +378,55 @@ INSERT INTO `review_course` VALUES (1,'c0d0bf8a-b431-4c1a-9ace-2dfb4514e1b8','AB
 UNLOCK TABLES;
 
 --
--- Table structure for table `review_course_students`
+-- Table structure for table `review_course_s`
 --
 
-DROP TABLE IF EXISTS `review_course_students`;
+DROP TABLE IF EXISTS `review_course_s`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `review_course_students` (
+CREATE TABLE `review_course_s` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `course_id` int(11) NOT NULL,
   `reviewuser_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `review_course_students_course_id_33e15abeb9b928c7_uniq` (`course_id`,`reviewuser_id`),
-  KEY `review_course_students_6234103b` (`course_id`),
-  KEY `review_course_students_c6440f4a` (`reviewuser_id`),
-  CONSTRAINT `course_id_refs_id_4df39490` FOREIGN KEY (`course_id`) REFERENCES `review_course` (`id`),
-  CONSTRAINT `reviewuser_id_refs_id_23835d11` FOREIGN KEY (`reviewuser_id`) REFERENCES `review_reviewuser` (`id`)
+  UNIQUE KEY `review_course_s_course_id_45a12a6bb623a77b_uniq` (`course_id`,`reviewuser_id`),
+  KEY `review_course_s_6234103b` (`course_id`),
+  KEY `review_course_s_c6440f4a` (`reviewuser_id`),
+  CONSTRAINT `course_id_refs_id_b1e603f9` FOREIGN KEY (`course_id`) REFERENCES `review_course` (`id`),
+  CONSTRAINT `reviewuser_id_refs_id_b79b369d` FOREIGN KEY (`reviewuser_id`) REFERENCES `review_reviewuser` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `review_course_students`
+-- Dumping data for table `review_course_s`
 --
 
-LOCK TABLES `review_course_students` WRITE;
-/*!40000 ALTER TABLE `review_course_students` DISABLE KEYS */;
-/*!40000 ALTER TABLE `review_course_students` ENABLE KEYS */;
+LOCK TABLES `review_course_s` WRITE;
+/*!40000 ALTER TABLE `review_course_s` DISABLE KEYS */;
+/*!40000 ALTER TABLE `review_course_s` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `review_createuserform`
+--
+
+DROP TABLE IF EXISTS `review_createuserform`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `review_createuserform` (
+  `user_ptr_id` int(11) NOT NULL,
+  PRIMARY KEY (`user_ptr_id`),
+  CONSTRAINT `user_ptr_id_refs_id_ea09df13` FOREIGN KEY (`user_ptr_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `review_createuserform`
+--
+
+LOCK TABLES `review_createuserform` WRITE;
+/*!40000 ALTER TABLE `review_createuserform` DISABLE KEYS */;
+/*!40000 ALTER TABLE `review_createuserform` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -422,7 +445,7 @@ CREATE TABLE `review_reviewuser` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `djangoUser_id` (`djangoUser_id`),
   CONSTRAINT `djangoUser_id_refs_id_ce92d1c6` FOREIGN KEY (`djangoUser_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +454,7 @@ CREATE TABLE `review_reviewuser` (
 
 LOCK TABLES `review_reviewuser` WRITE;
 /*!40000 ALTER TABLE `review_reviewuser` DISABLE KEYS */;
-INSERT INTO `review_reviewuser` VALUES (1,'99ffcc68-a9c4-450d-b74c-8acc976b206d',2,0,1),(2,'1bd5f565-47fc-4a12-ae32-22d8188b93ae',1,0,1),(3,'be808ac9-0bc8-4b2f-909a-2332fe4d4149',3,0,1),(4,'9cafb4e6-3a2a-4f2c-bbe8-9659ee9f69ad',8,1,1),(15,'9403e793-8dcf-4378-81df-ae777abe4051',23,0,1),(16,'f108a046-484d-4d4d-b120-ca5bf332a60f',24,0,1);
+INSERT INTO `review_reviewuser` VALUES (1,'99ffcc68-a9c4-450d-b74c-8acc976b206d',2,0,1),(2,'1bd5f565-47fc-4a12-ae32-22d8188b93ae',1,0,1),(3,'be808ac9-0bc8-4b2f-909a-2332fe4d4149',3,0,1),(4,'9cafb4e6-3a2a-4f2c-bbe8-9659ee9f69ad',8,1,1),(15,'9403e793-8dcf-4378-81df-ae777abe4051',23,0,1),(16,'f108a046-484d-4d4d-b120-ca5bf332a60f',24,0,1),(17,'dc181e47-17ca-4e2c-be61-761fd9c2d5e7',25,0,0);
 /*!40000 ALTER TABLE `review_reviewuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -452,7 +475,7 @@ CREATE TABLE `review_reviewuser_courses` (
   KEY `review_reviewuser_courses_6234103b` (`course_id`),
   CONSTRAINT `course_id_refs_id_e1fe2446` FOREIGN KEY (`course_id`) REFERENCES `review_course` (`id`),
   CONSTRAINT `reviewuser_id_refs_id_eca292ce` FOREIGN KEY (`reviewuser_id`) REFERENCES `review_reviewuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=617 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=621 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,7 +484,7 @@ CREATE TABLE `review_reviewuser_courses` (
 
 LOCK TABLES `review_reviewuser_courses` WRITE;
 /*!40000 ALTER TABLE `review_reviewuser_courses` DISABLE KEYS */;
-INSERT INTO `review_reviewuser_courses` VALUES (1,1,1),(206,2,1),(207,2,2),(208,2,3),(209,2,4),(210,2,5),(211,2,6),(212,2,7),(213,2,8),(214,2,9),(215,2,10),(216,2,11),(217,2,12),(218,2,13),(219,2,14),(220,2,15),(221,2,16),(222,2,17),(223,2,18),(224,2,19),(225,2,20),(226,2,21),(227,2,22),(228,2,23),(229,2,24),(230,2,25),(231,2,26),(232,2,27),(233,2,28),(234,2,29),(235,2,30),(236,2,31),(237,2,32),(238,2,33),(239,2,34),(240,2,35),(241,2,36),(242,2,37),(243,2,38),(244,2,39),(245,2,40),(246,2,41),(247,2,42),(248,2,43),(249,2,44),(250,2,45),(251,2,46),(252,2,47),(253,2,48),(254,2,49),(255,2,50),(256,2,51),(257,2,52),(258,2,53),(259,2,54),(260,2,55),(261,2,56),(262,2,57),(263,2,58),(264,2,59),(265,2,60),(266,2,61),(267,2,62),(268,2,63),(269,2,64),(270,2,65),(271,2,66),(272,2,67),(273,2,68),(274,2,69),(275,2,70),(276,2,71),(277,2,72),(278,2,73),(279,2,74),(280,2,75),(281,2,76),(282,2,77),(283,2,78),(284,2,79),(285,2,80),(286,2,81),(287,2,82),(288,2,83),(289,2,84),(290,2,85),(291,2,86),(292,2,87),(293,2,88),(294,2,89),(295,2,90),(296,2,91),(297,2,92),(298,2,93),(299,2,94),(300,2,95),(301,2,96),(302,2,97),(303,2,98),(304,2,99),(305,2,100),(306,2,101),(307,2,102),(308,2,103),(309,2,104),(310,2,105),(311,2,106),(312,2,107),(313,2,108),(314,2,109),(315,2,110),(316,2,111),(317,2,112),(318,2,113),(319,2,114),(320,2,115),(321,2,116),(322,2,117),(323,2,118),(324,2,119),(325,2,120),(326,2,121),(327,2,122),(328,2,123),(329,2,124),(330,2,125),(331,2,126),(332,2,127),(333,2,128),(334,2,129),(335,2,130),(336,2,131),(337,2,132),(338,2,133),(339,2,134),(340,2,135),(341,2,136),(342,2,137),(343,2,138),(344,2,139),(345,2,140),(346,2,141),(347,2,142),(348,2,143),(349,2,144),(350,2,145),(351,2,146),(352,2,147),(353,2,148),(354,2,149),(355,2,150),(356,2,151),(357,2,152),(358,2,153),(359,2,154),(360,2,155),(361,2,156),(362,2,157),(363,2,158),(364,2,159),(365,2,160),(366,2,161),(367,2,162),(368,2,163),(369,2,164),(370,2,165),(371,2,166),(372,2,167),(373,2,168),(374,2,169),(375,2,170),(376,2,171),(377,2,172),(378,2,173),(379,2,174),(380,2,175),(381,2,176),(382,2,177),(383,2,178),(384,2,179),(385,2,180),(386,2,181),(387,2,182),(388,2,183),(389,2,184),(390,2,185),(391,2,186),(392,2,187),(393,2,188),(394,2,189),(395,2,190),(396,2,191),(397,2,192),(398,2,193),(399,2,194),(400,2,195),(401,2,196),(402,2,197),(403,2,198),(404,2,199),(405,2,200),(406,3,1),(407,3,2),(408,3,3),(409,3,4),(410,3,5),(411,3,6),(412,3,7),(413,3,8),(414,3,9),(415,3,10),(416,3,11),(417,3,12),(418,3,13),(419,3,14),(420,3,15),(421,3,16),(422,3,17),(423,3,18),(424,3,19),(425,3,20),(426,3,21),(427,3,22),(428,3,23),(429,3,24),(430,3,25),(431,3,26),(432,3,27),(433,3,28),(434,3,29),(435,3,30),(436,3,31),(437,3,32),(438,3,33),(439,3,34),(440,3,35),(441,3,36),(442,3,37),(443,3,38),(444,3,39),(445,3,40),(446,3,41),(447,3,42),(448,3,43),(449,3,44),(450,3,45),(451,3,46),(452,3,47),(453,3,48),(454,3,49),(455,3,50),(456,3,51),(457,3,52),(458,3,53),(459,3,54),(460,3,55),(461,3,56),(462,3,57),(463,3,58),(464,3,59),(465,3,60),(466,3,61),(467,3,62),(468,3,63),(469,3,64),(470,3,65),(471,3,66),(472,3,67),(473,3,68),(474,3,69),(475,3,70),(476,3,71),(477,3,72),(478,3,73),(479,3,74),(480,3,75),(481,3,76),(482,3,77),(483,3,78),(484,3,79),(485,3,80),(486,3,81),(487,3,82),(488,3,83),(489,3,84),(490,3,85),(491,3,86),(492,3,87),(493,3,88),(494,3,89),(495,3,90),(496,3,91),(497,3,92),(498,3,93),(499,3,94),(500,3,95),(501,3,96),(502,3,97),(503,3,98),(504,3,99),(505,3,100),(506,3,101),(507,3,102),(508,3,103),(509,3,104),(510,3,105),(511,3,106),(512,3,107),(513,3,108),(514,3,109),(515,3,110),(516,3,111),(517,3,112),(518,3,113),(519,3,114),(520,3,115),(521,3,116),(522,3,117),(523,3,118),(524,3,119),(525,3,120),(526,3,121),(527,3,122),(528,3,123),(529,3,124),(530,3,125),(531,3,126),(532,3,127),(533,3,128),(534,3,129),(535,3,130),(536,3,131),(537,3,132),(538,3,133),(539,3,134),(540,3,135),(541,3,136),(542,3,137),(543,3,138),(544,3,139),(545,3,140),(546,3,141),(547,3,142),(548,3,143),(549,3,144),(550,3,145),(551,3,146),(552,3,147),(553,3,148),(554,3,149),(555,3,150),(556,3,151),(557,3,152),(558,3,153),(559,3,154),(560,3,155),(561,3,156),(562,3,157),(563,3,158),(564,3,159),(565,3,160),(566,3,161),(567,3,162),(568,3,163),(569,3,164),(570,3,165),(571,3,166),(572,3,167),(573,3,168),(574,3,169),(575,3,170),(576,3,171),(577,3,172),(578,3,173),(579,3,174),(580,3,175),(581,3,176),(582,3,177),(583,3,178),(584,3,179),(585,3,180),(586,3,181),(587,3,182),(588,3,183),(589,3,184),(590,3,185),(591,3,186),(592,3,187),(593,3,188),(594,3,189),(595,3,190),(596,3,191),(597,3,192),(598,3,193),(599,3,194),(600,3,195),(601,3,196),(602,3,197),(603,3,198),(604,3,199),(605,3,200),(613,15,5),(614,15,53),(616,16,50),(615,16,53);
+INSERT INTO `review_reviewuser_courses` VALUES (1,1,1),(206,2,1),(207,2,2),(208,2,3),(209,2,4),(210,2,5),(211,2,6),(212,2,7),(213,2,8),(214,2,9),(215,2,10),(216,2,11),(217,2,12),(218,2,13),(219,2,14),(220,2,15),(221,2,16),(222,2,17),(223,2,18),(224,2,19),(225,2,20),(226,2,21),(227,2,22),(228,2,23),(229,2,24),(230,2,25),(231,2,26),(232,2,27),(233,2,28),(234,2,29),(235,2,30),(236,2,31),(237,2,32),(238,2,33),(239,2,34),(240,2,35),(241,2,36),(242,2,37),(243,2,38),(244,2,39),(245,2,40),(246,2,41),(247,2,42),(248,2,43),(249,2,44),(250,2,45),(251,2,46),(252,2,47),(253,2,48),(254,2,49),(255,2,50),(256,2,51),(257,2,52),(258,2,53),(259,2,54),(260,2,55),(261,2,56),(262,2,57),(263,2,58),(264,2,59),(265,2,60),(266,2,61),(267,2,62),(268,2,63),(269,2,64),(270,2,65),(271,2,66),(272,2,67),(273,2,68),(274,2,69),(275,2,70),(276,2,71),(277,2,72),(278,2,73),(279,2,74),(280,2,75),(281,2,76),(282,2,77),(283,2,78),(284,2,79),(285,2,80),(286,2,81),(287,2,82),(288,2,83),(289,2,84),(290,2,85),(291,2,86),(292,2,87),(293,2,88),(294,2,89),(295,2,90),(296,2,91),(297,2,92),(298,2,93),(299,2,94),(300,2,95),(301,2,96),(302,2,97),(303,2,98),(304,2,99),(305,2,100),(306,2,101),(307,2,102),(308,2,103),(309,2,104),(310,2,105),(311,2,106),(312,2,107),(313,2,108),(314,2,109),(315,2,110),(316,2,111),(317,2,112),(318,2,113),(319,2,114),(320,2,115),(321,2,116),(322,2,117),(323,2,118),(324,2,119),(325,2,120),(326,2,121),(327,2,122),(328,2,123),(329,2,124),(330,2,125),(331,2,126),(332,2,127),(333,2,128),(334,2,129),(335,2,130),(336,2,131),(337,2,132),(338,2,133),(339,2,134),(340,2,135),(341,2,136),(342,2,137),(343,2,138),(344,2,139),(345,2,140),(346,2,141),(347,2,142),(348,2,143),(349,2,144),(350,2,145),(351,2,146),(352,2,147),(353,2,148),(354,2,149),(355,2,150),(356,2,151),(357,2,152),(358,2,153),(359,2,154),(360,2,155),(361,2,156),(362,2,157),(363,2,158),(364,2,159),(365,2,160),(366,2,161),(367,2,162),(368,2,163),(369,2,164),(370,2,165),(371,2,166),(372,2,167),(373,2,168),(374,2,169),(375,2,170),(376,2,171),(377,2,172),(378,2,173),(379,2,174),(380,2,175),(381,2,176),(382,2,177),(383,2,178),(384,2,179),(385,2,180),(386,2,181),(387,2,182),(388,2,183),(389,2,184),(390,2,185),(391,2,186),(392,2,187),(393,2,188),(394,2,189),(395,2,190),(396,2,191),(397,2,192),(398,2,193),(399,2,194),(400,2,195),(401,2,196),(402,2,197),(403,2,198),(404,2,199),(405,2,200),(406,3,1),(407,3,2),(408,3,3),(409,3,4),(410,3,5),(411,3,6),(412,3,7),(413,3,8),(414,3,9),(415,3,10),(416,3,11),(417,3,12),(418,3,13),(419,3,14),(420,3,15),(421,3,16),(422,3,17),(423,3,18),(424,3,19),(425,3,20),(426,3,21),(427,3,22),(428,3,23),(429,3,24),(430,3,25),(431,3,26),(432,3,27),(433,3,28),(434,3,29),(435,3,30),(436,3,31),(437,3,32),(438,3,33),(439,3,34),(440,3,35),(441,3,36),(442,3,37),(443,3,38),(444,3,39),(445,3,40),(446,3,41),(447,3,42),(448,3,43),(449,3,44),(450,3,45),(451,3,46),(452,3,47),(453,3,48),(454,3,49),(455,3,50),(456,3,51),(457,3,52),(458,3,53),(459,3,54),(460,3,55),(461,3,56),(462,3,57),(463,3,58),(464,3,59),(465,3,60),(466,3,61),(467,3,62),(468,3,63),(469,3,64),(470,3,65),(471,3,66),(472,3,67),(473,3,68),(474,3,69),(475,3,70),(476,3,71),(477,3,72),(478,3,73),(479,3,74),(480,3,75),(481,3,76),(482,3,77),(483,3,78),(484,3,79),(485,3,80),(486,3,81),(487,3,82),(488,3,83),(489,3,84),(490,3,85),(491,3,86),(492,3,87),(493,3,88),(494,3,89),(495,3,90),(496,3,91),(497,3,92),(498,3,93),(499,3,94),(500,3,95),(501,3,96),(502,3,97),(503,3,98),(504,3,99),(505,3,100),(506,3,101),(507,3,102),(508,3,103),(509,3,104),(510,3,105),(511,3,106),(512,3,107),(513,3,108),(514,3,109),(515,3,110),(516,3,111),(517,3,112),(518,3,113),(519,3,114),(520,3,115),(521,3,116),(522,3,117),(523,3,118),(524,3,119),(525,3,120),(526,3,121),(527,3,122),(528,3,123),(529,3,124),(530,3,125),(531,3,126),(532,3,127),(533,3,128),(534,3,129),(535,3,130),(536,3,131),(537,3,132),(538,3,133),(539,3,134),(540,3,135),(541,3,136),(542,3,137),(543,3,138),(544,3,139),(545,3,140),(546,3,141),(547,3,142),(548,3,143),(549,3,144),(550,3,145),(551,3,146),(552,3,147),(553,3,148),(554,3,149),(555,3,150),(556,3,151),(557,3,152),(558,3,153),(559,3,154),(560,3,155),(561,3,156),(562,3,157),(563,3,158),(564,3,159),(565,3,160),(566,3,161),(567,3,162),(568,3,163),(569,3,164),(570,3,165),(571,3,166),(572,3,167),(573,3,168),(574,3,169),(575,3,170),(576,3,171),(577,3,172),(578,3,173),(579,3,174),(580,3,175),(581,3,176),(582,3,177),(583,3,178),(584,3,179),(585,3,180),(586,3,181),(587,3,182),(588,3,183),(589,3,184),(590,3,185),(591,3,186),(592,3,187),(593,3,188),(594,3,189),(595,3,190),(596,3,191),(597,3,192),(598,3,193),(599,3,194),(600,3,195),(601,3,196),(602,3,197),(603,3,198),(604,3,199),(605,3,200),(613,15,5),(614,15,53),(616,16,50),(615,16,53),(619,17,1),(620,17,6);
 /*!40000 ALTER TABLE `review_reviewuser_courses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -609,6 +632,30 @@ LOCK TABLES `review_sourcefolder` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `review_studentuser`
+--
+
+DROP TABLE IF EXISTS `review_studentuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `review_studentuser` (
+  `user_ptr_id` int(11) NOT NULL,
+  `char` varchar(100) NOT NULL,
+  PRIMARY KEY (`user_ptr_id`),
+  CONSTRAINT `user_ptr_id_refs_id_b3f6ba22` FOREIGN KEY (`user_ptr_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `review_studentuser`
+--
+
+LOCK TABLES `review_studentuser` WRITE;
+/*!40000 ALTER TABLE `review_studentuser` DISABLE KEYS */;
+/*!40000 ALTER TABLE `review_studentuser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `review_submissiontest`
 --
 
@@ -672,7 +719,7 @@ CREATE TABLE `south_migrationhistory` (
   `migration` varchar(255) NOT NULL,
   `applied` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -681,7 +728,7 @@ CREATE TABLE `south_migrationhistory` (
 
 LOCK TABLES `south_migrationhistory` WRITE;
 /*!40000 ALTER TABLE `south_migrationhistory` DISABLE KEYS */;
-INSERT INTO `south_migrationhistory` VALUES (1,'review','0001_initial','2014-08-09 12:39:02'),(2,'review','0002_auto__del_test__add_user__add_sourceannotation__add_sourcefile__add_so','2014-08-09 12:39:10'),(3,'review','0003_auto__del_user__add_reviewuser__chg_field_sourceannotation_user__chg_f','2014-08-09 12:39:11'),(4,'review','0004_auto__add_field_reviewuser_isStaff','2014-08-09 12:39:11'),(5,'review','0005_auto__add_course','2014-08-09 12:39:12'),(6,'review','0006_auto__add_field_course_course_code__add_field_course_course_name','2014-08-09 12:39:12'),(7,'review','0007_auto__add_field_assignment_course_code','2014-08-09 12:39:13'),(8,'review','0008_auto','2014-08-09 12:39:15'),(9,'review','0009_auto__chg_field_course_course_name','2014-08-09 12:39:15'),(10,'review','0010_auto','2014-08-09 12:39:16'),(11,'review','0011_auto__add_myuser','2014-08-14 05:33:54'),(12,'review','0012_auto__del_myuser__add_studentuser__add_createuserform','2014-08-15 13:19:09'),(13,'review','0013_auto__del_studentuser','2014-08-15 13:19:09'),(14,'review','0014_auto__del_createuserform','2014-08-15 13:19:09'),(15,'review','0015_auto__add_field_reviewuser_firstLogin','2014-08-15 13:54:20'),(16,'review','0016_auto__add_faketestmodel','2014-08-17 13:17:14'),(17,'review','0017_auto__del_faketestmodel','2014-08-17 13:17:14');
+INSERT INTO `south_migrationhistory` VALUES (1,'review','0001_initial','2014-08-09 12:39:02'),(2,'review','0002_auto__del_test__add_user__add_sourceannotation__add_sourcefile__add_so','2014-08-09 12:39:10'),(3,'review','0003_auto__del_user__add_reviewuser__chg_field_sourceannotation_user__chg_f','2014-08-09 12:39:11'),(4,'review','0004_auto__add_field_reviewuser_isStaff','2014-08-09 12:39:11'),(5,'review','0005_auto__add_course','2014-08-09 12:39:12'),(6,'review','0006_auto__add_field_course_course_code__add_field_course_course_name','2014-08-09 12:39:12'),(7,'review','0007_auto__add_field_assignment_course_code','2014-08-09 12:39:13'),(8,'review','0008_auto','2014-08-09 12:39:15'),(9,'review','0009_auto__chg_field_course_course_name','2014-08-09 12:39:15'),(10,'review','0010_auto','2014-08-09 12:39:16'),(11,'review','0011_auto__add_myuser','2014-08-14 05:33:54'),(12,'review','0012_auto__del_myuser__add_studentuser__add_createuserform','2014-08-15 13:19:09'),(13,'review','0013_auto__del_studentuser','2014-08-15 13:19:09'),(14,'review','0014_auto__del_createuserform','2014-08-15 13:19:09'),(15,'review','0015_auto__add_field_reviewuser_firstLogin','2014-08-15 13:54:20'),(16,'review','0016_auto__add_faketestmodel','2014-08-17 13:17:14'),(17,'review','0017_auto__del_faketestmodel','2014-08-17 13:17:14'),(18,'review','0011_auto__add_studentuser__add_createuserform','2014-08-20 08:55:49'),(19,'review','0018_auto','2014-08-20 08:55:50');
 /*!40000 ALTER TABLE `south_migrationhistory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -694,4 +741,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-08-17 23:18:59
+-- Dump completed on 2014-08-24 19:22:16
