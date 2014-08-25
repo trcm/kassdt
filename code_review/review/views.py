@@ -392,13 +392,15 @@ def create_annotation(request):
 
     I'm going to assume that the add annotation is a form, so i'll
     use the django form methods for getting data
+
+    At this point I'm just assuming this works but I can't test it
     """
     context = {}
     # I'm making the assumption that the form has fields for
     # the text, and both the starting and end ranges.
     form = annotationForm(request.POST)
     annotation = None
-    range = None
+    annotation_range = None
     if request.method == 'POST' and form.is_valid():
         try:
             # get the user id and the source id
@@ -415,8 +417,8 @@ def create_annotation(request):
             )
             annotation.save()
             print "annotation saved"
-            range = SourceAnnotationRange.objects.create(
-                range_annotation=annotation,
+            annotation_range = SourceAnnotationRange.objects.create(
+                annotation_range_annotation=annotation,
                 start=start,
                 end=end,
                 # I'm not sure what they used offsets for but i'll make
@@ -424,19 +426,21 @@ def create_annotation(request):
                 startOffset=start,
                 endoOffset=end
             )
-            range.save()
-            print "range saved"
+            annotation_range.save()
+            print "annotation_range saved"
         except Exception as e:
             print e.message
 
         # not sure what you'll want to return here because I don't know
         # the format of the template but i'll return the data as a json object
-        # with the annotation data and the range data combined
+        # with the annotation data and the annotation_range data combined
 
-        context = model_to_dict(annotation).items() + model_to_dict(range).item()
+        context = model_to_dict(annotation).items() + model_to_dict(annotation_range).items()
+
         print context
-        return HttpResponse(context)
-            
+        # return a json file with the combied annotation and the annotation_range models
+        return HttpResponse(json.dumps(context, cls=serializers.json.DjangoJSONEncoder))
+
 @login_required(login_url='/review/login_redirect/')
 def retrieve_submission(request, submission_uuid):
     """
