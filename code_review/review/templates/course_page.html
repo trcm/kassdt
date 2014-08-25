@@ -9,35 +9,36 @@
 {% endif%}
 
 {% if assignments %}
-<table>
-  <tr>
-    <th>Assignment Name:</th>
-    <th>Submission Open Date:</th>
-    <th>Due Date</th>
-    <th>View</th>
-  </tr>
-  {% for assignment in assignments %}
+<div id="courseAssignments">
+  <table>
+    <tr>
+      <th>Assignment Name:</th>
+      <th>Submission Open Date:</th>
+      <th>Due Date</th>
+      <th>View</th>
+    </tr>
+    {% for assignment in assignments %}
 
-  <tr>
-    <td>{{ assignment.name}}</td>
-    <td>{{ assignment.submission_open_date }}</td>
-    <td>{{ assignment.submission_close_date }}</td>
-    <td>
-       <form action="{% url 'assignment_page' course.course_code assignment.name %}">
-            <input type="submit" value="View Assignment">
+    <tr>
+      <td>{{ assignment.name}}</td>
+      <td>{{ assignment.submission_open_date }}</td>
+      <td>{{ assignment.submission_close_date }}</td>
+      <td>
+        <form action="{% url 'assignment_page' course.course_code assignment.name %}">
+          <input type="submit" value="View Assignment">
         </form>
-    </td>
-    
-  </tr>
-  {% endfor %}
+      </td>
 
-  {% else %}
-  <p><strong>No assignments</strong></p>
-  {% endif%}
+    </tr>
+    {% endfor %}
 
-{% if user.is_superuser %}
-<h2>Settings</h2>
-{% endif %}
+    {% else %}
+    <p><strong>No assignments</strong></p>
+    {% endif%}
+  </div>
+  {% if user.is_superuser %}
+  <h2>Settings</h2>
+  {% endif %}
 
 
-{% endblock %}
+  {% endblock %}
