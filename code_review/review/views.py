@@ -359,8 +359,9 @@ def submit_assignment(request, course_code, asmt):
             # form.save(commit=True)
             repo = request.POST['submission_repository']
             # Create AssignmentSubmission object
-            sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
-                                                submission_for=assignment)
+            sub = AssignmentSubmission.objects.create(by=U.reviewuser,
+                                                      submission_repository=repo,
+                                                      submission_for=assignment)
             sub.save()
 
             # Populate databse.
