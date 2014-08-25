@@ -12,3 +12,6 @@ def getUser(request):
     
 def getCourses(request):
     pass
+
+def generatePassword():
+    return ''.join(random.choice('abcdefghijklmnopqrstuvwxyz0123456789'))
