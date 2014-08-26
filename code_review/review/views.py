@@ -363,11 +363,13 @@ def submit_assignment(request, course_code, asmt):
             
             except GitCommandError as giterr:
                 print giterr.args
-                context['giterr'] = True
+                context['errMsg'] = "Something wrong with the repository URL."
                 template = 'assignment_submission.html'
             
         else:
             print form.errors
+            context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
+            template = 'assignment_submission.html'
 
     else: # not POST; show the submission page.
         form = AssignmentSubmissionForm()

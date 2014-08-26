@@ -21,8 +21,9 @@
     <b> Repository URL </b><br>
     {{ form.submission_repository }}
     <input type="submit" value="Submit Assignment">
-    {% if giterr %}
-        <h3>Something went wrong - is the repo URL correct? Include the https://<h3>
+    {% if errMsg %}
+        <h3> ERROR! </h3>
+        {{ errMsg }}
     {% endif %}
   </form>
 </div>
