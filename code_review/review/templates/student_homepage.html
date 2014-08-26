@@ -17,6 +17,11 @@
 		    <td>{{ asmt.1.name }}</td>
 		    <td>{{ asmt.1.submission_open_date }}</td>
 		    <td>{{ asmt.1.submission_close_date }}</td>
+                    <td>
+                        <form action="{% url 'assignment_page' asmt.0.course_code asmt.1.name %}">
+                            <input type="submit" value="Go to assignment page">
+                        </form>
+                    </td>
 		</tr>
 	    {% endfor %}
 	    </table>
