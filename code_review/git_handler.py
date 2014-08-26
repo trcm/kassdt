@@ -1,6 +1,9 @@
 """
 Helper functions to clone git repos.
 Currently only tested on public repos. 
+
+Install gitpython with pip install gitpython
+to make this work. 
 """
 
 from git import *

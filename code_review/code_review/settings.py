@@ -125,3 +125,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
 TEMPLATE_PATH = (os.path.join(BASE_DIR, 'templates/'), )
 TEMPLATE_DIRS = [TEMPLATE_PATH,
                  os.path.join(BASE_DIR, 'templates')]
+
+
+# South seems to be breaking tests
+SKIP_SOUTH_TESTS = True
+SOUTH_TESTS_MIGRATE = False
