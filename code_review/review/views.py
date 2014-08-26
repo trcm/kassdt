@@ -351,15 +351,21 @@ def submit_assignment(request, course_code, asmt):
             # form.save(commit=True)
             repo = request.POST['submission_repository']
             # Create AssignmentSubmission object
-            sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
-                                                submission_for=assignment)
-            sub.save()
+            try:
+                sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
+                                                    submission_for=assignment)
+                sub.save()
+                # Populate databse. 
+                relDir = os.path.join(courseCode, asmtName)
+                populate_db(sub, relDir)
+                # User will be shown confirmation.
+                template = 'submission_confirmation.html'
             
-            # Populate databse. 
-            relDir = os.path.join(courseCode, asmtName)
-            populate_db(sub, relDir)
-            # User will be shown confirmation.
-            template = 'submission_confirmation.html'
+            except GitCommandError as giterr:
+                print giterr.args
+                context['giterr'] = True
+                template = 'assignment_submission.html'
+            
         else:
             print form.errors
 
