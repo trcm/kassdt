@@ -1,31 +1,31 @@
 {% extends 'sidebar.html' %}
+<div id="assignmentView">
+  {% block assignments %}
 
-{% block assignments %}
+  <!-- This page can only be called if an assignment exists, obviously -->
+  <h1>{{ asmt.name }}</h1>
 
-<!-- This page can only be called if an assignment exists, obviously -->
-<h1>{{ asmt.name }}</h1>
+  {% if user.is_superuser %}
+  <!-- Add stuff to allow superuser to edit assignment -->
 
-{% if user.is_superuser %}
-<!-- Add stuff to allow superuser to edit assignment -->
+  {% endif%}
 
-{% endif%}
+  {% if user.is_superuser %}
+  <h2>Settings</h2>
+  {% endif %}
 
-{% if user.is_superuser %}
-<h2>Settings</h2>
-{% endif %}
+  <b>Submission Opens at: </b> {{ asmt.submission_open_date }} <br>
+  <b>Assignment due at: </b> {{ asmt.submission_close_date }} <br>
+  <b>Review opens at: </b> {{ asmt.review_open_date }} <br>
+  <b>Review closes at: </b> {{ asmt.review_close_date }} <br>
 
-<b>Submission Opens at: </b> {{ asmt.submission_open_date }} <br>
-<b>Assignment due at: </b> {{ asmt.submission_close_date }} <br>
-<b>Review opens at: </b> {{ asmt.review_open_date }} <br>
-<b>Review closes at: </b> {{ asmt.review_close_date }} <br>
-
-{% if canSubmit %}
-<form action="submit/">
+  {% if canSubmit %}
+  <form action="submit/">
     <input type="submit" value="Submit Assignment">
-</form>
-{% else %}
-Submissions are closed now <br>
-{% endif %}
+  </form>
+  {% else %}
+  Submissions are closed now <br>
+  {% endif %}
 
-
+</div>
 {% endblock %}
