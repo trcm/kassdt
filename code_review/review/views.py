@@ -390,7 +390,7 @@ def submit_assignment(request, course_code, asmt):
 
 
 @login_required(login_url='/review/login_redirect/')
-def create_annotation(request):
+def create_annotation(request, course_code, asmt):
     """
     Creates an annotation for the user.  Needs to get most of its
     information from the http request sent by the AJAX function.

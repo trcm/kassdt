@@ -54,14 +54,15 @@ urlpatterns = patterns('',
                        # Assignment submission
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
                            views.submit_assignment, name='submit_assignment'),
+                       
+                       # Annotation
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/annotation/create/$',
+                           views.create_annotation, name="create_annotation"),
 
                        # Assignment page
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
                            views.assignment_page, name='assignment_page'),
 
-                       # Annotation
-                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/annotation/create/$',
-                           views.create_annotation, name="create_annotation"),
 
                        url(r'annotation_test/', views.annotation_test,
                            name='annotation_test'),
