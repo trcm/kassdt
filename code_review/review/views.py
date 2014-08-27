@@ -390,11 +390,6 @@ def submit_assignment(request, course_code, asmt):
                 context['errMsg'] = "Unknown error occurred, contact sys admin."
                 template = 'assignment_submission.html'
             
-            # Populate databse.
-            relDir = os.path.join(courseCode, asmtName)
-            populate_db(sub, relDir)
-            # User will be shown confirmation.
-            template = 'submission_confirmation.html'
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
