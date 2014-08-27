@@ -388,7 +388,6 @@ def submit_assignment(request, course_code, asmt):
 
     return render(request, template, context)
 
-
 @login_required(login_url='/review/login_redirect/')
 def create_annotation(request, course_code, asmt):
     """
@@ -402,6 +401,7 @@ def create_annotation(request, course_code, asmt):
     At this point I'm just assuming this works but I can't test it
     """
     context = {}
+
     # I'm making the assumption that the form has fields for
     # the text, and both the starting and end ranges.
     form = annotationForm(request.POST)
@@ -506,6 +506,9 @@ def annotation_test(request):
 
 
 def review(request, submissionUuid):
+    """
+    
+    """
     uuid = submissionUuid.encode('ascii', 'ignore')
     context = {}
     print uuid
@@ -515,6 +518,9 @@ def review(request, submissionUuid):
         root_files = sub.root_folder.files
         files = root_files.all()
         context['files'] = files
+        root_folders = sub.root_folder.folders
+        folders = root_folders.all()
+        context['folders'] = folders
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
