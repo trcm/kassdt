@@ -38,7 +38,7 @@ class uploadFile(ModelForm):
 class annotationForm(forms.Form):
     start = forms.IntegerField()
     end = forms.IntegerField()
-    annotation_text = forms.TextArea()
+    annotation_text = forms.Textarea()
 
     
 class UserCreationForm(ModelForm):

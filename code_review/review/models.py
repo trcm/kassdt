@@ -178,7 +178,7 @@ class AssignmentSubmission(models.Model):
     submission_for = models.ForeignKey(Assignment, related_name="submissions")
     error_occurred = models.BooleanField(default=False)
     root_folder = models.OneToOneField(SourceFolder, blank=False, null=True, related_name="assignment")
-    test_results = models.OneToOneField(SubmissionTestResults, blank=False, null=True, related_name="assignment")
+    # test_results = models.OneToOneField(SubmissionTestResults, blank=False, null=True, related_name="assignment")
 
     def __unicode__(self):
         return "(%s)%s @ %s" % (self.submission_uuid, self.submission_for.name, self.submission_date)
@@ -195,7 +195,7 @@ class AssignmentSubmission(models.Model):
             })
 
 
-        ### BEGIN ANNOTATION STORAGE ###
+# BEGIN ANNOTATION STORAGE ###
 
 
 class SourceAnnotation(models.Model):

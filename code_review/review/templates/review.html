@@ -1,0 +1,25 @@
+{% extends 'sidebar.html' %}
+
+{% block assignments %}
+
+<div id="files">
+  <ul>
+    
+    {% for file in files %}
+    <li ><button id="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
+    {% endfor %}
+  </ul>
+  
+</div>
+
+<div id="code">
+
+  
+</div>
+
+<div id="annotation">
+
+  
+</div>
+
+{% endblock %}

@@ -4,6 +4,18 @@ $(document).ready( function() {
     $("#logout").click(function() {
 	console.log("logout");
     });
+    
+
+    $("#appTest").click(function() {
+	console.log("app");
+	var data = $(this).val();
+	var html = "<p> Test </p>";
+	$(this).parent().html(html);
+	var next = "<li><button href=\"#\" id=\"appTest\">Test</button></li>"; 
+	$("#testList").append(next);
+	$(this).attr("id", "saved");
+    });
+    
     // I couldn't find a real way to add classes to django forms
     // so I used jquery to add them based on the input id tag
     $("input[id$=date_0]").addClass("datepicker");

@@ -25,7 +25,7 @@ from review.models import *
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm
 
 from django.utils import timezone
 
@@ -294,7 +294,7 @@ def student_homepage(request):
     context['open_assignments'] = get_open_assignments(U)
     # For the course template which we inherit from
     context['courses'] = U.reviewuser.courses.all()
-    context['form'] = uploadFile()
+    context['form'] = annotationForm()
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
@@ -478,6 +478,9 @@ def grab_file(request):
 
 
 def upload(request):
+    """
+    Test view for uploading fiels
+    """
     print "upload"
     if request.method == "POST":
         form = uploadFile(request.POST, request.FILES)
@@ -488,6 +491,7 @@ def upload(request):
     else:
         return HttpResponse("Fail")
 
+# to be deleted #
 def annotation_test(request):
     print request.method
     data = None
@@ -499,3 +503,20 @@ def annotation_test(request):
         return HttpResponse(data)
 
     return HttpResponse("nope")
+
+
+def review(request, submissionUuid):
+    uuid = submissionUuid.encode('ascii', 'ignore')
+    context = {}
+    print uuid
+
+    try:
+        sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+        root_files = sub.root_folder.files
+        files = root_files.all()
+        context['files'] = files
+        return render(request, 'review.html', context)
+        
+    except AssignmentSubmission.DoesNotExist:
+        return Http404()
+    
