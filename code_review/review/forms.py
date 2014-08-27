@@ -33,7 +33,14 @@ class AssignmentForm(ModelForm):
 class uploadFile(ModelForm):
     class Meta:
         model = SourceFile
-        
+
+
+class annotationForm(forms.Form):
+    start = forms.IntegerField()
+    end = forms.IntegerField()
+    annotation_text = forms.TextArea()
+
+    
 class UserCreationForm(ModelForm):
     class Meta:
         model = User
