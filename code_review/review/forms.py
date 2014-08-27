@@ -30,6 +30,17 @@ class AssignmentForm(ModelForm):
             'review_close_date': SplitDateTimeWidget()
         }
 
+class uploadFile(ModelForm):
+    class Meta:
+        model = SourceFile
+
+
+class annotationForm(forms.Form):
+    start = forms.IntegerField()
+    end = forms.IntegerField()
+    annotation_text = forms.Textarea()
+
+    
 class UserCreationForm(ModelForm):
     class Meta:
         model = User
@@ -74,4 +85,3 @@ class createUserForm(User):
                     last_name=self.clean, password=self.clean,
                     )
             return new_user
-

@@ -11,16 +11,26 @@ from django.contrib.auth.forms import UserCreationForm
 # which will probably be all of them.  You can see below that the index method uses this
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+# used to make django objects into json
+from django.core import serializers
+from django.forms.models import model_to_dict
+import json
+
+from pygments import *
+from pygments.lexers import *
+from pygments.formatters import *
+
 from review.models import *
 
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm
 
 from django.utils import timezone
 
 from git_handler import *
+
 import os
 import os.path
 
@@ -47,8 +57,10 @@ def index(request):
 
     return render(request, 'sidebar.html', context)
 
+
 def loginUser(request):
     pass
+
 
 # simply logs the user out
 def logout(request):
@@ -268,21 +280,22 @@ def validateCourse(request):
                 print ValidationError.args
 
     context['form'] = form
-    return render(request, '/admin/courseCreate.html', context) 
+    return render(request, '/admin/courseCreate.html', context)
 
 @login_required(login_url='/review/login_redirect/')
 def student_homepage(request):
-    context = {} 
+    context = {}
     U = User.objects.get(id=request.user.id)
     context['user'] = U
     context['open_assignments'] = get_open_assignments(U)
     # For the course template which we inherit from
     context['courses'] = U.reviewuser.courses.all()
+    context['form'] = annotationForm()
     return render(request, 'student_homepage.html', context)
-    
+
 def get_open_assignments(user):
     '''
-    :user User 
+    :user User
 
     return List[(Course, Assignment)]
     '''
@@ -290,12 +303,12 @@ def get_open_assignments(user):
     openAsmts = []
     courses = user.reviewuser.courses.all()
     for course in courses:
-	# Get assignments in the course 
+	# Get assignments in the course
 	assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
-	for assignment in assignments: 
+	for assignment in assignments:
 	    if(can_submit(assignment)):
 		openAsmts.append((course, assignment))
-    
+
     return openAsmts
 
 @login_required(login_url='/review/login_redirect/')
@@ -305,26 +318,26 @@ def assignment_page(request, course_code, asmt):
     :asmt Assignment
     '''
     context = {}
-   
+
     U = User.objects.get(id=request.user.id)
     courseList = U.reviewuser.courses.all()
     courseCode = course_code.encode('ascii', 'ignore')
     course = Course.objects.get(course_code=courseCode)
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
-    
+
     context['user'] = U
     context['course'] = course
     context['asmt'] = assignment
     context['courses'] = courseList
     context['canSubmit'] = can_submit(assignment)
-    
+
     return render(request, 'assignment_page.html', context)
 
 def can_submit(asmt):
     '''
         :asmt Assignment
-        
+
         Return True if allowed to submit asmt now
         False otherwise
     '''
@@ -342,14 +355,14 @@ def submit_assignment(request, course_code, asmt):
            differently
     """
     # Duplicated code... not good.
-    context = {} 
+    context = {}
     U = User.objects.get(id=request.user.id)
     courseList = U.reviewuser.courses.all()
     courseCode = course_code.encode('ascii', 'ignore')
     course = Course.objects.get(course_code=courseCode)
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
-     
+
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST)
         if form.is_valid():
@@ -371,6 +384,11 @@ def submit_assignment(request, course_code, asmt):
                 context['errMsg'] = "Something wrong with the repository URL."
                 template = 'assignment_submission.html'
             
+            # Populate databse.
+            relDir = os.path.join(courseCode, asmtName)
+            populate_db(sub, relDir)
+            # User will be shown confirmation.
+            template = 'submission_confirmation.html'
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
@@ -379,13 +397,149 @@ def submit_assignment(request, course_code, asmt):
     else: # not POST; show the submission page.
         form = AssignmentSubmissionForm()
         template = 'assignment_submission.html'
-    
+
     context['form'] = form
     context['course'] = course
     context['asmt'] = assignment
     context['courses'] = courseList
-    
+
     return render(request, template, context)
 
-            
+@login_required(login_url='/review/login_redirect/')
+def create_annotation(request, course_code, asmt):
+    """
+    Creates an annotation for the user.  Needs to get most of its
+    information from the http request sent by the AJAX function.
+    Needs a post request to work.
+
+    I'm going to assume that the add annotation is a form, so i'll
+    use the django form methods for getting data
+
+    At this point I'm just assuming this works but I can't test it
+    """
+    context = {}
+
+    # I'm making the assumption that the form has fields for
+    # the text, and both the starting and end ranges.
+    form = annotationForm(request.POST)
+    annotation = None
+    annotation_range = None
+    if request.method == 'POST' and form.is_valid():
+        try:
+            # get the user id and the source id
+            U = User.objects.get(id=request.user.id)
+            S = Source.objects.get(id=request.source.id)
+            annotation_text = form.cleaned_data['annotation_text']
+            start = form.cleaned_data['start']
+            end = form.cleaned_data['end']
+            annotation = SourceAnnotation.objects.create(
+                user=U,
+                source=s,
+                text=annotation_text,
+                quote=annotation_text[:30]+(annotation_text[30:] and '..')
+            )
+            annotation.save()
+            print "annotation saved"
+            annotation_range = SourceAnnotationRange.objects.create(
+                annotation_range_annotation=annotation,
+                start=start,
+                end=end,
+                # I'm not sure what they used offsets for but i'll make
+                # them the sam as the start and the end
+                startOffset=start,
+                endoOffset=end
+            )
+            annotation_range.save()
+            print "annotation_range saved"
+        except Exception as e:
+            print e.message
+
+        # not sure what you'll want to return here because I don't know
+        # the format of the template but i'll return the data as a json object
+        # with the annotation data and the annotation_range data combined
+
+        context = model_to_dict(annotation).items() + model_to_dict(annotation_range).items()
+
+        print context
+        # return a json file with the combied annotation and the annotation_range models
+        return HttpResponse(json.dumps(context,
+                                       cls=serializers.json.DjangoJSONEncoder))
+
+@login_required(login_url='/review/login_redirect/')
+def retrieve_submission(request, submission_uuid):
+    """
+    Retrieves a submission from the database and returns both it
+    and all its annotations to a template
+    """
+    pass
+
+
+@login_required(login_url='/review/login_redirect/')
+def grab_file(request):
+    """ 
+    this just grabs the file, pygmetizes it and returns it in,
+    this gets sent to the ajax request
+    """
+    
+    print "Grab file"
+    if request.is_ajax():
+        try:
+            toGrab = request.GET['fileUuid']
+            path = SourceFile.objects.get(file_uuid=toGrab)
+            formatted = highlight(path.contents(), guess_lexer(path.contents),
+                                  HtmlFormatter(linenos="table"))
+            return HttpResponse(formatted)
+        except SourceFile.doesNotExist:
+            print "Source file doesn't not exist"
+            return Http404()
+
+
+def upload(request):
+    """
+    Test view for uploading fiels
+    """
+    print "upload"
+    if request.method == "POST":
+        form = uploadFile(request.POST, request.FILES)
+        if form.is_valid():
+            print "valid"
+            form.save()
+            return HttpResponse("Upload")
+    else:
+        return HttpResponse("Fail")
+
+# to be deleted #
+def annotation_test(request):
+    print request.method
+    data = None
+    if request.method == 'GET' and request.is_ajax():
+        print "ajax"
+        u = open('/home/tom/urls.py')
+        print "opent"
+        data = highlight(u.read(), PythonLexer(), HtmlFormatter(linenos=True))
+        return HttpResponse(data)
+
+    return HttpResponse("nope")
+
+
+def review(request, submissionUuid):
+    """
+    
+    """
+    uuid = submissionUuid.encode('ascii', 'ignore')
+    context = {}
+    print uuid
+
+    try:
+        sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+        root_files = sub.root_folder.files
+        files = root_files.all()
+        context['files'] = files
+        root_folders = sub.root_folder.folders
+        folders = root_folders.all()
+        context['folders'] = folders
+        return render(request, 'review.html', context)
+        
+    except AssignmentSubmission.DoesNotExist:
+        return Http404()
     

@@ -41,7 +41,7 @@ class ReviewUser(models.Model):
     isStaff = models.BooleanField(default=False)
     courses = models.ManyToManyField('Course')
     firstLogin = models.BooleanField(default=True)
-    
+
     def __unicode__(self):
         return "%s" % (self.djangoUser.username)
 
@@ -95,6 +95,7 @@ class SourceFile(models.Model):
     def content(self):
         try:
             self.file.open("rU")
+            print "Open"
             return self.file.read()
         finally:
             self.file.close()
@@ -172,13 +173,12 @@ class Assignment(models.Model):
 class AssignmentSubmission(models.Model):
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
-    # by = models.ForeignKey(User)
     by = models.ForeignKey(ReviewUser)
     submission_repository = models.TextField()
     submission_for = models.ForeignKey(Assignment, related_name="submissions")
     error_occurred = models.BooleanField(default=False)
     root_folder = models.OneToOneField(SourceFolder, blank=False, null=True, related_name="assignment")
-    test_results = models.OneToOneField(SubmissionTestResults, blank=False, null=True, related_name="assignment")
+    # test_results = models.OneToOneField(SubmissionTestResults, blank=False, null=True, related_name="assignment")
 
     def __unicode__(self):
         return "(%s)%s @ %s" % (self.submission_uuid, self.submission_for.name, self.submission_date)
@@ -195,16 +195,13 @@ class AssignmentSubmission(models.Model):
             })
 
 
-        ### BEGIN ANNOTATION STORAGE ###
+# BEGIN ANNOTATION STORAGE ###
 
 
 class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
-
-    # user = models.ForeignKey(User)
     user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
-
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
@@ -216,7 +213,6 @@ class SourceAnnotation(models.Model):
 
 class SourceAnnotationRange(models.Model):
     range_annotation = models.ForeignKey(SourceAnnotation, related_name="ranges")
-
     start = models.TextField()
     end = models.TextField()
     startOffset = models.PositiveIntegerField()
