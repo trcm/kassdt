@@ -16,12 +16,16 @@ from django.core import serializers
 from django.forms.models import model_to_dict
 import json
 
+from pygments import *
+from pygments.lexers import *
+from pygments.formatters import *
+
 from review.models import *
 
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile
 
 from django.utils import timezone
 
@@ -290,6 +294,7 @@ def student_homepage(request):
     context['open_assignments'] = get_open_assignments(U)
     # For the course template which we inherit from
     context['courses'] = U.reviewuser.courses.all()
+    context['form'] = uploadFile()
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
@@ -440,7 +445,8 @@ def create_annotation(request):
 
         print context
         # return a json file with the combied annotation and the annotation_range models
-        return HttpResponse(json.dumps(context, cls=serializers.json.DjangoJSONEncoder))
+        return HttpResponse(json.dumps(context,
+                                       cls=serializers.json.DjangoJSONEncoder))
 
 @login_required(login_url='/review/login_redirect/')
 def retrieve_submission(request, submission_uuid):
@@ -449,3 +455,47 @@ def retrieve_submission(request, submission_uuid):
     and all its annotations to a template
     """
     pass
+
+
+@login_required(login_url='/review/login_redirect/')
+def grab_file(request):
+    """ 
+    this just grabs the file, pygmetizes it and returns it in,
+    this gets sent to the ajax request
+    """
+    
+    print "Grab file"
+    if request.is_ajax():
+        try:
+            toGrab = request.GET['fileUuid']
+            path = SourceFile.objects.get(file_uuid=toGrab)
+            formatted = highlight(path.contents(), guess_lexer(path.contents),
+                                  HtmlFormatter(linenos="table"))
+            return HttpResponse(formatted)
+        except SourceFile.doesNotExist:
+            print "Source file doesn't not exist"
+            return Http404()
+
+
+def upload(request):
+    print "upload"
+    if request.method == "POST":
+        form = uploadFile(request.POST, request.FILES)
+        if form.is_valid():
+            print "valid"
+            form.save()
+            return HttpResponse("Upload")
+    else:
+        return HttpResponse("Fail")
+
+def annotation_test(request):
+    print request.method
+    data = None
+    if request.method == 'GET' and request.is_ajax():
+        print "ajax"
+        u = open('/home/tom/urls.py')
+        print "opent"
+        data = highlight(u.read(), PythonLexer(), HtmlFormatter(linenos=True))
+        return HttpResponse(data)
+
+    return HttpResponse("nope")

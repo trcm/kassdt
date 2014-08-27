@@ -62,5 +62,8 @@ urlpatterns = patterns('',
                        # Annotation
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/annotation/create/$',
                            views.create_annotation, name="create_annotation"),
-                       
+
+                       url(r'annotation_test/', views.annotation_test,
+                           name='annotation_test'),
+                       url(r'upload', views.upload, name='upload'),
 )

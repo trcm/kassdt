@@ -95,6 +95,7 @@ class SourceFile(models.Model):
     def content(self):
         try:
             self.file.open("rU")
+            print "Open"
             return self.file.read()
         finally:
             self.file.close()
