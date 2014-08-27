@@ -144,10 +144,6 @@ def userAdmin(request):
 
     return render(request, 'admin/userList.html', context)
 
-
-
-
-
 # Validates the data from the assignment creation form.
 # If the data is valid then it creates the assignment,
 # otherwise the user is kicked back to the form to fix the data
@@ -302,6 +298,7 @@ def get_open_assignments(user):
     
     return openAsmts
 
+@login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
     '''
     :course_code Course.course_code
@@ -334,8 +331,16 @@ def can_submit(asmt):
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
+@login_required(login_url='/review/login_redirect/')
 def submit_assignment(request, course_code, asmt):
+    """
+    :request the HTTP request object
+    :course_code String course code 
+    :asmt Assignment the assignment for which we want to submit
     
+    TODO - handle multiple submission and single-submission assignments
+           differently
+    """
     # Duplicated code... not good.
     context = {} 
     U = User.objects.get(id=request.user.id)
