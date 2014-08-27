@@ -70,4 +70,5 @@ urlpatterns = patterns('',
 
                        url(r'reviews/(?P<submissionUuid>[-\w]+)/',
                            views.review, name="reviews"),
+
 )
