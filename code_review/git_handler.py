@@ -95,7 +95,8 @@ def traverse_tree(tree, thisFolder, path):
     print(path)
 
     for blob in blobs:
-	add_source_file(blob.name, thisFolder, path)
+        filepath = os.path.join(path, blob.name)
+	add_source_file(blob.name, thisFolder, filepath)
     
     # Get folders directly underneath this folder.
     folders = tree.trees
