@@ -79,7 +79,7 @@ class SourceFile(models.Model):
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
     file = models.FileField(upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
-
+    # file_html = models.TextField(null=False, blank=False)
     def __unicode__(self):
         return "(%s)%s" % (self.file_uuid, self.name)
 

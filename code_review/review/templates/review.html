@@ -4,14 +4,20 @@
 
 <div id="files">
   <ul>
-    <h4>Folders</h4>
-    {% for folder in folders %}
-    <li ><button class="reviewFolder" data-folderUuid="{{ folder.folder_uuid }}">{{ folder.name }}</li>
-    {% endfor %}
     
     <h4>Files</h4>
+<p>Root</p>
     {% for file in files %}
+    
+    {% if file.folder_uuid %}
+    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
+    {% endif%}
+
+    
+    {% if file.file_uuid %}
     <li ><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
+    {% endif%}
+
     {% endfor %}
   </ul>
   
@@ -25,8 +31,11 @@
 </div>
 
 <div id="annotation">
-
-  
+  <ul id="annotations">
+    {% for annotation in annotations %}
+    <li>blach</li>
+    {% endfor %}
+  </ul>
 </div>
 
 {% endblock %}

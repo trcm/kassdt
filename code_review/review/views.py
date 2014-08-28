@@ -479,14 +479,27 @@ def grabFile(request):
     if request.is_ajax():
         try:
             toGrab = request.GET['uuid']
-            print toGrab
             path = SourceFile.objects.get(file_uuid=toGrab)
-            print path
             # formatted = path.content
-            print path.content
             formatted = highlight(path.content, guess_lexer(path.content),
                                   HtmlFormatter(linenos="table"))
-            return HttpResponse(formatted)
+
+            # get all annotations for the current file
+            annotations = SourceAnnotation.objects.filter(source=path)
+            annotationRanges = []
+            aDict = [] 
+            for a in annotations:
+                annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
+                aDict.append(model_to_dict(a))
+
+            # create the array to return
+            ret = []
+            ret.append(formatted)
+            # zip up the two annotation lists so they can be called one after each other
+            ret.append(zip(aDict,annotationRanges))
+
+            # send the formatted file and the current annotations to the ajax call
+            return HttpResponse(json.dumps(ret))
         except SourceFile.doesNotExist:
             print "Source file doesn't not exist"
             return Http404()
@@ -528,10 +541,21 @@ def review(request, submissionUuid):
     print uuid
 
     try:
+        folders = []
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+        for f in sub.root_folder.files.all():
+            folders.append(f)
+        for f in sub.root_folder.folders.all():
+            folders.append(f)
+            for s in f.files.all():
+                folders.append(s)
         root_files = sub.root_folder.files
+
+        for f in folders:
+            print f
+
         files = root_files.all()
-        context['files'] = files
+        context['files'] = folders
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
