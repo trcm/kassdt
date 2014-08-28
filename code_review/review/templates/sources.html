@@ -1,0 +1,33 @@
+{% extends 'course_page.html' %}
+
+{% block sources %}
+
+<h1>Sources</h1>
+
+{% if folder %}
+<ul>
+  {% for files in folder %}
+  	<table>
+  		<tr>
+  			<td>Folder: </td>
+  			<td>File ID: </td>
+  			<td>Name: </td>
+  			<td>File Path: </td>
+  		</tr>
+  		
+  		<tr>
+  			<td>{{ files.folder }}</td>
+  			<td>{{ files.file_uuid }}</td>
+  			<td>{{ files.name }}</td>
+  			<td>{{ files.file }}</td>
+  		</tr>
+  	</table>
+  {% endfor %}
+</ul>
+
+{% else %}
+<p><strong>No Source Folders</strong></p>
+{% endif%}
+
+
+{% endblock %}
