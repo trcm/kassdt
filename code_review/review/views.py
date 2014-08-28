@@ -547,12 +547,8 @@ def get_list(root_folder, theList):
     
     :root_folder SourceFolder
     """
-    if root_folder.parent == None:
-        L = theList
-    else:
-        L = []
     
-    L.append(root_folder)
+    theList.append(root_folder)
     
     # Files directly under root_folder
     files = root_folder.files.all()
@@ -560,15 +556,13 @@ def get_list(root_folder, theList):
     # Folders directly under root_folder
     folders = root_folder.folders.all()
     for folder in folders:
-        L.append(folder)
+        theList.append(folder)
     
     for file in files:
-        L.append(file)
-
-    theList.append(L)
+        theList.append(file)
 
     # Now get everything underneath the folders in root_folder
     for folder in folders:
-        get_list(folder, theList)
+        theList.append(get_list(folder, []))
 
     return theList
