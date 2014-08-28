@@ -556,8 +556,38 @@ def review(request, submissionUuid):
 
         files = root_files.all()
         context['files'] = folders
+        # context['files'] = files
+        # context['fileList'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
         return Http404()
+
+def get_list(root_folder, theList):
+    """
+    Gets all the folders and files underneath root_folder
+    as a list of lists (of lists etc.) 
+    Format like this: 
+    [root_folder, Folder1, Folder2, [Folder1, sub-folder-of-folder1, file1..], [Folder2, ...]]
     
+    :root_folder SourceFolder
+    """
+    
+    theList.append(root_folder)
+    
+    # Files directly under root_folder
+    files = root_folder.files.all()
+    
+    # Folders directly under root_folder
+    folders = root_folder.folders.all()
+    for folder in folders:
+        theList.append(folder)
+    
+    for file in files:
+        theList.append(file)
+
+    # Now get everything underneath the folders in root_folder
+    for folder in folders:
+        theList.append(get_list(folder, []))
+
+    return theList
