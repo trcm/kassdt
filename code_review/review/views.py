@@ -476,10 +476,23 @@ def grabFile(request):
     this just grabs the file, pygmetizes it and returns it in,
     this gets sent to the ajax request
     """
+    print request.session['_auth_user_id']
+    # get current user
+    user = User.objects.get(id=request.session['_auth_user_id'])
+
     if request.is_ajax():
         try:
             toGrab = request.GET['uuid']
             path = SourceFile.objects.get(file_uuid=toGrab)
+            # get root folder
+
+            iter = path.folder
+            while iter.parent is not None:
+                iter = iter.parent
+            print iter
+            # get owner id
+            owner = AssignmentSubmission.objects.get(root_folder=iter).by
+            print owner
             # formatted = path.content
             formatted = highlight(path.content, guess_lexer(path.content),
                                   HtmlFormatter(linenos="table"))
@@ -488,6 +501,8 @@ def grabFile(request):
             annotations = SourceAnnotation.objects.filter(source=path)
             annotationRanges = []
             aDict = [] 
+
+            # if user is the owner of the files or super user get all annotations
             for a in annotations:
                 annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
                 aDict.append(model_to_dict(a))
@@ -557,7 +572,7 @@ def review(request, submissionUuid):
         files = root_files.all()
         context['files'] = folders
         # context['files'] = files
-        # context['fileList'] = get_list(sub.root_folder, [])
+        # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
