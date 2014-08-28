@@ -537,15 +537,6 @@ def review(request, submissionUuid):
         root_files = sub.root_folder.files
         files = root_files.all()
         context['files'] = files
-        # root_folders = sub.root_folder.folders
-        # folders = root_folders.all()
-        # context['folders'] = folders
-        # TODO Need to detect button click to figure out which file was requested
-        # For now, as a test, just display the file in root folder. 
-        # selectedFile = files[0].file
-        # selectedFile.open()
-        # context['selectedFile'] = selectedFile
-        # context['fileContent'] = selectedFile.read()
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
