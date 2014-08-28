@@ -522,7 +522,6 @@ def annotation_test(request):
 
     return HttpResponse("nope")
 
-
 def review(request, submissionUuid):
     """
     
@@ -539,6 +538,12 @@ def review(request, submissionUuid):
         root_folders = sub.root_folder.folders
         folders = root_folders.all()
         context['folders'] = folders
+        # TODO Need to detect button click to figure out which file was requested
+        # For now, as a test, just display the file in root folder. 
+        selectedFile = files[0].file
+        selectedFile.open()
+        context['selectedFile'] = selectedFile
+        context['fileContent'] = selectedFile.read()
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:
