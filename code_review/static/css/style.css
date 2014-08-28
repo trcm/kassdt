@@ -8,3 +8,6 @@
 #files > ul li {
   list-style: none;
 }
+#annotationForm {
+ visibility: hidden; 
+}

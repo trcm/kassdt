@@ -30,6 +30,7 @@ class AssignmentForm(ModelForm):
             'review_close_date': SplitDateTimeWidget()
         }
 
+
 class uploadFile(ModelForm):
     class Meta:
         model = SourceFile
@@ -38,8 +39,7 @@ class uploadFile(ModelForm):
 class annotationForm(forms.Form):
     start = forms.IntegerField()
     end = forms.IntegerField()
-    annotation_text = forms.Textarea()
-
+    annotation_text = forms.CharField(widget=forms.Textarea)
     
 class UserCreationForm(ModelForm):
     class Meta:
@@ -55,13 +55,16 @@ class UserCreationForm(ModelForm):
             'password': PasswordInput(),
             'is_staff': forms.CheckboxInput()
         }
-#Testing creating own form for user addition
+
+
 class createUserForm(User):
-    username = forms.CharField(max_length = 20, min_length = 6)
+
+    #Testing creating own form for user addition
+    username = forms.CharField(max_length=20, min_length=6)
     first_name = forms.CharField()
     last_name = forms.CharField()
-    password1 = forms.CharField(max_length = 100, widget=forms.PasswordInput())
-    password2 = forms.CharField(max_length = 30, widget=forms.PasswordInput())
+    password1 = forms.CharField(max_length=100, widget=forms.PasswordInput())
+    password2 = forms.CharField(max_length=30, widget=forms.PasswordInput())
     email = forms.EmailField(required=False)
 
     def clean_username(self): # check if username dos not exist before

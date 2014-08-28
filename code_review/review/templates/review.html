@@ -4,38 +4,39 @@
 
 <div id="files">
   <ul>
-    
+
     <h4>Files</h4>
-<p>Root</p>
+    <p>Root</p>
     {% for file in files %}
-    
+
     {% if file.folder_uuid %}
     <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
-    {% endif%}
+      {% endif%}
 
-    
-    {% if file.file_uuid %}
-    <li ><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
-    {% endif%}
 
-    {% endfor %}
+      {% if file.file_uuid %}
+      <li ><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
+	{% endif%}
+
+	{% endfor %}
   </ul>
-  
+
 </div>
 
 <h4 id="fileName"> Currently displaying </h4>
 <div id="code">
-<!-- START Temporary test stuff -->
+  <!-- START Temporary test stuff -->
 
-<!-- END Temporary test stuff --> 
+  <!-- END Temporary test stuff -->
 </div>
 
 <div id="annotation">
   <ul id="annotations">
-    {% for annotation in annotations %}
-    <li>blach</li>
-    {% endfor %}
   </ul>
+  <form id="annotationForm">
+    {{ form.as_ul }}
+    <button>Submit</button>
+  </form>
 </div>
 
 {% endblock %}

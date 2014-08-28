@@ -485,44 +485,35 @@ def grabFile(request):
             toGrab = request.GET['uuid']
             path = SourceFile.objects.get(file_uuid=toGrab)
             # get root folder
-
             iter = path.folder
             while iter.parent is not None:
                 iter = iter.parent
-            print iter
             # get owner id
             owner = AssignmentSubmission.objects.get(root_folder=iter).by
-            print owner
             # formatted = path.content
             formatted = highlight(path.content, guess_lexer(path.content),
                                   HtmlFormatter(linenos="table"))
 
             # get all annotations for the current file
-            print currentUser, owner
+            # if user is the owner of the files or super user get all annotations
             if currentUser.is_staff or currentUser == owner:
                 annotations = SourceAnnotation.objects.filter(source=path)
             else:
-                annotations = SourceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
+                annotations = Sou
+                rceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
             
             annotationRanges = []
             aDict = [] 
-
-            # if user is the owner of the files or super user get all annotations
 
             for a in annotations:
                 annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
                 aDict.append(model_to_dict(a))
 
-            # for a in annotations:
-            #     annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
-            #     aDict.append(model_to_dict(a))
-
             # create the array to return
             ret = []
             ret.append(formatted)
             # zip up the two annotation lists so they can be called one after each other
-            ret.append(zip(aDict,annotationRanges))
-
+            ret.append(zip(aDict, annotationRanges))
             # send the formatted file and the current annotations to the ajax call
             return HttpResponse(json.dumps(ret))
         except SourceFile.doesNotExist:
@@ -532,7 +523,7 @@ def grabFile(request):
 
 def upload(request):
     """
-    Test view for uploading fiels
+    Test view for uploading files
     """
     print "upload"
     if request.method == "POST":
@@ -545,6 +536,8 @@ def upload(request):
         return HttpResponse("Fail")
 
 # to be deleted #
+
+
 def annotation_test(request):
     print request.method
     data = None
@@ -556,6 +549,7 @@ def annotation_test(request):
         return HttpResponse(data)
 
     return HttpResponse("nope")
+
 
 def review(request, submissionUuid):
     """
@@ -574,12 +568,14 @@ def review(request, submissionUuid):
             folders.append(f)
             for s in f.files.all():
                 folders.append(s)
-        root_files = sub.root_folder.files
+        # root_files = sub.root_folder.files
 
         for f in folders:
             print f
 
-        files = root_files.all()
+        form = annotationForm()
+        context['form'] = form
+        # files = root_files.all()
         context['files'] = folders
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
