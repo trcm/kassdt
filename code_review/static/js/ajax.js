@@ -1,26 +1,30 @@
+// This will hold all the ajax calls we'll need to make
+
 $(document).ready(function() {
     console.log("Goliath standing by");
     console.log("Red 5 standing by");
 
-    $("#reviewFile").click(function() {
+    $(".reviewFile").click(function() {
 	console.log("Red File standing by");
-	var uuid = $(this).attr("fileUuid");
-	var route = "/review/annotation_test";
+	var uuid = $(this).attr("data-fileuuid");
+	var dict = {"uuid" :uuid };
+	var route = "/review/file";
 	$.ajax({
 	    url: route,
-	    data: uuid
+	    data: dict
 	}).done(function(data) {
 	    $("#code").html(data);
-	}).always(function(data) {
+	    console.log("Completed");
+	}).fail(function(data) {
+	    console.log("failed");
 	    console.log(data);
-	    console.log("ajax Complete");
+	}).always(function(data) {
+	    console.log($(this));
 	});
-	    
     });
     
     $("#createAnnotation").click(function() {
 	console.log("Ajax standing by");
-
 	$.ajax({
 	    url: '/review/annotation_test/',
 	    data: '1'

@@ -1,3 +1,6 @@
+// This is going to hole all the non-ajax javascript stuff.
+// Thought it would be easier to seperate it all
+
 $(document).ready( function() {
 
     // jquery test code

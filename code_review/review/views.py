@@ -476,18 +476,20 @@ def retrieve_submission(request, submission_uuid):
 
 
 @login_required(login_url='/review/login_redirect/')
-def grab_file(request):
+def grabFile(request):
     """ 
     this just grabs the file, pygmetizes it and returns it in,
     this gets sent to the ajax request
     """
-    
-    print "Grab file"
     if request.is_ajax():
         try:
-            toGrab = request.GET['fileUuid']
+            toGrab = request.GET['uuid']
+            print toGrab
             path = SourceFile.objects.get(file_uuid=toGrab)
-            formatted = highlight(path.contents(), guess_lexer(path.contents),
+            print path
+            # formatted = path.content
+            print path.content
+            formatted = highlight(path.content, guess_lexer(path.content),
                                   HtmlFormatter(linenos="table"))
             return HttpResponse(formatted)
         except SourceFile.doesNotExist:
@@ -535,15 +537,15 @@ def review(request, submissionUuid):
         root_files = sub.root_folder.files
         files = root_files.all()
         context['files'] = files
-        root_folders = sub.root_folder.folders
-        folders = root_folders.all()
-        context['folders'] = folders
+        # root_folders = sub.root_folder.folders
+        # folders = root_folders.all()
+        # context['folders'] = folders
         # TODO Need to detect button click to figure out which file was requested
         # For now, as a test, just display the file in root folder. 
-        selectedFile = files[0].file
-        selectedFile.open()
-        context['selectedFile'] = selectedFile
-        context['fileContent'] = selectedFile.read()
+        # selectedFile = files[0].file
+        # selectedFile.open()
+        # context['selectedFile'] = selectedFile
+        # context['fileContent'] = selectedFile.read()
         return render(request, 'review.html', context)
         
     except AssignmentSubmission.DoesNotExist:

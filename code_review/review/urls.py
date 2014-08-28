@@ -67,8 +67,19 @@ urlpatterns = patterns('',
                        url(r'annotation_test/', views.annotation_test,
                            name='annotation_test'),
                        url(r'upload', views.upload, name='upload'),
-
+                       url(r'file/', views.grabFile, name="grab_file"),
                        url(r'reviews/(?P<submissionUuid>[-\w]+)/',
                            views.review, name="reviews"),
 
 )
+
+
+
+
+
+
+
+
+
+
+

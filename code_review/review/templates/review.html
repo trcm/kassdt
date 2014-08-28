@@ -6,21 +6,21 @@
   <ul>
     <h4>Folders</h4>
     {% for folder in folders %}
-    <li ><button id="reviewFolder" data-folderUuid="{{ folder.folder_uuid }}">{{ folder.name }}</li>
+    <li ><button class="reviewFolder" data-folderUuid="{{ folder.folder_uuid }}">{{ folder.name }}</li>
     {% endfor %}
     
     <h4>Files</h4>
     {% for file in files %}
-    <li ><button id="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
+    <li ><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
     {% endfor %}
   </ul>
   
 </div>
 
+<h4 id="fileName"> Currently displaying </h4>
 <div id="code">
 <!-- START Temporary test stuff -->
-<h4> Currently displaying {{ selectedFile.name }} </h4>
-{{ fileContent }}
+
 <!-- END Temporary test stuff --> 
 </div>
 
