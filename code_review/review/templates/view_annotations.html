@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../../favicon.ico">
+
+		<title>Kassdt</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- google pretiffy -->
+		<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=sons-of-obsidian"></script>
+
+		<!-- custom javascript -->
+		<script type="text/javascript">
+			function op(numb){
+				if(numb == 'one'){
+					$('#collapseOne').collapse('toggle');
+				} else if(numb == 'two'){
+					$('#collapseTwo').collapse('toggle');
+				}
+			}
+
+			$("#form").submit(function(event) {
+        		var $form = $(this),
+        		$inputs = $form.find("input, select, button, textarea"),
+        		serializedData = $form.serialize();
+
+        		$.ajax({
+            		url: "/donate/",
+            		type: "post",
+            		data: serializeData,
+            		success: function(response) {
+                		alert(response)
+            		}
+        		})
+        		
+        		event.preventDefault();
+    		});
+    		
+		</script>
+
+		<!-- Custom styles for this template -->
+		<link href="starter-template.css" rel="stylesheet">
+		<style>
+			body {
+				padding-top: 50px;
+			}
+			.starter-template {
+				padding: 40px 15px;
+			}
+			.positive{
+				color: green;
+			}
+			.neutral{
+				color: gray;
+			}
+			.negative{
+				color: red;
+			}
+			.glyphicon-info-sign{
+				color: white;
+			}
+			.annotated{
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Peer Code Review</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#review">Review Code</a></li>
+						<li><a href="#feedback">Feedback</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+
+		<div class="container">
+
+			<div class="starter-template">
+				<h1>Sample Code Review</h1>
+
+		<div class="row">
+				<div class="col-md-6">
+					<pre class="prettyprint linenums">
+class Voila { 
+public:
+// Voila</span>
+<span class="glyphicon glyphicon-info-sign"></span> <span class="annotated" onclick="op('two')">static const string VOILA = "Voila";</span>
+// will not interfere with embedded tags.
+}
+
+class Eureka {
+private:
+int number = 1334;
+<span class="glyphicon glyphicon-info-sign"></span> <span class="annotated" onclick="op('one')">	for(int i=0; i<6; i++){
+		System.out.print(i);
+	}</span>
+}</pre>
+				</div>
+				
+					<div class="col-md-6">
+						<pre class="prettyprint linenums">
+This code is good
+						</pre>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		</div><!-- /.container -->
+
+
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+	</body>
+</html>
