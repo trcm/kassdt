@@ -478,8 +478,8 @@ def grabFile(request):
     """
     print request.session['_auth_user_id']
     # get current user
-    user = User.objects.get(id=request.session['_auth_user_id'])
-
+    currentUser = User.objects.get(id=request.session['_auth_user_id'])
+    print currentUser
     if request.is_ajax():
         try:
             toGrab = request.GET['uuid']
@@ -498,14 +498,24 @@ def grabFile(request):
                                   HtmlFormatter(linenos="table"))
 
             # get all annotations for the current file
-            annotations = SourceAnnotation.objects.filter(source=path)
+            print currentUser, owner
+            if currentUser.is_staff or currentUser == owner:
+                annotations = SourceAnnotation.objects.filter(source=path)
+            else:
+                annotations = SourceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
+            
             annotationRanges = []
             aDict = [] 
 
             # if user is the owner of the files or super user get all annotations
+
             for a in annotations:
                 annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
                 aDict.append(model_to_dict(a))
+
+            # for a in annotations:
+            #     annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
+            #     aDict.append(model_to_dict(a))
 
             # create the array to return
             ret = []
