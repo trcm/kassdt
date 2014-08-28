@@ -385,11 +385,6 @@ def submit_assignment(request, course_code, asmt):
                 context['errMsg'] = "Something wrong with the repository URL."
                 template = 'assignment_submission.html'
 
-            except Exception as e:
-                sub.delete()
-                context['errMsg'] = "Unknown error occurred, contact sys admin."
-                template = 'assignment_submission.html'
-            
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
