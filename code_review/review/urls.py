@@ -65,10 +65,13 @@ urlpatterns = patterns('',
                        url(r'annotation_test/', views.annotation_test,
                            name='annotation_test'),
                        url(r'upload', views.upload, name='upload'),
-                       url(r'annotation/create/$',
+                       url(r'annotation/create/(?P<submission_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.createAnnotation, name="create_annotation"),
-                       url(r'file/', views.grabFile, name="grab_file"),
-                       url(r'reviews/(?P<submissionUuid>[-\w]+)/',
+                       # url(r'file/', views.grabFile, name="grab_file"),
+
+                       url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.reviewFile, name="review_file"),
+                       url(r'reviews/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
                            views.review, name="reviews"),
 
 )

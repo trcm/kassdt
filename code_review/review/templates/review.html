@@ -4,7 +4,6 @@
 
 <div id="files">
   <ul>
-
     <h4>Files</h4>
     <p>Root</p>
     {% for file in files %}
@@ -13,9 +12,10 @@
     <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
       {% endif%}
 
-
       {% if file.file_uuid %}
-      <li ><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}">{{ file.name }}</li>
+      <li><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}" href="/review/reviews/{{ sub }}/{{ file.file_uuid }}/">{{ file.name }}</button></li>
+      <li><a href="/review/file/{{ sub }}/{{ file.file_uuid }}"/>{{ file.name }}</a></li>
+	
 	{% endif%}
 
 	{% endfor %}
@@ -25,6 +25,10 @@
 
 <h4 id="fileName"> Currently displaying </h4>
 <div id="code">
+  {% if code %}
+  {{ code | safe}}
+  {% endif%}
+
   <!-- START Temporary test stuff -->
 
   <!-- END Temporary test stuff -->
@@ -32,10 +36,18 @@
 
 <div id="annotation">
   <ul id="annotations">
+    
+    {% for annote, range in annotations %}
+    <p>
+      Lines: {{ range.start }} - {{ range.end }}
+    </p>
+    <p>{{ annote.text }}</p>
+    {% endfor %}
   </ul>
-  <form id="annotationForm">
+  <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+    {{ rangeform.as_ul }}
     {{ form.as_ul }}
-    <button>Submit</button>
+    <input type="Submit" name="submit" value="Submit" />
   </form>
 </div>
 

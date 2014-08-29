@@ -25,7 +25,7 @@ from review.models import *
 from helpers import staffTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
 
 from django.utils import timezone
 
@@ -325,7 +325,7 @@ def assignment_page(request, course_code, asmt):
     course = Course.objects.get(course_code=courseCode)
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
-
+    
     context['user'] = U
     context['course'] = course
     context['asmt'] = assignment
@@ -402,7 +402,7 @@ def submit_assignment(request, course_code, asmt):
     return render(request, template, context)
 
 @login_required(login_url='/review/login_redirect/')
-def createAnnotation(request):
+def createAnnotation(request, submission_uuid, file_uuid):
     """
     Creates an annotation for the user.  Needs to get most of its
     information from the http request sent by the AJAX function.
@@ -416,12 +416,19 @@ def createAnnotation(request):
     context = {}
 
     try:
+        print request
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
-        text = request.GET['text']
-        start = request.GET['start']
-        end = request.GET['end']
-        file = SourceFile.objects.get(file_uuid=request.GET['uuid'])
-        print currentUser, text, start, end, file
+
+        form = annotationForm(request.GET)
+        rangeForm = annotationRangeForm(request.GET)
+
+        text = form['text'].value()
+        start = rangeForm['start'].value()
+        end = rangeForm['end'].value()
+        form.is_valid()
+        rangeForm.is_valid()
+
+        file = SourceFile.objects.get(file_uuid=file_uuid)
         newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
                                                         source=file,
                                                         text=text,
@@ -435,9 +442,9 @@ def createAnnotation(request):
 
         newRange.save()
         print newAnnotation, newRange
-        ret = [newAnnotation.text, newRange.start, newRange.end]
         
-        return HttpResponse(json.dumps(ret))
+        # return HttpResponse(json.dumps(ret))
+        return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
     except User.DoesNotExist or SourceFile.DoesNotExist:
         return Http404()
     
@@ -532,17 +539,22 @@ def annotation_test(request):
 
     return HttpResponse("nope")
 
+def reviewFile(request, submissionUuid, file_uuid):
 
-def review(request, submissionUuid):
-    """
-    
-    """
     uuid = submissionUuid.encode('ascii', 'ignore')
+    file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
-    print uuid
+    currentUser = User.objects.get(id=request.session['_auth_user_id'])
+    print currentUser
 
     try:
+        file = SourceFile.objects.get(file_uuid=file_uuid)
+        print 'get file'
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="table"))
+        print code
         folders = []
+
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
         for f in sub.root_folder.files.all():
             folders.append(f)
@@ -552,13 +564,77 @@ def review(request, submissionUuid):
                 folders.append(s)
         # root_files = sub.root_folder.files
 
-        for f in folders:
-            print f
+        # get root folder
+        iter = file.folder
+        while iter.parent is not None:
+            iter = iter.parent
+        # get owner id
+        owner = AssignmentSubmission.objects.get(root_folder=iter).by
 
+        # get all annotations for the current file
+        # if user is the owner of the files or super user get all annotations
+        if currentUser.is_staff or currentUser == owner:
+            annotations = SourceAnnotation.objects.filter(source=file)
+        else:
+            annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
+
+        annotationRanges = []
+        aDict = [] 
+
+        for a in annotations:
+            annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
+            aDict.append(a)
+
+        print annotationRanges
         form = annotationForm()
+        rangeForm = annotationRangeForm()
+        context['annotations'] = zip(aDict, annotationRanges)
+        context['sub'] = submissionUuid
         context['form'] = form
+        context['rangeform'] = rangeForm
+        # files = root_files.all()
+        context['uuid'] = file_uuid
+        context['files'] = folders
+        context['code'] = code
+        # context['files'] = files
+        # context['files'] = get_list(sub.root_folder, [])
+        return render(request, 'review.html', context)
+        
+    except AssignmentSubmission.DoesNotExist:
+        return Http404()
+
+def review(request, submissionUuid, **kwargs):
+    """
+    """
+    uuid = submissionUuid.encode('ascii', 'ignore')
+    context = {}
+
+    print "normal review"
+    try:
+        file= None
+        code = None
+        if 'uuid' in kwargs.keys():
+            print "get file"
+
+            file = SourceFile.objects.get(file_uuid=uuid)
+            code = highlight(file.content, guess_lexer(file.content),
+                             HtmlFormatter(linoes="table"))
+
+        folders = []
+
+        sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+        for f in sub.root_folder.files.all():
+            folders.append(f)
+        for f in sub.root_folder.folders.all():
+            folders.append(f)
+            for s in f.files.all():
+                folders.append(s)
+        # root_files = sub.root_folder.files
+
+        context['sub'] = submissionUuid
         # files = root_files.all()
         context['files'] = folders
+        context['code'] = code
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)

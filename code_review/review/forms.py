@@ -1,4 +1,4 @@
-from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput
+from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput, IntegerField
 from django.contrib.auth.forms import SetPasswordForm
 from django.forms import *
 from django.forms.extras.widgets import SelectDateWidget
@@ -36,10 +36,25 @@ class uploadFile(ModelForm):
         model = SourceFile
 
 
-class annotationForm(forms.Form):
-    start = forms.IntegerField()
-    end = forms.IntegerField()
-    annotation_text = forms.CharField(widget=forms.Textarea)
+class annotationRangeForm(ModelForm):
+    class Meta:
+        model = SourceAnnotationRange
+        fields = ['start', 'end']
+        widgets = {
+            'start': NumberInput(),
+            'end': NumberInput()
+        }
+        
+class annotationForm(ModelForm):
+    class Meta:
+        model = SourceAnnotation
+        fields = ['text']
+    # start = forms.IntegerField()
+    # end = forms.IntegerField()
+    # annotation_text = forms.CharField(widget=forms.Textarea)
+
+    # def clean(self):
+    #     return self
     
 class UserCreationForm(ModelForm):
     class Meta:
@@ -55,7 +70,7 @@ class UserCreationForm(ModelForm):
             'password': PasswordInput(),
             'is_staff': forms.CheckboxInput()
         }
-
+        
 
 class createUserForm(User):
 
