@@ -402,7 +402,7 @@ def submit_assignment(request, course_code, asmt):
     return render(request, template, context)
 
 @login_required(login_url='/review/login_redirect/')
-def create_annotation(request, course_code, asmt):
+def createAnnotation(request):
     """
     Creates an annotation for the user.  Needs to get most of its
     information from the http request sent by the AJAX function.
@@ -415,51 +415,33 @@ def create_annotation(request, course_code, asmt):
     """
     context = {}
 
-    # I'm making the assumption that the form has fields for
-    # the text, and both the starting and end ranges.
-    form = annotationForm(request.POST)
-    annotation = None
-    annotation_range = None
-    if request.method == 'POST' and form.is_valid():
-        try:
-            # get the user id and the source id
-            U = User.objects.get(id=request.user.id)
-            S = Source.objects.get(id=request.source.id)
-            annotation_text = form.cleaned_data['annotation_text']
-            start = form.cleaned_data['start']
-            end = form.cleaned_data['end']
-            annotation = SourceAnnotation.objects.create(
-                user=U,
-                source=s,
-                text=annotation_text,
-                quote=annotation_text[:30]+(annotation_text[30:] and '..')
-            )
-            annotation.save()
-            print "annotation saved"
-            annotation_range = SourceAnnotationRange.objects.create(
-                annotation_range_annotation=annotation,
-                start=start,
-                end=end,
-                # I'm not sure what they used offsets for but i'll make
-                # them the sam as the start and the end
-                startOffset=start,
-                endoOffset=end
-            )
-            annotation_range.save()
-            print "annotation_range saved"
-        except Exception as e:
-            print e.message
+    try:
+        currentUser = User.objects.get(id=request.session['_auth_user_id'])
+        text = request.GET['text']
+        start = request.GET['start']
+        end = request.GET['end']
+        file = SourceFile.objects.get(file_uuid=request.GET['uuid'])
+        print currentUser, text, start, end, file
+        newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
+                                                        source=file,
+                                                        text=text,
+                                                        quote=text)
+        newAnnotation.save()
+        newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
+                                                        start=start,
+                                                        end=end,
+                                                        startOffset=start,
+                                                        endOffset=end)
 
-        # not sure what you'll want to return here because I don't know
-        # the format of the template but i'll return the data as a json object
-        # with the annotation data and the annotation_range data combined
-
-        context = model_to_dict(annotation).items() + model_to_dict(annotation_range).items()
-
-        print context
-        # return a json file with the combied annotation and the annotation_range models
-        return HttpResponse(json.dumps(context,
-                                       cls=serializers.json.DjangoJSONEncoder))
+        newRange.save()
+        print newAnnotation, newRange
+        ret = [newAnnotation.text, newRange.start, newRange.end]
+        
+        return HttpResponse(json.dumps(ret))
+    except User.DoesNotExist or SourceFile.DoesNotExist:
+        return Http404()
+    
+    return HttpResponse("test")
 
 @login_required(login_url='/review/login_redirect/')
 def retrieve_submission(request, submission_uuid):

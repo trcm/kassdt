@@ -22,12 +22,15 @@ $(document).ready(function() {
 	    // the formatted code will always be the first
 	    // item in the json struct
 	    $("#code").html(json[0]);
+	    $("#code").attr("data-fileuuid", uuid);
 	    $("#annotationForm").css("visibility", "visible");
 	    // get the information from the annotations
 	    // creates the annotation list items with the range and the text
 	    // this is grabbed from the parsed json
 	    console.log(json[1].length);
+
 	    for (var i = 1; i < json.length; i++) {
+		// console.log(json[i]);
 		var annote = "<li id=\"" + i + "\">" +
 			json[i][0][1]["start"] + " - " +
 			json[i][0][1]["end"] + ": " +
@@ -47,10 +50,36 @@ $(document).ready(function() {
 	}).always(function(data) {
 	});
     });
-    
+
+
+    // code for saving the annotation from the annotation form
+    // needs the start, end, text, file name and the user id
     $("#annotationForm").submit(function(e) {
 	e.preventDefault();
 	console.log("Ajax standing by");
+	var uuid = $("#code").attr("data-fileuuid");
+	var start = $("#id_start").val() ;
+	var end = $("#id_end").val();
+	var text = $("#id_annotation_text").val();
+	var context = { "uuid": uuid,
+			"start": start,
+			"end": end,
+			"text": text};
+	console.log(context);
+	$.ajax({
+	    url: '/review/annotation/create',
+	    data: context
+	}).done(function(data) {
+	    console.log(data);
+	    var annote = "<li id=\"\">" +
+		    data["start"] + " - " +
+		    data["end"] + ": " +
+		    data["text"] +
+		    "</li>"; 
+	    $("#annotations").append(annote);
+	    console.log("Created annotation");
+	    $("#annotationForm").trigger("reset");
+	});
 	// $.ajax({
 	//     url: '/review/annotation_test/',
 	//     data: '1'
