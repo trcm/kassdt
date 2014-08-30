@@ -19,6 +19,7 @@ import json
 from pygments import *
 from pygments.lexers import *
 from pygments.formatters import *
+from pygments.styles import *
 
 from review.models import *
 
@@ -481,7 +482,7 @@ def grabFile(request):
             owner = AssignmentSubmission.objects.get(root_folder=iter).by
             # formatted = path.content
             formatted = highlight(path.content, guess_lexer(path.content),
-                                  HtmlFormatter(linenos="table"))
+                                  HtmlFormatter(linenos="table", style="colorful"))
 
             # get all annotations for the current file
             # if user is the owner of the files or super user get all annotations

@@ -1,7 +1,11 @@
 {% extends 'sidebar.html' %}
 
 {% block assignments %}
-
+<script>
+  $(document).ready(function() {
+    annotationHighlight();
+    });
+</script>
 <div id="files">
   <ul>
     <h4>Files</h4>
