@@ -28,5 +28,27 @@ $(document).ready( function() {
     // the correct formats to meet the models standards
     $(".datepicker").datepicker({ dateFormat: "yy-mm-dd" });
     $(".timepicker").timepicker({ 'timeFormat': 'H:i:s'});
+
 });
+
+function annotationHighlight() {
+  console.log("yup");
+    
+  //So say we have some list or array of start points
+    var array = [1];
+    //We could run this function over that array and it 
+    //would find and highlight all start points as per the
+    //.highlight css class
+    var text = '2';
+
+    $( '.linenos' ).html( function ( i, html ) {
+         var regexp, replacement;
+         regexp = RegExp( '(' + text + ')' );
+         replacement = '<span class="highlight">$1</span>';
+         return html.replace( regexp, replacement );
+    });
+
+}
+
+
 
