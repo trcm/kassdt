@@ -509,7 +509,7 @@ def grabFile(request):
             print "Source file doesn't not exist"
             return Http404()
 
-
+# This is just a test view for uploading files, will be deleted
 def upload(request):
     """
     Test view for uploading files
@@ -524,23 +524,9 @@ def upload(request):
     else:
         return HttpResponse("Fail")
 
-# to be deleted #
 
-
-def annotation_test(request):
-    print request.method
-    data = None
-    if request.method == 'GET' and request.is_ajax():
-        print "ajax"
-        u = open('/home/tom/urls.py')
-        print "opent"
-        data = highlight(u.read(), PythonLexer(), HtmlFormatter(linenos=True))
-        return HttpResponse(data)
-
-    return HttpResponse("nope")
-
+@login_required(login_url='/review/login_redirect/')
 def reviewFile(request, submissionUuid, file_uuid):
-
     uuid = submissionUuid.encode('ascii', 'ignore')
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
@@ -603,6 +589,8 @@ def reviewFile(request, submissionUuid, file_uuid):
     except AssignmentSubmission.DoesNotExist:
         return Http404()
 
+
+@login_required(login_url='/review/login_redirect/')
 def review(request, submissionUuid, **kwargs):
     """
     """

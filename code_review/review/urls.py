@@ -54,35 +54,24 @@ urlpatterns = patterns('',
                        # Assignment submission
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
                            views.submit_assignment, name='submit_assignment'),
-                       
-                       # Annotation
+
 
                        # Assignment page
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
                            views.assignment_page, name='assignment_page'),
-                       
 
-                       url(r'annotation_test/', views.annotation_test,
-                           name='annotation_test'),
-                       url(r'upload', views.upload, name='upload'),
+                       # Annotation
+                       # These urls handle the viewing of assignments and the creation of annotations
+                       # Used to create the annnotation, redirects back to the file view
                        url(r'annotation/create/(?P<submission_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.createAnnotation, name="create_annotation"),
-                       # url(r'file/', views.grabFile, name="grab_file"),
-
+                       # Used to view a specific file for reviewing
                        url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.reviewFile, name="review_file"),
-                       url(r'reviews/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
-                           views.review, name="reviews"),
+                       # Views a particular submission
+                       url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
+                           views.review, name="submission"),
 
+                       # Testing views
+                       url(r'upload', views.upload, name='upload'),
 )
-
-
-
-
-
-
-
-
-
-
-
