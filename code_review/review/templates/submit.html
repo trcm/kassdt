@@ -1,0 +1,22 @@
+{% extends 'sources.html' %}
+
+{% block tests %}
+
+   {% if open_tests %}
+        <h1>Test Result</h1>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Pass count</th>
+          </tr>
+          {% for test in open_tests %}
+          <tr>
+          	<td><a href="{% url 'result' test.file_uuid %}">{{ test.0.test_name }}</a></td>
+          	<td>{{ test.0.test_count }}</td>
+          	<td>{{ test.0.test_pass_count }}</td>
+          </tr>
+        </table>
+   {% endif %}
+ 
+{% endblock %}

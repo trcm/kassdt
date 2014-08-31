@@ -6,7 +6,6 @@
 
 {% if folder %}
 <ul>
-  {% for files in folder %}
   	<table>
   		<tr>
   			<td>Folder: </td>
@@ -15,14 +14,15 @@
   			<td>File Path: </td>
   		</tr>
   		
+  		{% for files in folder %}
   		<tr>
   			<td>{{ files.folder }}</td>
   			<td>{{ files.file_uuid }}</td>
-  			<td>{{ files.name }}</td>
+  			<td><a href="{% url 'submit' files.file_uuid %}">{{ files.name }}</a></td>
   			<td>{{ files.file }}</td>
-  		</tr>
+  		</tr>  
+  		{% endfor %}
   	</table>
-  {% endfor %}
 </ul>
 
 {% else %}

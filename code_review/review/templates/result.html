@@ -1,0 +1,29 @@
+{% extends 'submit.html' %}
+
+{% block result %}
+
+<h1>Test Result</h1>
+
+Tests Completed: {{ result.tests_completed }}
+
+<div>
+	% passed
+</div>
+
+<div>
+	Total Tests:
+</div>
+
+<div>
+	Failures:
+</div>
+
+<div>
+	Errors:
+</div>
+
+<div>
+	Time:
+</div>
+
+{% endblock %}
