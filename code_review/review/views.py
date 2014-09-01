@@ -35,13 +35,14 @@ from git_handler import *
 import os
 import os.path
 
-# this is the basic index view, it required login before the user can do any
-# as you can see at the moment this shows nothing other than a logout button
-# as I haven't added any content to it yet
 @login_required(login_url='/review/login_redirect/')
 def index(request):
     context = {}
-
+    """
+    this is the basic index view, it required login before the user can do any
+    as you can see at the moment this shows nothing other than a logout button
+    as I haven't added any content to it yet
+    """
     # whatever stuff we're goign to show in the index page needs to
     # generated here
     U = User.objects.get(id=request.user.id)
@@ -72,7 +73,6 @@ def logout(request):
 # This will redirect the admin user to the admin panel.
 # It will also list all the courses they're currently
 
-
 @login_required(login_url='/review/login_redirect/')
 # @user_passes_test(staffTest)
 def coursePage(request, course_code):
@@ -97,15 +97,15 @@ def coursePage(request, course_code):
 
     return render(request, 'course_page.html', context)
 
-# gets the course code for the current course being used and
-# creates a form for creating a new assignment, redirects to the
-# assignment create page
-
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
-
+    """
+    gets the course code for the current course being used and
+    creates a form for creating a new assignment, redirects to the
+    assignment create page
+    """
     context = {}
 
     # grab course code from the url and convert to a string from unicode
@@ -157,13 +157,15 @@ def userAdmin(request):
 
     return render(request, 'admin/userList.html', context)
 
-# Validates the data from the assignment creation form.
-# If the data is valid then it creates the assignment,
-# otherwise the user is kicked back to the form to fix the data
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateAssignment(request):
+    """
+    Validates the data from the assignment creation form.
+    If the data is valid then it creates the assignment,
+    otherwise the user is kicked back to the form to fix the data
+    """
     form = None
     context = {}
     # gets the data from the post request
@@ -205,13 +207,15 @@ def validateAssignment(request):
 
     return render(request, 'admin/new_assignment.html', context)
 
-# validates the data for user createion, pretty much the same as the view above
-# but for users.  Also creates a new review user for the user
 
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateUser(request):
+    """
+    validates the data for user createion, pretty much the same as the view above
+    but for users.  Also creates a new review user for the user
+    """
     form = None
     context = {}
 
