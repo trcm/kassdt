@@ -1,4 +1,4 @@
-from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput
+from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput, IntegerField
 from django.contrib.auth.forms import SetPasswordForm
 from django.forms import *
 from django.forms.extras.widgets import SelectDateWidget
@@ -30,6 +30,32 @@ class AssignmentForm(ModelForm):
             'review_close_date': SplitDateTimeWidget()
         }
 
+
+class uploadFile(ModelForm):
+    class Meta:
+        model = SourceFile
+
+
+class annotationRangeForm(ModelForm):
+    class Meta:
+        model = SourceAnnotationRange
+        fields = ['start', 'end']
+        widgets = {
+            'start': NumberInput(),
+            'end': NumberInput()
+        }
+        
+class annotationForm(ModelForm):
+    class Meta:
+        model = SourceAnnotation
+        fields = ['text']
+    # start = forms.IntegerField()
+    # end = forms.IntegerField()
+    # annotation_text = forms.CharField(widget=forms.Textarea)
+
+    # def clean(self):
+    #     return self
+    
 class UserCreationForm(ModelForm):
     class Meta:
         model = User
@@ -44,13 +70,16 @@ class UserCreationForm(ModelForm):
             'password': PasswordInput(),
             'is_staff': forms.CheckboxInput()
         }
-#Testing creating own form for user addition
+        
+
 class createUserForm(User):
-    username = forms.CharField(max_length = 20, min_length = 6)
+
+    #Testing creating own form for user addition
+    username = forms.CharField(max_length=20, min_length=6)
     first_name = forms.CharField()
     last_name = forms.CharField()
-    password1 = forms.CharField(max_length = 100, widget=forms.PasswordInput())
-    password2 = forms.CharField(max_length = 30, widget=forms.PasswordInput())
+    password1 = forms.CharField(max_length=100, widget=forms.PasswordInput())
+    password2 = forms.CharField(max_length=30, widget=forms.PasswordInput())
     email = forms.EmailField(required=False)
 
     def clean_username(self): # check if username dos not exist before
@@ -74,4 +103,3 @@ class createUserForm(User):
                     last_name=self.clean, password=self.clean,
                     )
             return new_user
-

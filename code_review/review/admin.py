@@ -39,6 +39,7 @@ class CourseAdmin(admin.ModelAdmin):
     fields = ('course_code', 'course_name', 'students')
     search_fields = ('course_code', )
 
+
 class AssignmentAdmin(admin.ModelAdmin):
     model = Assignment
     list_display = ('course_code', 'name', 'first_display_date', 'submission_close_date')

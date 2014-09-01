@@ -9,6 +9,6 @@ def staffTest(User):
 def getUser(request):
     user = User.objects.get_object_or_404(id=request.user.id)
     return user
-    
+
 def getCourses(request):
     pass
