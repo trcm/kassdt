@@ -1,4 +1,4 @@
-lfrom django.contrib.auth import login
+from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
@@ -74,7 +74,7 @@ def launch_lti(request):
             all_user_roles += roles
         if uoc_roles:
             if not isinstance(uoc_roles, list): uoc_roles = (uoc_roles,)
-            all_user_roles += uoc_roles
+        all_user_roles += uoc_roles
 
         is_role_allowed = [m for velvet_role in settings.VELVET_ROLES for m in all_user_roles if velvet_role.lower()==m.lower()]
 

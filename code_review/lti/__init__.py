@@ -12,7 +12,7 @@ def setconf(name, default_value):
     setattr(settings, name, value)
 
 setconf('LTI_DEBUG', False)
-setconf('AUTH_PROFILE_MODULE', 'uocLTI.LTIProfile')
+setconf('AUTH_PROFILE_MODULE', 'LTI.LTIProfile')
 setconf('CONSUMER_URL', 'consumer url')
 setconf('CONSUMER_KEY', 'the consumer key')
 setconf('LTI_SECRET', 'the secret key')

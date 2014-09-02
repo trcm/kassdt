@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'review',
     'south',
+    'LTI',
     # 'ims_lti_py',
 )
 
