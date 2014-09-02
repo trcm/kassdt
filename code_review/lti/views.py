@@ -121,7 +121,7 @@ def launch_lti(request):
         ru.save()
         try:
             print "adding course"
-            c = course.objects.get(course_code=course)
+            c = Course.objects.get(course_code=course)
             ru.courses.add(c)
             ru.save()
         except Exception:
