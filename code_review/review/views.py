@@ -1,3 +1,10 @@
+"""
+views.py handles all the controllers for the application.
+
+This file will eventually be separated into various files for each
+of the main sections of the application.  Currently it contains views,
+for all the features to date.
+"""
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -16,6 +23,8 @@ from django.core import serializers
 from django.forms.models import model_to_dict
 import json
 
+#  Imports all the lexers and the formatters currently needed
+# to highlight the source code
 from pygments import *
 from pygments.lexers import *
 from pygments.formatters import *
@@ -23,6 +32,7 @@ from pygments.styles import *
 
 from review.models import *
 
+# imports any helpers we might need to write
 from helpers import staffTest
 
 # imports the form for assignment creation
@@ -35,11 +45,13 @@ from git_handler import *
 import os
 import os.path
 
-# this is the basic index view, it required login before the user can do any
-# as you can see at the moment this shows nothing other than a logout button
-# as I haven't added any content to it yet
 @login_required(login_url='/review/login_redirect/')
 def index(request):
+    """
+    this is the basic index view, it required login before the user can do any
+    as you can see at the moment this shows nothing other than a logout button
+    as I haven't added any content to it yet
+    """
     context = {}
 
     # whatever stuff we're goign to show in the index page needs to
@@ -58,24 +70,19 @@ def index(request):
 
     return render(request, 'sidebar.html', context)
 
-
-def loginUser(request):
-    pass
-
-
 # simply logs the user out
 def logout(request):
     logout(request)
     return HttpResponse("logout")
     # return redirect('/review/')
 
-# This will redirect the admin user to the admin panel.
-# It will also list all the courses they're currently
-
 
 @login_required(login_url='/review/login_redirect/')
 # @user_passes_test(staffTest)
 def coursePage(request, course_code):
+    """
+    Redirects the user to the course page the user has selected
+    """
     context = {}
     # get the current assignments for the subject, subject choosing
     # will be added later
@@ -97,15 +104,14 @@ def coursePage(request, course_code):
 
     return render(request, 'course_page.html', context)
 
-# gets the course code for the current course being used and
-# creates a form for creating a new assignment, redirects to the
-# assignment create page
-
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
-
+    """
+    creates a new assignment for the current course,
+    this can only be used if the user has staff access.
+    """
     context = {}
 
     # grab course code from the url and convert to a string from unicode
@@ -117,7 +123,7 @@ def create_assignment(request, course_code):
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
 
-    # add all the data to thte context dict
+    # add all the data to the context dict
     context['form'] = form
     context['course'] = c
 
@@ -139,6 +145,9 @@ def createUser(request):
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def courseAdmin(request):
+    """
+    Dummy Course admin for the review admin
+    """
     context = {}
     courses = Course.objects.all()
     context['courses'] = courses
@@ -146,24 +155,27 @@ def courseAdmin(request):
     return render(request, 'admin/courseList.html', context)
 
 
-# user administration alternative instead of using the django backend
-
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def userAdmin(request):
+    """
+    Dummy User administration for the review admin
+    """
     context = {}
     users = User.objects.all()
     context['users'] = users
 
     return render(request, 'admin/userList.html', context)
 
-# Validates the data from the assignment creation form.
-# If the data is valid then it creates the assignment,
-# otherwise the user is kicked back to the form to fix the data
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateAssignment(request):
+    """
+    Validates the data from the assignment creation form.
+    If the data is valid then it creates the assignment,
+    otherwise the user is kicked back to the form to fix the data
+    """
     form = None
     context = {}
     # gets the data from the post request
@@ -174,8 +186,6 @@ def validateAssignment(request):
         if form.is_valid():
             try:
                 # gets the cleaned data from the post request
-
-                # Just to check the code is working
                 print "Creating assignment"
                 course = Course.objects.get(id=request.POST['course_code'])
                 name = form.cleaned_data['name']
@@ -186,6 +196,7 @@ def validateAssignment(request):
                 review_open_date = form.cleaned_data['review_open_date']
                 review_close_date = form.cleaned_data['review_close_date']
 
+                # Create the new assignment object and try saving it
                 ass = Assignment.objects.create(course_code=course, name=name,
                                                 repository_format=repository_format,
                                                 first_display_date=first_display_date,
@@ -205,21 +216,25 @@ def validateAssignment(request):
 
     return render(request, 'admin/new_assignment.html', context)
 
-# validates the data for user createion, pretty much the same as the view above
-# but for users.  Also creates a new review user for the user
-
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateUser(request):
+    """
+    validates the data for user creation, pretty much the same as the view above
+    but for users.  Also creates a new review user for the user
+    """
     form = None
     context = {}
 
     if request.method == "POST":
+        # grab form from the request
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
             try:
+                # grab the cleaned data from the form and try creating a
+                # new user object
                 username = form.cleaned_data['username']
                 first_name = form.cleaned_data['first_name']
                 last_name = form.cleaned_data['last_name']
@@ -257,14 +272,20 @@ def validateUser(request):
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def validateCourse(request):
+    """
+    validateCourse validates the data from the course creation template
+    If the course is valid then it will create a new object.
+    """
     form = None
     context = {}
 
     if request.method == "POST":
+        # grab the form from the template
         form = CourseCreationForm(request.POST)
-
         if form.is_valid():
             try:
+                # grab the cleaned data from the form and try
+                # creating a new course object
                 course_code = form.cleaned_data['course_code']
                 course_name = form.cleaned_data['course_name']
                 newCourse = Course.objects.reate(course_code=course_code,
@@ -285,6 +306,10 @@ def validateCourse(request):
 
 @login_required(login_url='/review/login_redirect/')
 def student_homepage(request):
+    """
+    Displays all the information for the current user, including upcoming assignments
+    and tasks
+    """
     context = {}
     U = User.objects.get(id=request.user.id)
     context['user'] = U
@@ -296,6 +321,8 @@ def student_homepage(request):
 
 def get_open_assignments(user):
     '''
+    Grabs the list of currently open assignments for
+    the current user
     :user User
 
     return List[(Course, Assignment)]
@@ -304,17 +331,17 @@ def get_open_assignments(user):
     openAsmts = []
     courses = user.reviewuser.courses.all()
     for course in courses:
-	# Get assignments in the course
-	assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
-	for assignment in assignments:
-	    if(can_submit(assignment)):
-		openAsmts.append((course, assignment))
-
+        # Get assignments in the course
+        assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
+        for assignment in assignments:
+            if(can_submit(assignment)):
+                openAsmts.append((course, assignment))
     return openAsmts
 
 @login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
     '''
+    assignment_page Displays the data for a specific assignment
     :course_code Course.course_code
     :asmt Assignment
     '''
@@ -326,7 +353,7 @@ def assignment_page(request, course_code, asmt):
     course = Course.objects.get(course_code=courseCode)
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
-    
+
     context['user'] = U
     context['course'] = course
     context['asmt'] = assignment
@@ -337,21 +364,22 @@ def assignment_page(request, course_code, asmt):
 
 def can_submit(asmt):
     '''
-        :asmt Assignment
+    :asmt Assignment
 
-        Return True if allowed to submit asmt now
-        False otherwise
+    Return True if allowed to submit asmt now
+    False otherwise
     '''
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
+
 
 @login_required(login_url='/review/login_redirect/')
 def submit_assignment(request, course_code, asmt):
     """
     :request the HTTP request object
-    :course_code String course code 
+    :course_code String course code
     :asmt Assignment the assignment for which we want to submit
-    
+
     TODO - handle multiple submission and single-submission assignments
            differently
     """
@@ -374,12 +402,12 @@ def submit_assignment(request, course_code, asmt):
                 sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
                                                     submission_for=assignment)
                 sub.save()
-                # Populate databse. 
+                # Populate databse.
                 relDir = os.path.join(courseCode, asmtName)
                 populate_db(sub, relDir)
                 # User will be shown confirmation.
                 template = 'submission_confirmation.html'
-            
+
             except GitCommandError as giterr:
                 print giterr.args
                 sub.delete()
@@ -405,31 +433,31 @@ def submit_assignment(request, course_code, asmt):
 @login_required(login_url='/review/login_redirect/')
 def createAnnotation(request, submission_uuid, file_uuid):
     """
-    Creates an annotation for the user.  Needs to get most of its
-    information from the http request sent by the AJAX function.
-    Needs a post request to work.
+    Creates an annotation form the currently opened file.
+    If it succesfully creates an annotation then the user is returned the current file.
 
-    I'm going to assume that the add annotation is a form, so i'll
-    use the django form methods for getting data
-
-    At this point I'm just assuming this works but I can't test it
+    :submission_uuid - the uuid of the current submission
+    :file_uuid - the uuid of the current file
     """
     context = {}
 
     try:
         print request
+        # Get the current user and form data
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
-
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
 
         text = form['text'].value()
         start = rangeForm['start'].value()
         end = rangeForm['end'].value()
+
+        # TODO This needs a conditional wrapped around it
         form.is_valid()
         rangeForm.is_valid()
 
         file = SourceFile.objects.get(file_uuid=file_uuid)
+        # Create and try saving the new annotation and range
         newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
                                                         source=file,
                                                         text=text,
@@ -443,28 +471,22 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         newRange.save()
         print newAnnotation, newRange
-        
-        # return HttpResponse(json.dumps(ret))
+
         return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
     except User.DoesNotExist or SourceFile.DoesNotExist:
         return Http404()
-    
-    return HttpResponse("test")
 
-@login_required(login_url='/review/login_redirect/')
-def retrieve_submission(request, submission_uuid):
-    """
-    Retrieves a submission from the database and returns both it
-    and all its annotations to a template
-    """
-    pass
+    return HttpResponse("test")
 
 
 @login_required(login_url='/review/login_redirect/')
 def grabFile(request):
-    """ 
+    """
     this just grabs the file, pygmetizes it and returns it in,
     this gets sent to the ajax request
+
+    This was used in the Ajax version of this application but
+    it isn't currently used.
     """
     print request.session['_auth_user_id']
     # get current user
@@ -491,9 +513,9 @@ def grabFile(request):
             else:
                 annotations = Sou
                 rceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
-            
+
             annotationRanges = []
-            aDict = [] 
+            aDict = []
 
             for a in annotations:
                 annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
@@ -513,7 +535,7 @@ def grabFile(request):
 
 def upload(request):
     """
-    Test view for uploading files
+    Test view for uploading files, not needed in the final version
     """
     print "upload"
     if request.method == "POST":
@@ -525,23 +547,14 @@ def upload(request):
     else:
         return HttpResponse("Fail")
 
-# to be deleted #
-
-
-def annotation_test(request):
-    print request.method
-    data = None
-    if request.method == 'GET' and request.is_ajax():
-        print "ajax"
-        u = open('/home/tom/urls.py')
-        print "opent"
-        data = highlight(u.read(), PythonLexer(), HtmlFormatter(linenos=True))
-        return HttpResponse(data)
-
-    return HttpResponse("nope")
 
 def reviewFile(request, submissionUuid, file_uuid):
-
+    """
+    Grabs all the files for the current submission, but it also
+    grabs and pygmentizes the current file.
+    :submissionUuid - current submission identifier
+    :file_uuid - the identifier of the rile to be annotated.
+    """
     uuid = submissionUuid.encode('ascii', 'ignore')
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
@@ -580,7 +593,7 @@ def reviewFile(request, submissionUuid, file_uuid):
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
 
         annotationRanges = []
-        aDict = [] 
+        aDict = []
 
         for a in annotations:
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
@@ -600,12 +613,13 @@ def reviewFile(request, submissionUuid, file_uuid):
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)
-        
+
     except AssignmentSubmission.DoesNotExist:
         return Http404()
 
 def review(request, submissionUuid, **kwargs):
     """
+    review simply grabs all the files for the current submission.
     """
     uuid = submissionUuid.encode('ascii', 'ignore')
     context = {}
@@ -639,30 +653,30 @@ def review(request, submissionUuid, **kwargs):
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)
-        
+
     except AssignmentSubmission.DoesNotExist:
         return Http404()
 
 def get_list(root_folder, theList):
     """
     Gets all the folders and files underneath root_folder
-    as a list of lists (of lists etc.) 
-    Format like this: 
+    as a list of lists (of lists etc.)
+    Format like this:
     [root_folder, Folder1, Folder2, [Folder1, sub-folder-of-folder1, file1..], [Folder2, ...]]
-    
+
     :root_folder SourceFolder
     """
-    
+
     theList.append(root_folder)
-    
+
     # Files directly under root_folder
     files = root_folder.files.all()
-    
+
     # Folders directly under root_folder
     folders = root_folder.folders.all()
     for folder in folders:
         theList.append(folder)
-    
+
     for file in files:
         theList.append(file)
 

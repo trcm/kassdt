@@ -17,7 +17,7 @@
       {% endif%}
 
       {% if file.file_uuid %}
-      <li><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}" href="/review/reviews/{{ sub }}/{{ file.file_uuid }}/">{{ file.name }}</button></li>
+      <!-- <li><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}" href="/review/reviews/{{ sub }}/{{ file.file_uuid }}/">{{ file.name }}</button></li> -->
       <li><a href="/review/file/{{ sub }}/{{ file.file_uuid }}"/>{{ file.name }}</a></li>
 	
 	{% endif%}

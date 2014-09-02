@@ -1,9 +1,14 @@
+"""
+This file handles all the django admin interface frontend.
+The only user that will actually be able to use this is the system admin.
+"""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm  # , PasswordChangeForm
 
 from django.contrib.auth.models import User
-from review.models import *
+from review.models import ReviewUser, Course, Assignment
 # from django import forms
 
 class ReviewUserInline(admin.StackedInline):
@@ -15,7 +20,6 @@ class ReviewUserInline(admin.StackedInline):
 
     def callable(self, ru):
         return ru.user_uuid
-
 
 class UserAdmin(UserAdmin):
     #    list_ldisplay = ("user_uuid", "djangoUser")
@@ -42,7 +46,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 class AssignmentAdmin(admin.ModelAdmin):
     model = Assignment
-    list_display = ('course_code', 'name', 'first_display_date', 'submission_close_date')
+    list_display = ('course_code', 'name', 'first_display_date',
+                    'submission_close_date')
     
 # adds models for editing in the admin page
 admin.site.unregister(User)
