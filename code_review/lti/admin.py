@@ -1,5 +1,5 @@
 from django.contrib import admin
-from LTI.models import LTIProfile
+from lti.models import LTIProfile
 
 class LTIProfileAdmin(admin.ModelAdmin):
     pass
