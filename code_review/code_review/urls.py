@@ -11,5 +11,5 @@ urlpatterns = patterns('django.contrib.auth.views',
                        url(r'^review/', include('review.urls')),
                        url(r'^admin/', include(admin.site.urls)),
                        # url(r'^lti/', include('lti.urls')),
-                       url(r'^LTI/', include('LTI.urls')),
+                       url(r'^LTI/', include('lti.urls')),
 )
