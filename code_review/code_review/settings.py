@@ -52,7 +52,7 @@ ALLOWED_HOSTS = []
 #LTI INTEGRATION KEYS
 CONSUMER_KEY = 'TESTING'
 LTI_SECRET = 'TESTING'
-
+LTI_DEBUG = True
 
 
 # Application definition

@@ -10,11 +10,11 @@ from django.core.exceptions import PermissionDenied
 from django.conf import settings 
 from utils import *
 from models import *
+from review.models import *
 
 @csrf_exempt
 def launch_lti(request):
     """ Receives a request from the lti consumer and creates/authenticates user in django """
-
     """ See post items in log by setting LTI_DEBUG=True in settings """    
     if settings.LTI_DEBUG:
         for item in request.POST:
@@ -50,9 +50,14 @@ def launch_lti(request):
     first_name = get_lti_value(settings.LTI_FIRST_NAME, tool_provider, encoding=encoding)
     last_name = get_lti_value(settings.LTI_LAST_NAME, tool_provider, encoding=encoding)
     email = get_lti_value(settings.LTI_EMAIL, tool_provider, encoding=encoding)
+    course = request.POST['context_label']
+    print course
+    # for s in dir(settings):
+    #     print s, ':', getattr(settings, s)
+    
 #    avatar = tool_provider.custom_params['custom_photo'] 
     roles = get_lti_value(settings.LTI_ROLES, tool_provider, encoding=encoding)
-    uoc_roles = get_lti_value(settings.LTI_CUSTOM_UOC_ROLES, tool_provider, encoding=encoding)
+    # uoc_roles = get_lti_value(settings.LTI_CUSTOM_UOC_ROLES, tool_provider, encoding=encoding)
     user_id = get_lti_value('user_id', tool_provider, encoding=encoding)
     test = get_lti_value('context_title', tool_provider, encoding=encoding)
 
@@ -95,13 +100,33 @@ def launch_lti(request):
             if there was a previously populated User table. """
             user.username = lti_username
             user.save()
+        try:
+            print "adding course"
+            c = Course.objects.get(course_code=course)
+            if c not in user.reviewuser.courses.all():
+                user.reviewuser.courses.add(c)
+                user.save()
+        except Exception:
+            print "TODO"
+
     except User.DoesNotExist:
         """ first time entry, create new user """
+        print lti_username, email
         user = User.objects.create_user(lti_username, email)
         user.set_unusable_password()
         if first_name: user.first_name = first_name
         if last_name: user.last_name = last_name
         user.save()
+        ru = ReviewUser.objects.create(djangoUser=user)
+        ru.save()
+        try:
+            print "adding course"
+            c = course.objects.get(course_code=course)
+            ru.courses.add(c)
+            ru.save()
+        except Exception:
+            print "TODO"
+            
     except User.MultipleObjectsReturned:
         """ If the application is not requiring unique emails, multiple users may be returned if there was an existing
         User table before implementing this app with multiple users for the same email address.  Could add code to merge them, but for now we return 404 if 
@@ -116,14 +141,18 @@ def launch_lti(request):
             user.save()
     
     """ Save extra info to custom profile model (add/remove fields in models.py)""" 
-    lti_userprofile = get_object_or_404(LTIProfile, user=user)
-    lti_userprofile.roles = (",").join(all_user_roles)
+    print "lti_userprofile"
+    # lti_userpro = LTIProfile.objects.create(user=user)
+    # lti_userpro.save()
+    # lti_userprofile = LTIProfile.objects.get_or_create(user=user)
+    # lti_userprofile.roles = (",").join(all_user_roles)
 #    lti_userprofile.avatar = avatar  #TO BE ADDED:  function to grab user profile image if exists
-    lti_userprofile.save()
+    # lti_userprofile.save()
     
     """ Log in user and redirect to LOGIN_REDIRECT_URL defined in settings (default: accounts/profile) """
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, user)
 
-    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL) 
+    # return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL) 
+    return HttpResponseRedirect('/review/')
     
