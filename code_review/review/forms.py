@@ -2,6 +2,7 @@ from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, Spli
 # from django.contrib.auth.forms import SetPasswordForm
 # from django.forms import *
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms import *
 from models import *
 
 
