@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm  # , PasswordChangeForm
 
 from django.contrib.auth.models import User
-from review.models import ReviewUser, Course, Assignment
+from review.models import *
 # from django import forms
 
 class ReviewUserInline(admin.StackedInline):
