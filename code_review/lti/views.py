@@ -14,6 +14,7 @@ from review.models import *
 
 @csrf_exempt
 def launch_lti(request):
+    print "LAUNCH LTI HAS BEEN CALLED!!!"
     """ Receives a request from the lti consumer and creates/authenticates user in django """
     """ See post items in log by setting LTI_DEBUG=True in settings """    
     if settings.LTI_DEBUG:
@@ -102,12 +103,18 @@ def launch_lti(request):
             user.save()
         try:
             print "adding course"
+            print('course is ' + course)
+            print(type(course))
             c = Course.objects.get(course_code=course)
             if c not in user.reviewuser.courses.all():
                 user.reviewuser.courses.add(c)
                 user.save()
-        except Exception:
-            print "TODO"
+        except Course.DoesNotExist:
+            # Make course and enrol user in it. 
+            c = Course.objects.create(course_code=course)
+            user.reviewuser.courses.add(c)
+            user.save()
+            print("New course created in CPRS")
 
     except User.DoesNotExist:
         """ first time entry, create new user """
@@ -124,8 +131,13 @@ def launch_lti(request):
             c = Course.objects.get(course_code=course)
             ru.courses.add(c)
             ru.save()
-        except Exception:
-            print "TODO"
+        except Course.DoesNotExist:
+            # Make course and enrol user in it. 
+            c = Course.objects.create(course_code=course)
+            ru.courses.add(c)
+            ru.save()
+            print("New course created in CPRS")
+
             
     except User.MultipleObjectsReturned:
         """ If the application is not requiring unique emails, multiple users may be returned if there was an existing
