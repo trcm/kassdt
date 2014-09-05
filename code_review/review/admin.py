@@ -12,10 +12,6 @@ from review.models import *
 
 
 class ReviewUserInline(admin.StackedInline):
-    """
-    This class holds the required information for the Review user
-    data to be displayed in the User admin page.
-    """
     model = ReviewUser
     readonly_fields = ('user_uuid', )
     fields = ("djangoUser", 'user_uuid', 'courses')
@@ -55,14 +51,12 @@ class AssignmentAdmin(admin.ModelAdmin):
                     'submission_close_date')
 
     
-# adds models for editing in the admin page
-admin.site.unregister(User)
+# Register all the admin templates for the django admin
 
-# admin.site.register(createUserForm, UserAdmin)
+admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReviewUser, ReviewUserAdmin)
 admin.site.register(Course, CourseAdmin)
-
 admin.site.register(SourceFolder)
 admin.site.register(SourceFile)
 admin.site.register(SubmissionTest)

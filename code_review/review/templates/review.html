@@ -43,7 +43,8 @@
     <p>{{ annote.text }}</p>
     {% endfor %}
   </ul>
-  <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+  {% url 'create_annotation' sub uuid as annotateUrl %}
+  <form id="annotationForm" action="{{ annotateUrl | obfuscate }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />

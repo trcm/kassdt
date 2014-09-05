@@ -449,9 +449,10 @@ def createAnnotation(request, submission_uuid, file_uuid):
         rangeForm = annotationRangeForm(request.GET)
 
         text = form['text'].value()
+        print text
         start = rangeForm['start'].value()
         # end = rangeForm['end'].value()
-        end = nil
+        end = 0
 
         # TODO This needs a conditional wrapped around it
         form.is_valid()
