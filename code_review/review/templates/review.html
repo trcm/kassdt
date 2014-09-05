@@ -51,4 +51,9 @@
   </form>
 </div>
 
+<div id='startLine'>
+  {% for annote, range in annotations %}
+  <ul>{{ range.start }}</ul>
+  {% endfor %}
+</div>
 {% endblock %}
