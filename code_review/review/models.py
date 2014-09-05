@@ -1,3 +1,9 @@
+"""
+models.py - This file contains the representations of all the tables used in the applications's
+database.  The unicode methods in each model are used to determine how the models information
+will be shown in the django admin
+"""
+
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -6,6 +12,8 @@ from django.contrib.auth.models import User as Django_User
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django import forms
+
+# Help text for the django admin backend
 c = lambda x: "<code>" + x + "</code>"
 repo_format_format_vars = [
     ("user_uuid",
@@ -35,7 +43,16 @@ repo_format_help_text = """
         ; which will produce """ + c("https://www.source-hosting.com/joe_blogs/ass1/") + """ for the user "joe_blogs".
     """
 
+
 class ReviewUser(models.Model):
+    """
+    ReviewUser -
+    This model is used to extend the default Django User model.
+    Currently this is used to show which courses a user is enrolled in
+    as well as a number of boolean fields showing whether a user is 
+    a member of staff, as well as a firstLogin flag which will be used
+    to prompt the user to change their password.
+    """
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
@@ -50,14 +67,23 @@ class ReviewUser(models.Model):
 
 
 class Course(models.Model):
+    """
+    Course - This models contains information about the courses being used with the system.
+    It contains the name and course code as well as a relationship to show which users 
+    are enrolled in which course.
+    """
     course_uuid = UUIDField()
     course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
     course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
     students = models.ManyToManyField('ReviewUser')
+
     def __unicode__(self):
         return "%s" % (self.course_code)
 
+# The following two models are used in conjuction with each other to give the applciation
+# a representation of the file structure used to upload and retrieve assignment files
 
+        
 class SourceFolder(models.Model):
     
     """Represents a folder (containing folders and/or files)
@@ -108,7 +134,7 @@ class SourceFile(models.Model):
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
     file = models.FileField(upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
-    # file_html = models.TextField(null=False, blank=False)
+
     def __unicode__(self):
         return "(%s)%s" % (self.file_uuid, self.name)
 
@@ -317,7 +343,6 @@ class SourceAnnotationRange(models.Model):
 
 class SourceAnnotationTag(models.Model):
     tag_annotation = models.ForeignKey(SourceAnnotation, related_name="tags")
-
     tag = models.TextField()
 
 

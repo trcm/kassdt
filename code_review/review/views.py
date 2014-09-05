@@ -442,7 +442,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
     context = {}
 
     try:
-        # print request
+        print request
         # Get the current user and form data
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
@@ -450,8 +450,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         text = form['text'].value()
         start = rangeForm['start'].value()
-        # end = rangeForm['end'].value()
-        end = nil
+        end = rangeForm['end'].value()
 
         # TODO This needs a conditional wrapped around it
         form.is_valid()
@@ -471,7 +470,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
                                                         endOffset=end)
 
         newRange.save()
-        # print newAnnotation, newRange
+        print newAnnotation, newRange
 
         return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
     except User.DoesNotExist or SourceFile.DoesNotExist:
@@ -560,14 +559,14 @@ def reviewFile(request, submissionUuid, file_uuid):
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
-    # print currentUser
+    print currentUser
 
     try:
         file = SourceFile.objects.get(file_uuid=file_uuid)
-        # print 'get file'
+        print 'get file'
         code = highlight(file.content, guess_lexer(file.content),
                          HtmlFormatter(linenos="table"))
-        # print code
+        print code
         folders = []
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
