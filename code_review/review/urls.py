@@ -73,14 +73,3 @@ urlpatterns = patterns('',
                            views.review, name="reviews"),
 
 )
-
-
-
-
-
-
-
-
-
-
-

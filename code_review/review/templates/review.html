@@ -1,5 +1,5 @@
 {% extends 'sidebar.html' %}
-
+{% load unfriendly_tags %}
 {% block assignments %}
 <script>
   $(document).ready(function() {
@@ -17,12 +17,10 @@
       {% endif%}
 
       {% if file.file_uuid %}
-      <!-- <li><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}" href="/review/reviews/{{ sub }}/{{ file.file_uuid }}/">{{ file.name }}</button></li> -->
-      <li><a href="/review/file/{{ sub }}/{{ file.file_uuid }}"/>{{ file.name }}</a></li>
-	
-	{% endif%}
-
-	{% endfor %}
+      {% url 'review_file' sub file.file_uuid as fileurl %}
+      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
+      {% endif%}
+    {% endfor %}
   </ul>
 
 </div>
@@ -33,9 +31,6 @@
   {{ code | safe}}
   {% endif%}
 
-  <!-- START Temporary test stuff -->
-
-  <!-- END Temporary test stuff -->
 </div>
 
 <div id="annotation">

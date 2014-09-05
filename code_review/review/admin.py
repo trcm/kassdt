@@ -9,9 +9,13 @@ from django.contrib.auth.forms import UserChangeForm  # , PasswordChangeForm
 
 from django.contrib.auth.models import User
 from review.models import *
-# from django import forms
+
 
 class ReviewUserInline(admin.StackedInline):
+    """
+    This class holds the required information for the Review user
+    data to be displayed in the User admin page.
+    """
     model = ReviewUser
     readonly_fields = ('user_uuid', )
     fields = ("djangoUser", 'user_uuid', 'courses')
@@ -20,6 +24,7 @@ class ReviewUserInline(admin.StackedInline):
 
     def callable(self, ru):
         return ru.user_uuid
+
 
 class UserAdmin(UserAdmin):
     #    list_ldisplay = ("user_uuid", "djangoUser")
@@ -48,6 +53,7 @@ class AssignmentAdmin(admin.ModelAdmin):
     model = Assignment
     list_display = ('course_code', 'name', 'first_display_date',
                     'submission_close_date')
+
     
 # adds models for editing in the admin page
 admin.site.unregister(User)

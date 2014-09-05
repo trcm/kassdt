@@ -1,3 +1,8 @@
+"""
+forms.py - 
+This file contains all the custom forms used throughout the application.
+"""
+
 from django.forms import ModelForm, DateTimeField, DateTimeInput, Textarea, SplitDateTimeWidget, PasswordInput, IntegerField
 # from django.contrib.auth.forms import SetPasswordForm
 # from django.forms import *
@@ -41,27 +46,28 @@ class uploadFile(ModelForm):
         model = SourceFile
 
 
+class annotationForm(ModelForm):
+    """
+    This is paired with the form below when creating annotations on a source 
+    file.
+    """
+    class Meta:
+        model = SourceAnnotation
+        fields = ['text']
+
+
 class annotationRangeForm(ModelForm):
     """
     Creates a range object
     """
     class Meta:
         model = SourceAnnotationRange
-        fields = ['start', 'end']
+        fields = ['start']
+        # fields = ['start', 'end']
         widgets = {
             'start': NumberInput(),
-            'end': NumberInput()
+            # 'end': NumberInput()
         }
-
-
-class annotationForm(ModelForm):
-    """
-    This is paired with the form above when creating 
-    annotations on a source file
-    """
-    class Meta:
-        model = SourceAnnotation
-        fields = ['text']
 
 
 # Can these be deleted? They don't seem to be in use anymore
