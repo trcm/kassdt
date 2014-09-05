@@ -504,7 +504,7 @@ def grabFile(request):
             owner = AssignmentSubmission.objects.get(root_folder=iter).by
             # formatted = path.content
             formatted = highlight(path.content, guess_lexer(path.content),
-                                  HtmlFormatter(linenos="table", style="colorful"))
+                                  HtmlFormatter(linenos="table", style="friendly"))
 
             # get all annotations for the current file
             # if user is the owner of the files or super user get all annotations
