@@ -44,7 +44,9 @@
     {% endfor %}
   </ul>
   {% url 'create_annotation' sub uuid as annotateUrl %}
-  <form id="annotationForm" action="{{ annotateUrl | obfuscate }}">
+  <!-- Obfucations doesn't work on get -->
+  <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
+  <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
