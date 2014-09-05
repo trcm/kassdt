@@ -33,7 +33,10 @@ $(document).ready( function() {
 
 function annotationHighlight() {
   console.log("Even In Death I Still Serve");
-    
+  var arr = $('#startLine ul').map(function(){
+                   return $(this).text();
+                               }).get();
+  console.log(arr);
   //So say we have some list or array of start points
     var array = [1,3,5,7,9];
     //We could run this function over that array and it 
@@ -41,10 +44,12 @@ function annotationHighlight() {
     //.highlight css class
     var text = '2';
 
-    for(z = 0; z < array.length; z++) {
+    for(z = 0; z < arr.length; z++) {
       $( '.linenos' ).html( function ( i, html ) {
           var regexp, replacement;
-          regexp = RegExp( '(' + array[z] + ')' );
+          x = parseInt(arr[z]);
+          console.log(x);
+          regexp = RegExp( '(' + x + ')' );
           replacement = '<span class="highlight">$1</span>';
           return html.replace( regexp, replacement );
       });
