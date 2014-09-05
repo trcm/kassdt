@@ -59,6 +59,20 @@ class Course(models.Model):
 
 
 class SourceFolder(models.Model):
+    
+    """Represents a folder (containing folders and/or files)
+    
+    A SourceFolder knows its parent SourceFolder and has a one-to-many relationship
+    with SourceFolder and SourceFile objects. 
+
+    Attributes: 
+        folder_uuid (UUIDField) -- the UUID of this folder
+        name (TextField) -- the name of this folder, for instance 'assignment1'
+        parent (SourceFolder) -- the parent of this folder; the SourceFolder object representing the folder in which
+                  this folder lives. 
+                  
+    """
+
     folder_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
     parent = models.ForeignKey('self', null=True, related_name="folders")
@@ -75,6 +89,21 @@ class SourceFolder(models.Model):
 
 
 class SourceFile(models.Model):
+    
+    """Represents a file (containing, for instance, source code)
+
+    Represents a file which knows which folder it belongs to. 
+
+    Attributes:
+        folder (SourceFolder) -- the folder in which this file lives
+        file_uuid (UUIDField) -- the UUID of this file
+        name (TextField) -- the name of this file, e.g., "hello.c"
+    
+    Methods:
+        content(self) -- gets the contents of this file.
+
+    """
+
     folder = models.ForeignKey(SourceFolder, null=False, blank=False, related_name="files")
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
@@ -93,6 +122,9 @@ class SourceFile(models.Model):
 
     @property
     def content(self):
+        """Get the contents of this file.
+
+        """
         try:
             # self.file.open("rU")
             # print "Open"
@@ -102,8 +134,24 @@ class SourceFile(models.Model):
             self.file.close()
 
 
-
 class SubmissionTestResults(models.Model):
+    
+    """Represents the test results for a particular assignment submission
+    
+    When the automatic grading is run on an assignment submission, the results
+    of the tests are stored in this class.
+
+    Attributes:
+        tests_completed (NullBooleanField) -- whether or not the tests have been completed.
+
+    Methods:
+        overall_percentage(self) -- return the overall percentage correct
+        total_tests(self) -- return the number of tests completed 
+        total_passes(self) -- return the number of total passing tests 
+        total_failures(self) -- return the total number of failing tests
+    
+    """
+    
     tests_completed = models.NullBooleanField()
 
     def overall_percentage(self):
@@ -143,6 +191,36 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
+    
+    """Represents an assignment, as in assignment specifications such as due dates etc.
+
+    Not to be confused with an AssignmentSubmission, which is a particular submission
+    to an assignment. An Assignment details things such as due dates and submission open
+    dates. Assignment has a one-to-many relationship with AssignmentSubmission and a 
+    many-to-one relationship with Course.
+
+    Attributes:
+        course_code (ForeignKey) -- points to the Course to which this assignment belongs.
+        assignment_uuid (UUIDField) -- the UUID of this assignment 
+        name (TextField) -- the name of this assignment, e.g., "The Bomb"
+        repository_format (TextField) -- specifies the format of the repository address
+                                         to which students should commit their code. 
+                                         See the helpstring.
+        first_display_date (DateTimeField) -- the date and time at which this assignment
+                                              first becomes visible to students. 
+                                              (default timezone.now())
+        submission_open_date (DateTimeField) -- the date and time after which students are 
+                                                able to make a submission for this assignment
+                                                (default timezone.now())
+        submission_close_date (DateTimeField) -- the date and time at which submissions close
+                                                 for this assignment. 
+        review_open_date (DateTimeField) -- the date and time after which students are able to
+                                            review each others' code.
+                                            (default timezone.now())
+        review_close_date (DateTimeField) -- the date and time at which peer reviews close.
+
+    """
+
     course_code = models.ForeignKey('Course',
                                     default=Course.objects.get(id=1),
                                     related_name="assignments")
@@ -172,6 +250,23 @@ class Assignment(models.Model):
 
 
 class AssignmentSubmission(models.Model):
+    
+    """Represents a submission for a particular Assignment. 
+
+    Contains information such as when the submission was made, and by whom. 
+    Some assignments may allow multiple submissions. AssignmentSubmission has
+    a many-to-one relationship with Assignment and a one-to-one relationship
+    with ReviewUser. Has a one-to-one relationship with SourceFolder, and with
+    SubmissionTestResults. 
+
+    Attributes:
+        submission_uuid (UUIDField) -- the UUID of this submission. 
+        submission_date (DateTimeField) -- the date and time at which this submission
+                                           was submitted. 
+        by (ReviewUser) -- the student who made this submission. 
+    
+    """
+    
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
     by = models.ForeignKey(ReviewUser)
