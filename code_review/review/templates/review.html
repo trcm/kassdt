@@ -17,10 +17,8 @@
       {% endif%}
 
       {% if file.file_uuid %}
-      {% url "review.reviewFile" sub file.file_uuid as fileurl %}
-      <li><a href="{{ fileurl }}">{{ file.name }}</a></li>
-      <li><a href="/review/file/{{ sub }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
-	
+      {% url 'review_file' sub file.file_uuid as fileurl %}
+      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
       {% endif%}
     {% endfor %}
   </ul>
@@ -33,9 +31,6 @@
   {{ code | safe}}
   {% endif%}
 
-  <!-- START Temporary test stuff -->
-
-  <!-- END Temporary test stuff -->
 </div>
 
 <div id="annotation">
