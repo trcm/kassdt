@@ -46,12 +46,16 @@ repo_format_help_text = """
 
 class ReviewUser(models.Model):
     """
-    ReviewUser -
-    This model is used to extend the default Django User model.
-    Currently this is used to show which courses a user is enrolled in
-    as well as a number of boolean fields showing whether a user is 
-    a member of staff, as well as a firstLogin flag which will be used
-    to prompt the user to change their password.
+    Represents a user of the CPRS.  This model is used to extend the
+    inbuilt django User model to suit our purposes.
+
+    Attributes:
+        user_uuid (UUIDFIeld) -- unique identifier for the user
+        djangoUser (OneToOneField)  -- shows relationship between the inbuild model
+        and the ReviewUsermodel
+        isStaff (BooleanField) -- boolean to show whether the Reviewuser is staff
+        courses (ManyToManyField) -- represents which courses the User is enrolled in
+        firstLogin (BooleanFIeld) -- boolean flag used to prompt user to change password
     """
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
@@ -68,9 +72,14 @@ class ReviewUser(models.Model):
 
 class Course(models.Model):
     """
-    Course - This models contains information about the courses being used with the system.
-    It contains the name and course code as well as a relationship to show which users 
-    are enrolled in which course.
+    Represents a course in the database. Also shows the relationship between
+    courses and their enrolled students.
+
+    Attributes:
+        course_uuid (UUIDField) -- unique identifier for the course
+        course_code (CharField) -- the course name for the course ie. code
+        course_name (CharField) -- Full name of the course
+        students (ManyToManyField) -- Many to many relationship to show enrolment
     """
     course_uuid = UUIDField()
     course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
@@ -83,20 +92,20 @@ class Course(models.Model):
 # The following two models are used in conjuction with each other to give the applciation
 # a representation of the file structure used to upload and retrieve assignment files
 
-        
-class SourceFolder(models.Model):
-    
-    """Represents a folder (containing folders and/or files)
-    
-    A SourceFolder knows its parent SourceFolder and has a one-to-many relationship
-    with SourceFolder and SourceFile objects. 
 
-    Attributes: 
+class SourceFolder(models.Model):
+
+    """Represents a folder (containing folders and/or files)
+
+    A SourceFolder knows its parent SourceFolder and has a one-to-many relationship
+    with SourceFolder and SourceFile objects.
+
+    Attributes:
         folder_uuid (UUIDField) -- the UUID of this folder
         name (TextField) -- the name of this folder, for instance 'assignment1'
         parent (SourceFolder) -- the parent of this folder; the SourceFolder object representing the folder in which
-                  this folder lives. 
-                  
+                  this folder lives.
+
     """
 
     folder_uuid = UUIDField()
@@ -115,16 +124,16 @@ class SourceFolder(models.Model):
 
 
 class SourceFile(models.Model):
-    
+
     """Represents a file (containing, for instance, source code)
 
-    Represents a file which knows which folder it belongs to. 
+    Represents a file which knows which folder it belongs to.
 
     Attributes:
         folder (SourceFolder) -- the folder in which this file lives
         file_uuid (UUIDField) -- the UUID of this file
         name (TextField) -- the name of this file, e.g., "hello.c"
-    
+
     Methods:
         content(self) -- gets the contents of this file.
 
@@ -161,9 +170,9 @@ class SourceFile(models.Model):
 
 
 class SubmissionTestResults(models.Model):
-    
+
     """Represents the test results for a particular assignment submission
-    
+
     When the automatic grading is run on an assignment submission, the results
     of the tests are stored in this class.
 
@@ -172,12 +181,12 @@ class SubmissionTestResults(models.Model):
 
     Methods:
         overall_percentage(self) -- return the overall percentage correct
-        total_tests(self) -- return the number of tests completed 
-        total_passes(self) -- return the number of total passing tests 
+        total_tests(self) -- return the number of tests completed
+        total_passes(self) -- return the number of total passing tests
         total_failures(self) -- return the total number of failing tests
-    
+
     """
-    
+
     tests_completed = models.NullBooleanField()
 
     def overall_percentage(self):
@@ -217,29 +226,29 @@ class SubmissionTest(models.Model):
 
 
 class Assignment(models.Model):
-    
+
     """Represents an assignment, as in assignment specifications such as due dates etc.
 
     Not to be confused with an AssignmentSubmission, which is a particular submission
     to an assignment. An Assignment details things such as due dates and submission open
-    dates. Assignment has a one-to-many relationship with AssignmentSubmission and a 
+    dates. Assignment has a one-to-many relationship with AssignmentSubmission and a
     many-to-one relationship with Course.
 
     Attributes:
         course_code (ForeignKey) -- points to the Course to which this assignment belongs.
-        assignment_uuid (UUIDField) -- the UUID of this assignment 
+        assignment_uuid (UUIDField) -- the UUID of this assignment
         name (TextField) -- the name of this assignment, e.g., "The Bomb"
         repository_format (TextField) -- specifies the format of the repository address
-                                         to which students should commit their code. 
+                                         to which students should commit their code.
                                          See the helpstring.
         first_display_date (DateTimeField) -- the date and time at which this assignment
-                                              first becomes visible to students. 
+                                              first becomes visible to students.
                                               (default timezone.now())
-        submission_open_date (DateTimeField) -- the date and time after which students are 
+        submission_open_date (DateTimeField) -- the date and time after which students are
                                                 able to make a submission for this assignment
                                                 (default timezone.now())
         submission_close_date (DateTimeField) -- the date and time at which submissions close
-                                                 for this assignment. 
+                                                 for this assignment.
         review_open_date (DateTimeField) -- the date and time after which students are able to
                                             review each others' code.
                                             (default timezone.now())
@@ -276,23 +285,23 @@ class Assignment(models.Model):
 
 
 class AssignmentSubmission(models.Model):
-    
-    """Represents a submission for a particular Assignment. 
 
-    Contains information such as when the submission was made, and by whom. 
+    """Represents a submission for a particular Assignment.
+
+    Contains information such as when the submission was made, and by whom.
     Some assignments may allow multiple submissions. AssignmentSubmission has
     a many-to-one relationship with Assignment and a one-to-one relationship
     with ReviewUser. Has a one-to-one relationship with SourceFolder, and with
-    SubmissionTestResults. 
+    SubmissionTestResults.
 
     Attributes:
-        submission_uuid (UUIDField) -- the UUID of this submission. 
+        submission_uuid (UUIDField) -- the UUID of this submission.
         submission_date (DateTimeField) -- the date and time at which this submission
-                                           was submitted. 
-        by (ReviewUser) -- the student who made this submission. 
-    
+                                           was submitted.
+        by (ReviewUser) -- the student who made this submission.
+
     """
-    
+
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
     by = models.ForeignKey(ReviewUser)
@@ -318,9 +327,26 @@ class AssignmentSubmission(models.Model):
 
 
 # BEGIN ANNOTATION STORAGE ###
-
+# The following models represent the annotation on the source files by the users;
 
 class SourceAnnotation(models.Model):
+
+    """
+    Represents an annotation on a SourceFile by the user.
+
+    Attributes:
+        annotation_uuid (UUIDField) -- unique identifier for the annotation
+        user (ForeignKey) -- links the annotation to a specific user
+        source (ForeignKey) -- links the annotation to a specific File
+        created (DateTimeFIeld) -- field to show the creation date and time
+        updates (DateTimeField) -- field to show when the annotation is updated
+        text (TextField) -- the actual content of the annotation
+        quote (TextField) -- a quote from the annotation text
+
+    Methods:
+        __str__(self) -- returns a string representation of the object
+    """
+
     annotation_uuid = UUIDField()
     user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
@@ -334,11 +360,26 @@ class SourceAnnotation(models.Model):
 
 
 class SourceAnnotationRange(models.Model):
+
+    """
+    Represents the range of the annotation the user is creating
+
+    Attributes:
+        range_annotation (ForeignKey) -- links the range to an annotation
+        start (TextField) -- the begining line of the annotation
+        end (TextField) -- the line on which the annotation ends
+        startOffset (PositiveIntegerField) -- Character offsets for the range
+        endOffset (PositiveIntegerFIeld) -- Character offsets for the range
+    Returns:
+    type
+    """
     range_annotation = models.ForeignKey(SourceAnnotation, related_name="ranges")
     start = models.TextField()
     end = models.TextField()
     startOffset = models.PositiveIntegerField()
     endOffset = models.PositiveIntegerField()
+
+# Source Annotation Tag is scheduled to be deleted from the database
 
 
 class SourceAnnotationTag(models.Model):
@@ -346,7 +387,7 @@ class SourceAnnotationTag(models.Model):
     tag = models.TextField()
 
 
-## Utility Methods ##
+# Utility Methods ##
 
 def get_user_for_django_user(usr):
     """

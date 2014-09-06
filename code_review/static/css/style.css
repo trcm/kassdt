@@ -11,6 +11,8 @@
 
 .highlight {
   background-color: yellow;
-
 }
 
+#startLine {
+  visibility: hidden;
+}

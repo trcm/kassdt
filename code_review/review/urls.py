@@ -1,3 +1,9 @@
+"""
+urls.py - This contains all the routes for the application.
+The routes are split into groups depending on the section
+of the application they use.  This will be split into
+seperate appliations at a later date.
+"""
 from django.conf.urls import patterns, include, url
 
 from review import views
@@ -57,20 +63,23 @@ urlpatterns = patterns('',
                        
                        # Annotation
 
-                       # Assignment page
+                       # Course page
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
                            views.assignment_page, name='assignment_page'),
                        
-
+                       # Test route for uploading files
                        url(r'upload', views.upload, name='upload'),
+
+                       # Creates an annotation using the submission and file uuids
                        url(r'annotation/create/(?P<submission_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.createAnnotation, name="create_annotation"),
-                       # url(r'file/', views.grabFile, name="grab_file"),
 
+                       # Grabs a files from the specified submission and displays it.
                        url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.reviewFile, name="review_file"),
-                       
-                       url(r'reviews/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
+
+                       # Displays a specific submission
+                       url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
                            views.review, name="reviews"),
 
 )

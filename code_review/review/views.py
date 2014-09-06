@@ -45,12 +45,21 @@ from git_handler import *
 import os
 import os.path
 
+
 @login_required(login_url='/review/login_redirect/')
 def index(request):
+
     """
-    this is the basic index view, it required login before the user can do any
-    as you can see at the moment this shows nothing other than a logout button
-    as I haven't added any content to it yet
+    index(HttpRequest) is the default index view for the application.
+    If the user is a student then they are redirected to the student_homepage
+    view.
+
+    Attributes:
+       request(HttpRequest) -- the http request from the user
+
+    Returns:
+        HttpResponse - Renders the http request using the given context and the
+        sidebar.html template.
     """
     context = {}
 
@@ -70,32 +79,63 @@ def index(request):
 
     return render(request, 'sidebar.html', context)
 
-# simply logs the user out
+
 def logout(request):
+
+    """
+    logout(request) - Simple logout function to remove the users authentication
+
+    Parameters:
+        request (HttpRequest) -- Users http request
+    Returns:
+        HttpReponse -- the use will be logged out and redirected to a simple
+        logout page
+
+    """
     logout(request)
     return HttpResponse("logout")
-    # return redirect('/review/')
 
 
 @login_required(login_url='/review/login_redirect/')
 # @user_passes_test(staffTest)
 def coursePage(request, course_code):
     """
-    Redirects the user to the course page the user has selected
+    coursePage(request, course_code) - redirects the user to 
+    the course page for their desired course. If the course 
+    does not exist then they will be redirected to a 404 page.
+    
+    Parameters:
+        request (HttpRequest) -- users http request object
+        course_code (HttpRequest) -- the desired course code embedded in the 
+        httprequest object.
+
+    Returns:
+    HttpResponse -- if the function is successful the user will be redirected
+    to the desired course page using render(), with the correct context
+    dictionary, otherwise they will redirected toa 404.
     """
+
     context = {}
-    # get the current assignments for the subject, subject choosing
-    # will be added later
-    U = User.objects.get(id=request.user.id)
-    context['user'] = U
-    code = course_code.encode('ascii', 'ignore')
-    c = Course.objects.get(course_code=code)
-    assignments = c.assignments.all()
-    context['assignments'] = assignments
-    context['course'] = c
+    # get the current assignments for the subject
+
+    # grab the user from the http request
     try:
-        print "Getting courses"
+        U = User.objects.get(id=request.user.id)
+        context['user'] = U
+
+        # grab course code from http reqest and attempt to find course
+        # in database
+        code = course_code.encode('ascii', 'ignore')
+        c = Course.objects.get(course_code=code)
+
+        # get all current assignments for that course
+        assignments = c.assignments.all()
         courses = U.reviewuser.courses.all()
+
+        
+        context['assignments'] = assignments
+        context['course'] = c
+
         context['courses'] = courses
         return render(request, 'course_page.html', context)
     except Exception as UserExcept:
