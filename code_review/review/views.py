@@ -227,7 +227,15 @@ def validateAssignment(request):
     Validates the data from the assignment creation form.
     If the data is valid then it creates the assignment,
     otherwise the user is kicked back to the form to fix the data
+    
+    Parameters:
+    request (HttpRequest) -- http request from the user to create an assignment
+
+    Returns:
+    HttpResponse redirecting the usr to either the course page, 
+    or back to the assignment creation form to fix any errors.
     """
+
     form = None
     context = {}
     # gets the data from the post request
@@ -258,10 +266,12 @@ def validateAssignment(request):
                                                 review_close_date=review_close_date)
                 ass.save()
             except Exception as AssError:
-                # prints the exception
+                # prints the exception to console
                 print AssError.args
+
             return HttpResponseRedirect('/review/course_admin/')
 
+    # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
     context['course'] = Course.objects.get(id=request.POST['course_code'])
 
@@ -273,8 +283,17 @@ def validateAssignment(request):
 def validateUser(request):
     """
     validates the data for user creation, pretty much the same as the view above
-    but for users.  Also creates a new review user for the user
+    but for users.  Also creates a new review user for the user.  The user must
+    be a staff member to use this view.
+    
+    Parameters:
+    request (HttpRequest) -- http request by the user to create a new user
+    
+    Returns:
+    HttpReponse redirecting the user to either the userList admin or
+    back to the user creation form to fix any errors.
     """
+
     form = None
     context = {}
 
@@ -308,7 +327,7 @@ def validateUser(request):
                     newRUser.save()
                 except Exception as r:
                     print r.args
-                    context['error'] = "Errr Something went wrong, Tom fix this"
+                    context['error'] = "Opps, Something went wrong."
                     return render(request, 'admin/userCreate.html', context)
 
                 context['users'] = User.objects.all()
@@ -326,7 +345,16 @@ def validateCourse(request):
     """
     validateCourse validates the data from the course creation template
     If the course is valid then it will create a new object.
+    The user must be a staff member to use this view.
+    
+    Parameters:
+    request (HttpRequest) -- request from the user to create a new course
+    
+    Returns:
+    HttpResponse redirecting the user to the courseList page or back
+    to the course creation page to fix any errors.
     """
+
     form = None
     context = {}
 
@@ -594,10 +622,15 @@ def createAnnotation(request, submission_uuid, file_uuid):
     """
     Creates an annotation form the currently opened file.
     If it succesfully creates an annotation then the user is returned the current file.
+    
+    Parameters:
+    submission_uuid (string) -- the uuid of the current submission
+    file_uuid (string) -- the uuid of the current file
 
-    :submission_uuid - the uuid of the current submission
-    :file_uuid - the uuid of the current file
+    Returns:
+    returns
     """
+
     context = {}
 
     try:
@@ -632,8 +665,12 @@ def createAnnotation(request, submission_uuid, file_uuid):
         print newAnnotation, newRange
 
         return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
-    except User.DoesNotExist or SourceFile.DoesNotExist:
-        raise Http404
+    except User.DoesNotExist:
+        print "This user doesn't exist! %r" % currentUser
+        return error_page(request, "This user does not exist")
+        # raise Http404
+    except SourceFile.DoesNotExit:
+        return error_page(request, "This file does not exist")
 
     return HttpResponse("test")
 
@@ -647,73 +684,84 @@ def grabFile(request):
     This was used in the Ajax version of this application but
     it isn't currently used.
     """
-    print request.session['_auth_user_id']
-    # get current user
-    currentUser = User.objects.get(id=request.session['_auth_user_id'])
-    print currentUser
-    if request.is_ajax():
-        try:
-            toGrab = request.GET['uuid']
-            path = SourceFile.objects.get(file_uuid=toGrab)
-            # get root folder
-            iter = path.folder
-            while iter.parent is not None:
-                iter = iter.parent
-            # get owner id
-            owner = AssignmentSubmission.objects.get(root_folder=iter).by
-            # formatted = path.content
-            formatted = highlight(path.content, guess_lexer(path.content),
-                                  HtmlFormatter(linenos="table", style="friendly"))
+    # print request.session['_auth_user_id']
+    # # get current user
+    # currentUser = User.objects.get(id=request.session['_auth_user_id'])
+    # print currentUser
+    # if request.is_ajax():
+    #     try:
+    #         toGrab = request.GET['uuid']
+    #         path = SourceFile.objects.get(file_uuid=toGrab)
+    #         # get root folder
+    #         iter = path.folder
+    #         while iter.parent is not None:
+    #             iter = iter.parent
+    #         # get owner id
+    #         owner = AssignmentSubmission.objects.get(root_folder=iter).by
+    #         # formatted = path.content
+    #         formatted = highlight(path.content, guess_lexer(path.content),
+    #                               HtmlFormatter(linenos="table", style="friendly"))
 
-            # get all annotations for the current file
-            # if user is the owner of the files or super user get all annotations
-            if currentUser.is_staff or currentUser == owner:
-                annotations = SourceAnnotation.objects.filter(source=path)
-            else:
-                annotations = Sou
-                rceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
+    #         # get all annotations for the current file
+    #         # if user is the owner of the files or super user get all annotations
+    #         if currentUser.is_staff or currentUser == owner:
+    #             annotations = SourceAnnotation.objects.filter(source=path)
+    #         else:
+    #             annotations = Sou
+    #             rceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
 
-            annotationRanges = []
-            aDict = []
+    #         annotationRanges = []
+    #         aDict = []
 
-            for a in annotations:
-                annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
-                aDict.append(model_to_dict(a))
+    #         for a in annotations:
+    #             annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
+    #             aDict.append(model_to_dict(a))
 
-            # create the array to return
-            ret = []
-            ret.append(formatted)
-            # zip up the two annotation lists so they can be called one after each other
-            ret.append(zip(aDict, annotationRanges))
-            # send the formatted file and the current annotations to the ajax call
-            return HttpResponse(json.dumps(ret))
-        except SourceFile.doesNotExist:
-            print "Source file doesn't not exist"
-            raise Http404
+    #         # create the array to return
+    #         ret = []
+    #         ret.append(formatted)
+    #         # zip up the two annotation lists so they can be called one after each other
+    #         ret.append(zip(aDict, annotationRanges))
+    #         # send the formatted file and the current annotations to the ajax call
+    #         return HttpResponse(json.dumps(ret))
+    #     except SourceFile.doesNotExist:
+    #         print "Source file doesn't not exist"
+    #         raise Http404
 
 
 def upload(request):
     """
     Test view for uploading files, not needed in the final version
     """
-    print "upload"
-    if request.method == "POST":
-        form = uploadFile(request.POST, request.FILES)
-        if form.is_valid():
-            print "valid"
-            form.save()
-            return HttpResponse("Upload")
-    else:
-        return HttpResponse("Fail")
+    # print "upload"
+    # if request.method == "POST":
+    #     form = uploadFile(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         print "valid"
+    #         form.save()
+    #         return HttpResponse("Upload")
+    # else:
+    #     return HttpResponse("Fail")
 
 
 def reviewFile(request, submissionUuid, file_uuid):
     """
-    Grabs all the files for the current submission, but it also
-    grabs and pygmentizes the current file.
     :submissionUuid - current submission identifier
     :file_uuid - the identifier of the rile to be annotated.
     """
+    """
+    Grabs all the files for the current submission, but it also
+    grabs and pygmentizes the current file and displays it to the user.
+    
+    Parameters:
+    submissionUuid (string) - submission identifer for the current sub.
+    file_uuid (String) -- file identifier
+    
+    Returns:
+    HttpReponse redirecting the user to the review.html template
+    showing the selected file or else redirects to a 404.
+    """
+
     uuid = submissionUuid.encode('ascii', 'ignore')
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
@@ -778,7 +826,15 @@ def reviewFile(request, submissionUuid, file_uuid):
 
 def review(request, submissionUuid, **kwargs):
     """
-    review simply grabs all the files for the current submission.
+    Grabs all the files for the current submission, and shows them
+    as a list to the user
+    
+    Parameters:
+    submissionUuid (string) - submission identifer for the current sub.
+    
+    Returns:
+    HttpReponse redirecting the user to the review.html template or else
+    redirects to a 404.
     """
     uuid = submissionUuid.encode('ascii', 'ignore')
     context = {}
