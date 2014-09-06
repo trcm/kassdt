@@ -439,6 +439,32 @@ def can_submit(asmt):
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
 
+def user_can_submit(user, asmt):
+    """Return true if this user has not yet made a submission for this asmt or 
+       if multiple submission are allowed.
+
+    Not to be confused with can_submit, which only checks that the the current
+    time is between submission open and close dates.
+
+    Arguments:
+        user (ReviewUser) -- we check if user has already submitted.
+        asmt (Assignment) -- the assignment for which we want to make the check.
+
+    Returns:
+        True if the user can make a submission, i.e., if they have not yet
+        made a submission, or if multiple submissions are allowed. Return 
+        False otherwise. 
+    """
+
+    # multiple submissions allowed
+    if(asmt.multiple_submissions):
+        return True
+    # user has never submitted anything for asmt
+    elif(not AssignmentSubmission.objects.filter(by=user, submission_for=asmt)):
+        return True
+    else:
+        return False
+        
 @login_required(login_url='/review/login_redirect/')
 def submit_assignment(request, course_code, asmt):
     """Make a submission for an assignment.
@@ -446,7 +472,9 @@ def submit_assignment(request, course_code, asmt):
     When the user enters the address of their reposistory (e.g., on github) 
     into the submission page, this method is called to clone the contents of the
     given repository and populate the database with an AssignmentSubmission and 
-    SourceFolder and SourceFile objects. 
+    SourceFolder and SourceFile objects. If submissions are closed and the user
+    somehow landed on the submission URL, displays a page saying that submissions 
+    are not open.
 
     Arguments:
         request (HttpRequest) -- the HTTP request object asking to make a submission.
@@ -499,9 +527,16 @@ def submit_assignment(request, course_code, asmt):
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
 
-    else: # not POST; show the submission page.
+    else: # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
-        template = 'assignment_submission.html'
+        if(not can_submit(assignment)):
+            template = 'cannot_submit.html'
+            context['errorMsg'] = 'Submissions are closed'
+        elif(not user_can_submit(U.reviewuser, assignment)):
+            template = 'cannot_submit.html'
+            context['errorMsg'] = 'You have already submitted.'
+        else:
+            template = 'assignment_submission.html'
 
     context['form'] = form
     context['course'] = course

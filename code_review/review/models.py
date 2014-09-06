@@ -253,6 +253,9 @@ class Assignment(models.Model):
                                             review each others' code.
                                             (default timezone.now())
         review_close_date (DateTimeField) -- the date and time at which peer reviews close.
+        multiple_submissions (BooleanField) -- true if multiple submissions (prior to the due date)
+                                               are allowed for this assignment, false otherwise. 
+                                               (default True)
 
     """
 
@@ -267,6 +270,7 @@ class Assignment(models.Model):
     submission_close_date = models.DateTimeField()
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
+    multiple_submissions = models.BooleanField(default=True)
 
     def __unicode__(self):
         return "(%s)%s" % (self.assignment_uuid, self.name)
@@ -281,6 +285,7 @@ class Assignment(models.Model):
             "submission_close_date": self.submission_close_date,
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
+            "multiple_submissions": self.multiple_submissions,
             })
 
 
