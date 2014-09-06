@@ -7,7 +7,7 @@ for all the features to date.
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotFound
 
 # authentication libraries
 # base django user system
@@ -41,6 +41,7 @@ from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, up
 
 from django.utils import timezone
 
+# For handling assignments submitted via git repo
 from git_handler import *
 
 import os
@@ -367,12 +368,17 @@ def student_homepage(request):
         A HttpResponse object which is used to render the homepage.
     """
     context = {}
-    U = User.objects.get(id=request.user.id)
-    context['user'] = U
-    context['open_assignments'] = get_open_assignments(U)
-    # For the course template which we inherit from
-    context['courses'] = U.reviewuser.courses.all()
-    context['form'] = annotationForm()
+    try:
+        U = User.objects.get(id=request.user.id)
+        context['user'] = U
+        context['open_assignments'] = get_open_assignments(U)
+        # For the course template which we inherit from
+        context['courses'] = U.reviewuser.courses.all()
+        context['form'] = annotationForm()
+    except User.DoesNotExist as err:
+        print err.args
+        return error_page(request, "User does not exist") 
+    
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
@@ -392,13 +398,28 @@ def get_open_assignments(user):
     timenow = timezone.now()
     openAsmts = []
     courses = user.reviewuser.courses.all()
+    
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
         for assignment in assignments:
             if(can_submit(assignment)):
                 openAsmts.append((course, assignment))
+
     return openAsmts
+
+def error_page(request, message):
+    """Display an error page with Http status 404.
+
+    Arguments:
+        request (HttpRequest) -- the request which provoked the error.
+        message (String) -- message to display on the 404 page.
+
+    Returns:
+        HttpResponse object to display error page.
+    """
+    context = {'errorMessage':message}
+    return render(request, 'error.html', context, status=404)
 
 @login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
@@ -415,19 +436,32 @@ def assignment_page(request, course_code, asmt):
     '''
 
     context = {}
+    
+    try:
+        U = User.objects.get(id=request.user.id)
+        courseList = U.reviewuser.courses.all()
+        courseCode = course_code.encode('ascii', 'ignore')
+        course = Course.objects.get(course_code=courseCode)
+        asmtName = asmt.encode('ascii', 'ignore')
+        assignment = Assignment.objects.get(name=asmtName)
 
-    U = User.objects.get(id=request.user.id)
-    courseList = U.reviewuser.courses.all()
-    courseCode = course_code.encode('ascii', 'ignore')
-    course = Course.objects.get(course_code=courseCode)
-    asmtName = asmt.encode('ascii', 'ignore')
-    assignment = Assignment.objects.get(name=asmtName)
+        context['user'] = U
+        context['course'] = course
+        context['asmt'] = assignment
+        context['courses'] = courseList
+        context['canSubmit'] = can_submit(assignment)
 
-    context['user'] = U
-    context['course'] = course
-    context['asmt'] = assignment
-    context['courses'] = courseList
-    context['canSubmit'] = can_submit(assignment)
+    except User.DoesNotExist:
+        print("User doesn't exist!")
+        return error_page(request, 'User does not exist!')
+
+    except Assignment.DoesNotExist:
+        msg = "Assignment %s does not exist" %asmtName
+        return error_page(request, msg) 
+    
+    except Course.DoesNotExist:
+        msg = "Course %s does not exist" %courseCode
+        return error_page(request, msg) 
 
     return render(request, 'assignment_page.html', context)
 
