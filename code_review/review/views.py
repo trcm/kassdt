@@ -5,6 +5,7 @@ This file will eventually be separated into various files for each
 of the main sections of the application.  Currently it contains views,
 for all the features to date.
 """
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
@@ -149,9 +150,16 @@ def coursePage(request, course_code):
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
     """
-    creates a new assignment for the current course,
-    this can only be used if the user has staff access.
+    create_assignment is used by the staff memebers of the system to create
+    new assignments for the students.
+    
+    Parameters:
+    parameters
+    
+    Returns:
+    returns
     """
+
     context = {}
 
     # grab course code from the url and convert to a string from unicode
