@@ -347,8 +347,14 @@ def validateCourse(request):
 @login_required(login_url='/review/login_redirect/')
 def student_homepage(request):
     """
-    Displays all the information for the current user, including upcoming assignments
-    and tasks
+    Displays all critical information for the current user, including upcoming assignments
+    and tasks.
+
+    Arguments:
+        request (HttpRequest) -- the http request asking for the homepage.
+
+    Returns:
+        A HttpResponse object which is used to render the homepage.
     """
     context = {}
     U = User.objects.get(id=request.user.id)
@@ -360,7 +366,7 @@ def student_homepage(request):
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
-    ''' Grabs the list of currently open assignments for the current user
+    ''' Returns the list of currently open assignments for the current user
     
     Here open assignment means that a student is able to make a submission
     for the assignment at the time this method is called. I.e., submissions
