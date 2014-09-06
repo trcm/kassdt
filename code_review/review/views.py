@@ -154,10 +154,11 @@ def create_assignment(request, course_code):
     new assignments for the students.
     
     Parameters:
-    request (HttpRequest) -- 
+    request (HttpRequest) -- Request to create assignment
+    course_code (String) -- encoded string of the courses code
     
     Returns:
-    returns
+    HttpReponse rendering the new_assignment template
     """
 
     context = {}
@@ -177,12 +178,14 @@ def create_assignment(request, course_code):
 
     return render(request, 'admin/new_assignment.html', context)
 
-# course administration alternative instead of using the django backend
 
+#  The following 3 views are simply for use in testing, they return all the
+#  current users and courses. 
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
 def createUser(request):
+
     context = {}
     userForm = UserCreationForm()
     context['form'] = userForm
@@ -255,7 +258,6 @@ def validateAssignment(request):
                 ass.save()
             except Exception as AssError:
                 # prints the exception
-                print "DREADED EXCEPTION"
                 print AssError.args
             return HttpResponseRedirect('/review/course_admin/')
 
