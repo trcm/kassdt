@@ -12,7 +12,7 @@ from models import *
 
 
 class AssignmentSubmissionForm(ModelForm):
-    submission_repository = forms.URLField()
+    submission_repository = forms.CharField(label='repo_address')
     def clean_url(self):
         cleaned_data = self.cleaned_data
     class Meta:

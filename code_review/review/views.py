@@ -355,8 +355,14 @@ def validateCourse(request):
 @login_required(login_url='/review/login_redirect/')
 def student_homepage(request):
     """
-    Displays all the information for the current user, including upcoming assignments
-    and tasks
+    Displays all critical information for the current user, including upcoming assignments
+    and tasks.
+
+    Arguments:
+        request (HttpRequest) -- the http request asking for the homepage.
+
+    Returns:
+        A HttpResponse object which is used to render the homepage.
     """
     context = {}
     U = User.objects.get(id=request.user.id)
@@ -368,13 +374,19 @@ def student_homepage(request):
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
-    '''
-    Grabs the list of currently open assignments for
-    the current user
-    :user User
+    ''' Returns the list of currently open assignments for the current user
+    
+    Here open assignment means that a student is able to make a submission
+    for the assignment at the time this method is called. I.e., submissions
+    are open and the due date has not passed yet. 
 
-    return List[(Course, Assignment)]
+    Arguments:
+        user (User) -- the user whose open assignments we want to retrieve.
+    
+    Returns:
+        A list whose entries are a tuple (Course, Assignment) 
     '''
+    
     timenow = timezone.now()
     openAsmts = []
     courses = user.reviewuser.courses.all()
@@ -388,11 +400,18 @@ def get_open_assignments(user):
 
 @login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
+    '''Displays the data (due date, review open date etc.) for a specific assignment.
+
+    Arguments:
+        request (HttpRequest) -- the HTTP request asking to view the assignment.
+        course_code (Course.course_code) -- the course code of the course to which
+                                            the assignment we want to display belongs.
+        asmt (Assignment) -- the assignment we want to display. 
+    
+    Returns:
+        A HttpResponse object which is used to render the webpage.
     '''
-    assignment_page Displays the data for a specific assignment
-    :course_code Course.course_code
-    :asmt Assignment
-    '''
+
     context = {}
 
     U = User.objects.get(id=request.user.id)
@@ -411,22 +430,71 @@ def assignment_page(request, course_code, asmt):
     return render(request, 'assignment_page.html', context)
 
 def can_submit(asmt):
-    '''
-    :asmt Assignment
+    '''Check whether a student can make a submission to an assignment. 
 
-    Return True if allowed to submit asmt now
-    False otherwise
+    Checks whether asmt is open for submission; i.e., determine whether or not
+    submissions have opened, and whether the due date has passed. 
+
+    Arguments:
+        asmt (Assignment) -- the assignment for which we want to check whether
+                             or not submission are open. 
+
+    Returns:
+        True if allowed to submit asmt now, False otherwise
     '''
+
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
 
+def user_can_submit(user, asmt):
+    """Return true if this user has not yet made a submission for this asmt or 
+       if multiple submission are allowed.
+
+    Not to be confused with can_submit, which only checks that the the current
+    time is between submission open and close dates.
+
+    Arguments:
+        user (ReviewUser) -- we check if user has already submitted.
+        asmt (Assignment) -- the assignment for which we want to make the check.
+
+    Returns:
+        True if the user can make a submission, i.e., if they have not yet
+        made a submission, or if multiple submissions are allowed. Return 
+        False otherwise. 
+    """
+
+    # multiple submissions allowed
+    if(asmt.multiple_submissions):
+        return True
+    # user has never submitted anything for asmt
+    elif(not AssignmentSubmission.objects.filter(by=user, submission_for=asmt)):
+        return True
+    else:
+        return False
+        
 @login_required(login_url='/review/login_redirect/')
 def submit_assignment(request, course_code, asmt):
-    """
-    :request the HTTP request object
-    :course_code String course code
-    :asmt Assignment the assignment for which we want to submit
+    """Make a submission for an assignment.
+
+    When the user enters the address of their reposistory (e.g., on github) 
+    into the submission page, this method is called to clone the contents of the
+    given repository and populate the database with an AssignmentSubmission and 
+    SourceFolder and SourceFile objects. If submissions are closed and the user
+    somehow landed on the submission URL, displays a page saying that submissions 
+    are not open.
+
+    Arguments:
+        request (HttpRequest) -- the HTTP request object asking to make a submission.
+        course_code (String) -- the course code of the course to which
+                                the assignment belongs. 
+        asmt (Assignment) -- the assignment for which the student wants to submit.
+    
+    Returns:
+        A HttpReponse object which renders a confirmation page if the submission
+        is successful (the given repository exists, cloning succeeded), or which
+        re-renders the submission page with appropriate error messages 
+        (e.g., URL entered does not exist) if the submission is unsuccessful. 
 
     TODO - handle multiple submission and single-submission assignments
            differently
@@ -467,9 +535,16 @@ def submit_assignment(request, course_code, asmt):
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
 
-    else: # not POST; show the submission page.
+    else: # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
-        template = 'assignment_submission.html'
+        if(not can_submit(assignment)):
+            template = 'cannot_submit.html'
+            context['errorMsg'] = 'Submissions are closed'
+        elif(not user_can_submit(U.reviewuser, assignment)):
+            template = 'cannot_submit.html'
+            context['errorMsg'] = 'You have already submitted.'
+        else:
+            template = 'assignment_submission.html'
 
     context['form'] = form
     context['course'] = course
