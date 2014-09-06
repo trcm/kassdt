@@ -644,27 +644,26 @@ def createAnnotation(request, submission_uuid, file_uuid):
         start = rangeForm['start'].value()
         end = rangeForm['end'].value()
 
-        # TODO This needs a conditional wrapped around it
-        form.is_valid()
-        rangeForm.is_valid()
+        if form.is_valid() and rangeForm.is_valid():
 
-        file = SourceFile.objects.get(file_uuid=file_uuid)
-        # Create and try saving the new annotation and range
-        newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
-                                                        source=file,
-                                                        text=text,
-                                                        quote=text)
-        newAnnotation.save()
-        newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
-                                                        start=start,
-                                                        end=end,
-                                                        startOffset=start,
-                                                        endOffset=end)
+            file = SourceFile.objects.get(file_uuid=file_uuid)
+            # Create and try saving the new annotation and range
+            newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
+                                                            source=file,
+                                                            text=text,
+                                                            quote=text)
+            newAnnotation.save()
+            newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
+                                                            start=start,
+                                                            end=end,
+                                                            startOffset=start,
+                                                            endOffset=end)
 
-        newRange.save()
-        print newAnnotation, newRange
+            newRange.save()
+            print newAnnotation, newRange
 
-        return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
+            return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
+            
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
@@ -776,6 +775,8 @@ def reviewFile(request, submissionUuid, file_uuid):
         print code
         folders = []
 
+        # grab submission and all the associated files and folders
+        
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
         for f in sub.root_folder.files.all():
             folders.append(f)
@@ -783,7 +784,6 @@ def reviewFile(request, submissionUuid, file_uuid):
             folders.append(f)
             for s in f.files.all():
                 folders.append(s)
-        # root_files = sub.root_folder.files
 
         # get root folder
         iter = file.folder
@@ -802,13 +802,17 @@ def reviewFile(request, submissionUuid, file_uuid):
         annotationRanges = []
         aDict = []
 
+        # get all the ranges for the annotations
         for a in annotations:
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
             aDict.append(a)
 
         print annotationRanges
+
+        # create the forms for annotation creation
         form = annotationForm()
         rangeForm = annotationRangeForm()
+        
         context['annotations'] = zip(aDict, annotationRanges)
         context['sub'] = submissionUuid
         context['form'] = form
@@ -843,15 +847,17 @@ def review(request, submissionUuid, **kwargs):
     try:
         file= None
         code = None
-        if 'uuid' in kwargs.keys():
-            print "get file"
+        # if 'uuid' in kwargs.keys():
+        #     print "get file"
 
-            file = SourceFile.objects.get(file_uuid=uuid)
-            code = highlight(file.content, guess_lexer(file.content),
-                             HtmlFormatter(linoes="table"))
+        #     file = SourceFile.objects.get(file_uuid=uuid)
+        #     code = highlight(file.content, guess_lexer(file.content),
+        #                      HtmlFormatter(linoes="table"))
 
         folders = []
 
+        # grab the submission and the associated files and folders
+        
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
         for f in sub.root_folder.files.all():
             folders.append(f)
@@ -861,6 +867,7 @@ def review(request, submissionUuid, **kwargs):
                 folders.append(s)
         # root_files = sub.root_folder.files
 
+        # return all the data for the submission to the context
         context['sub'] = submissionUuid
         # files = root_files.all()
         context['files'] = folders
