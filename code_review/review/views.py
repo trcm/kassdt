@@ -154,7 +154,7 @@ def create_assignment(request, course_code):
     new assignments for the students.
     
     Parameters:
-    parameters
+    request (HttpRequest) -- 
     
     Returns:
     returns
@@ -597,7 +597,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
     except User.DoesNotExist or SourceFile.DoesNotExist:
-        return Http404()
+        raise Http404
 
     return HttpResponse("test")
 
@@ -653,7 +653,7 @@ def grabFile(request):
             return HttpResponse(json.dumps(ret))
         except SourceFile.doesNotExist:
             print "Source file doesn't not exist"
-            return Http404()
+            raise Http404
 
 
 def upload(request):
@@ -738,7 +738,7 @@ def reviewFile(request, submissionUuid, file_uuid):
         return render(request, 'review.html', context)
 
     except AssignmentSubmission.DoesNotExist:
-        return Http404()
+        raise Http404
 
 def review(request, submissionUuid, **kwargs):
     """
@@ -778,7 +778,7 @@ def review(request, submissionUuid, **kwargs):
         return render(request, 'review.html', context)
 
     except AssignmentSubmission.DoesNotExist:
-        return Http404()
+        raise Http404
 
 def get_list(root_folder, theList):
     """
