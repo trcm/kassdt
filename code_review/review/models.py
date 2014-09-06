@@ -297,9 +297,17 @@ class AssignmentSubmission(models.Model):
     Attributes:
         submission_uuid (UUIDField) -- the UUID of this submission.
         submission_date (DateTimeField) -- the date and time at which this submission
-                                           was submitted.
-        by (ReviewUser) -- the student who made this submission.
-
+                                           was submitted. 
+        by (ReviewUser) -- the student who made this submission. 
+        submission_repository (TextField) -- the address of this repository,  
+                                             for pulling from; e.g., https://github.com/user/assignment.git
+                                             or git@github.com:user/assignment.git
+        submission_for (Assignment) -- the assignment for which this submission is for. 
+        error_occurred (BooleanField) -- whether or not an error occurred while creating this
+                                         submission (?) 
+        root_folder (SourceFolder) -- the top-level folder containing the source folders and files of this
+                                      submission.
+    
     """
 
     submission_uuid = UUIDField()
