@@ -17,12 +17,12 @@ from pygments.lexers import *
 from pygments.formatters import *
 def clone(url, directory):
     """
-	Clone a repo from url to directory and
-	return the Repo object.
+    Clone a repo from url to directory and
+    return the Repo object.
 
-	:url String
-	:directory String absolute path to the directory to which
-	to clone this repo; directory must be empty folder.
+    :url String
+    :directory String absolute path to the directory to which
+    to clone this repo; directory must be empty folder.
     """
     return Repo.clone_from(url, directory)
 
@@ -53,40 +53,40 @@ def root_folder_name(asmtSubmission):
 
 def add_source_folder(name, parent):
     """
-	:name String
-	:parent SourceFolder
+    :name String
+    :parent SourceFolder
     """
     return SourceFolder.objects.get_or_create(name=name, parent=parent)
 
 def add_source_file(name, folder, srcPath):
     """
-	We note SourceFile has a FileField, which only stores the upload
-	path; it will append the given path in the upload_to attribute to the
-	root directory given by MEDIA_ROOT in settings.
+    We note SourceFile has a FileField, which only stores the upload
+    path; it will append the given path in the upload_to attribute to the
+    root directory given by MEDIA_ROOT in settings.
 
-	So once we clone the repo to some assignment directory, we simply
-	look at the file structure within the repo to determine srcPath.
+    So once we clone the repo to some assignment directory, we simply
+    look at the file structure within the repo to determine srcPath.
 
-	:name String name of file
-	:folder SourceFolder the folder containing thisfile.
-	:srcPath String the path to this file, relative to MEDIA_ROOT.
+    :name String name of file
+    :folder SourceFolder the folder containing thisfile.
+    :srcPath String the path to this file, relative to MEDIA_ROOT.
     """
     f = srcPath
     return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
 
 def traverse_tree(tree, thisFolder, path):
     """
-	Recurvise tree traversal; creates the appropriate
-	database objects for all folders and files which are
-	children of tree.
+    Recurvise tree traversal; creates the appropriate
+    database objects for all folders and files which are
+    children of tree.
 
-	Need to create root folder then call traverse_tree
-	on that.
+    Need to create root folder then call traverse_tree
+    on that.
 
-	:tree git.objects.Tree the Tree to traverse.
-	:thisFolder SourceFolder corresponding to tree.
-	:path String the path (relative to MEDIA_ROOT) to the folder represented
-	by this tree; path does not contain this folder.
+    :tree git.objects.Tree the Tree to traverse.
+    :thisFolder SourceFolder corresponding to tree.
+    :path String the path (relative to MEDIA_ROOT) to the folder represented
+    by this tree; path does not contain this folder.
     """
 
     # Get files directly underneath this folder.

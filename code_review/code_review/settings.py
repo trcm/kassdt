@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'south',
     'lti',
     'unfriendly',
+    'django_jenkins'
     # 'ims_lti_py',
 )
 
@@ -136,3 +137,4 @@ TEMPLATE_DIRS = [TEMPLATE_PATH,
 # South seems to be breaking tests
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
+
