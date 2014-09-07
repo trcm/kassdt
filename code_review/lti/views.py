@@ -1,3 +1,14 @@
+"""
+lti/views.py contains the controller for handling LTI-related requests,
+namely the launch request, which sends the Learning Management System's (LMS)
+user and course details and causes the CPRS to show the home page of the
+appropriate user. 
+
+Methods:
+    launch_lit -- launches the CPRS.
+
+"""
+
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
@@ -14,6 +25,33 @@ from review.models import *
 
 @csrf_exempt
 def launch_lti(request):
+    """Process launch (start cprs) request from a leaning management system.
+    
+    The method extracts the user's details such as name, ID, email, course
+    and role (e.g., teacher, student) from the request and checks whether the
+    user has permission to enter the system (see Raises section for details). 
+    If the user has permission, then the corresponding CPRS user is retrieved
+    or created. The user's enrolments in the CPRS are updated with the course
+    information in the request. The user is then redirected to his/her home page
+    in the CPRS. 
+
+    Arguments:
+        request (HttpRequest) -- the Http request sent by the LMS. 
+
+    Returns:
+        HttpResponseRedirect which redirects the user to their home page
+        in the CPRS if they have permission to access the system, or an error page
+        if their role is not allowed.
+
+    Raises:
+        PermissionDenied -- if the user does not have permission to access the system. 
+                            this happens if:
+                                - the request does not contain an email or user id
+                                - the role sent in the request is None 
+                                - the authentication key is missing 
+                                - the request is not valid. 
+    """
+
     print "LAUNCH LTI HAS BEEN CALLED!!!"
     """ Receives a request from the lti consumer and creates/authenticates user in django """
     """ See post items in log by setting LTI_DEBUG=True in settings """    

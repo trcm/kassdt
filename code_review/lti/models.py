@@ -1,11 +1,40 @@
+"""
+lti/models.py -- this file contains the representations of database 
+tables used in association with LTI integration. 
+The unicode method in each class determines how the model's information
+is displayed in Django admin.
+
+Abbreviations, conventions:
+    LMS = Learning Management System.
+
+Classes:
+    LTIProfile(models.Model) -- the user profile model, storing 
+                                a CPRS User and their role.  
+
+Methods:
+    user_post_save(sender, instance, created, **kwargs) --
+        creates an LTIProfile when a new user is created. 
+
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 
 class LTIProfile(models.Model):
-    """User profile model. This profile can be retrieved by calling
+    
+    """Represents a user who logs in with an associated account in an LMS
+    
+    User profile model. This profile can be retrieved by calling
     get_profile() on the User model
+
+    Attributes:
+        user (OneToOneField) -- the CPRS User corresponding to this user.
+        roles (CharField) -- the role of this user (e.g. student)
+
+    Methods:
+        get_absolute_url(self) -- return the absolute 
     """
     
     user = models.OneToOneField(User, null=True)
@@ -13,6 +42,12 @@ class LTIProfile(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
+        """Helpful one line summary.
+
+        Returns:
+            helpful description.
+        """
+
         return ('view_profile', None, {'username': self.user.username})
 
     def __unicode__(self):
