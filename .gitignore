@@ -1,1 +1,4 @@
+code_review/.ropeproject/
 *.pyc
+code_review/reports/
+code_review/tests_integration.py

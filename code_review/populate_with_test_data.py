@@ -45,6 +45,3 @@ for i in range(0, 20):
         newStudentRU.save()
     except IntegrityError as e:
         print e.args
-
-    
-        
