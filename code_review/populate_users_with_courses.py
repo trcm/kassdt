@@ -54,4 +54,3 @@ for r in users:
                 break
     else:
         print newUser[0].username
-    

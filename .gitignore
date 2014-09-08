@@ -4423,3 +4423,5 @@ Deco/lib/python2.7/site-packages/south/utils/datetime_utils.py
 Deco/lib/python2.7/site-packages/south/utils/py3.py
 Deco/lib/python2.7/site-packages/tests/__init__.py
 Deco/lib/python2.7/site-packages/tests/test_oauth.py
+code_review/reports/
+code_review/tests_integration.py

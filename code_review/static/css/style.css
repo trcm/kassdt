@@ -5,7 +5,58 @@
   display: inline;
 }
 
+/*Assignment List on Default Landing Page*/
+#assignmentList {
+
+
+}
+
+/* Assingment Submission page */
+#assignmentSubmit {
+
+
+
+
+}
+
+/* The table for viewing a specific 
+ course Assignments */
+#courseAssignments {
+
+
+
+}
+
 #files > ul li {
   list-style: none;
 }
+
+/*Code for highlighting specific lines on review/annotations*/
+.highlight {
+  background-color: yellow;
+
+}
+
+/*The Navigation bar on every page */
+#sidebarBody {
+  padding-top: 100px;
+
+}
+#startLine {
+  visibility: hidden;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,10 +1,15 @@
+"""
+This file handles all the django admin interface frontend.
+The only user that will actually be able to use this is the system admin.
+"""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm  # , PasswordChangeForm
 
 from django.contrib.auth.models import User
 from review.models import *
-# from django import forms
+
 
 class ReviewUserInline(admin.StackedInline):
     model = ReviewUser
@@ -42,16 +47,16 @@ class CourseAdmin(admin.ModelAdmin):
 
 class AssignmentAdmin(admin.ModelAdmin):
     model = Assignment
-    list_display = ('course_code', 'name', 'first_display_date', 'submission_close_date')
-    
-# adds models for editing in the admin page
-admin.site.unregister(User)
+    list_display = ('course_code', 'name', 'first_display_date',
+                    'submission_close_date')
 
-# admin.site.register(createUserForm, UserAdmin)
+    
+# Register all the admin templates for the django admin
+
+admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReviewUser, ReviewUserAdmin)
 admin.site.register(Course, CourseAdmin)
-
 admin.site.register(SourceFolder)
 admin.site.register(SourceFile)
 admin.site.register(SubmissionTest)

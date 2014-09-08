@@ -1,5 +1,5 @@
 {% extends 'sidebar.html' %}
-
+{% load unfriendly_tags %}
 {% block assignments %}
 <script>
   $(document).ready(function() {
@@ -17,12 +17,10 @@
       {% endif%}
 
       {% if file.file_uuid %}
-      <li><button class="reviewFile" data-fileUuid="{{ file.file_uuid }}" href="/review/reviews/{{ sub }}/{{ file.file_uuid }}/">{{ file.name }}</button></li>
-      <li><a href="/review/file/{{ sub }}/{{ file.file_uuid }}"/>{{ file.name }}</a></li>
-	
-	{% endif%}
-
-	{% endfor %}
+      {% url 'review_file' sub file.file_uuid as fileurl %}
+      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
+      {% endif%}
+    {% endfor %}
   </ul>
 
 </div>
@@ -33,9 +31,6 @@
   {{ code | safe}}
   {% endif%}
 
-  <!-- START Temporary test stuff -->
-
-  <!-- END Temporary test stuff -->
 </div>
 
 <div id="annotation">
@@ -48,6 +43,9 @@
     <p>{{ annote.text }}</p>
     {% endfor %}
   </ul>
+  {% url 'create_annotation' sub uuid as annotateUrl %}
+  <!-- Obfucations doesn't work on get -->
+  <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
@@ -55,4 +53,9 @@
   </form>
 </div>
 
+<div id='startLine'>
+  {% for annote, range in annotations %}
+  <ul>{{ range.start }}</ul>
+  {% endfor %}
+</div>
 {% endblock %}

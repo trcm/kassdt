@@ -32,21 +32,28 @@ $(document).ready( function() {
 });
 
 function annotationHighlight() {
-  console.log("yup");
-    
+  console.log("Even In Death I Still Serve");
+  var arr = $('#startLine ul').map(function(){
+                   return $(this).text();
+                               }).get();
+  console.log(arr);
   //So say we have some list or array of start points
-    var array = [1];
+    var array = [1,3,5,7,9];
     //We could run this function over that array and it 
     //would find and highlight all start points as per the
     //.highlight css class
     var text = '2';
 
-    $( '.linenos' ).html( function ( i, html ) {
-         var regexp, replacement;
-         regexp = RegExp( '(' + text + ')' );
-         replacement = '<span class="highlight">$1</span>';
-         return html.replace( regexp, replacement );
-    });
+    for(z = 0; z < arr.length; z++) {
+      $( '.linenos' ).html( function ( i, html ) {
+          var regexp, replacement;
+          x = parseInt(arr[z]);
+          console.log(x);
+          regexp = RegExp( '(' + x + ')' );
+          replacement = '<span class="highlight">$1</span>';
+          return html.replace( regexp, replacement );
+      });
+    }
 
 }
 

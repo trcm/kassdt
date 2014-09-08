@@ -49,6 +49,10 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
+#LTI INTEGRATION KEYS
+CONSUMER_KEY = 'TESTING'
+LTI_SECRET = 'TESTING'
+LTI_DEBUG = True
 
 
 # Application definition
@@ -62,6 +66,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'review',
     'south',
+    'lti',
+    'unfriendly',
+
     # 'ims_lti_py',
 )
 
@@ -130,3 +137,4 @@ TEMPLATE_DIRS = [TEMPLATE_PATH,
 # South seems to be breaking tests
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
+

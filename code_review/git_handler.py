@@ -69,8 +69,10 @@ def add_source_file(name, folder, srcPath):
     We note SourceFile has a FileField, which only stores the upload
     path; it will append the given path in the upload_to attribute to the
     root directory given by MEDIA_ROOT in settings.
+
     So once we clone the repo to some assignment directory, we simply
     look at the file structure within the repo to determine srcPath.
+
     :name String name of file
     :folder SourceFolder the folder containing thisfile.
     :srcPath String the path to this file, relative to MEDIA_ROOT.
