@@ -60,8 +60,7 @@ urlpatterns = patterns('',
                        # Assignment submission
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
                            views.submit_assignment, name='submit_assignment'),
-                       
-                       # Annotation
+
 
                        # Course page
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
@@ -82,4 +81,15 @@ urlpatterns = patterns('',
                        url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
                            views.review, name="reviews"),
 
+                       # Annotation
+                       # These urls handle the viewing of assignments and the creation of annotations
+                       # Used to create the annnotation, redirects back to the file view
+                       url(r'annotation/create/(?P<submission_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.createAnnotation, name="create_annotation"),
+                       # Used to view a specific file for reviewing
+                       url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.reviewFile, name="review_file"),
+                       # Views a particular submission
+                       url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
+                           views.review, name="submission"),
 )

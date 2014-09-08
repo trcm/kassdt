@@ -64,7 +64,11 @@ def index(request):
         sidebar.html template.
     """
     context = {}
-
+    """
+    this is the basic index view, it required login before the user can do any
+    as you can see at the moment this shows nothing other than a logout button
+    as I haven't added any content to it yet
+    """
     # whatever stuff we're goign to show in the index page needs to
     # generated here
     U = User.objects.get(id=request.user.id)
@@ -96,7 +100,6 @@ def logout(request):
     """
     logout(request)
     return HttpResponse("logout")
-
 
 @login_required(login_url='/review/login_redirect/')
 # @user_passes_test(staffTest)
@@ -151,6 +154,7 @@ def coursePage(request, course_code):
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
     """
+<<<<<<< HEAD
     create_assignment is used by the staff memebers of the system to create
     new assignments for the students.
     
@@ -727,7 +731,7 @@ def grabFile(request):
     #         print "Source file doesn't not exist"
     #         raise Http404
 
-
+# This is just a test view for uploading files, will be deleted
 def upload(request):
     """
     Test view for uploading files, not needed in the final version
@@ -743,11 +747,8 @@ def upload(request):
     #     return HttpResponse("Fail")
 
 
+@login_required(login_url='/review/login_redirect/')
 def reviewFile(request, submissionUuid, file_uuid):
-    """
-    :submissionUuid - current submission identifier
-    :file_uuid - the identifier of the rile to be annotated.
-    """
     """
     Grabs all the files for the current submission, but it also
     grabs and pygmentizes the current file and displays it to the user.
@@ -828,6 +829,8 @@ def reviewFile(request, submissionUuid, file_uuid):
     except AssignmentSubmission.DoesNotExist:
         raise Http404
 
+
+@login_required(login_url='/review/login_redirect/')
 def review(request, submissionUuid, **kwargs):
     """
     Grabs all the files for the current submission, and shows them

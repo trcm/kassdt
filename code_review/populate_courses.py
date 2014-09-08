@@ -1,4 +1,7 @@
-
+"""
+This script is used to import a list of course codes and names from 
+a file.  Development use only.
+"""
 import os
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'code_review.settings'
@@ -12,7 +15,6 @@ courses = {}
 for line in f:
     s = line.split(" ", 1)
     s[1] = s[1].strip()
-
     Course.objects.create(course_code=s[0], course_name=s[1])
 
     

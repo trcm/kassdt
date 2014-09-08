@@ -15,6 +15,8 @@ from time import strftime
 from pygments import *
 from pygments.lexers import *
 from pygments.formatters import *
+
+
 def clone(url, directory):
     """
     Clone a repo from url to directory and
@@ -36,6 +38,8 @@ def clone(url, directory):
 
     :asmtSubmission AssignmentSubmission
     """
+
+
 def root_folder_name(asmtSubmission):
     ''''
     asmt = asmtSubmission.submission_for
@@ -51,12 +55,14 @@ def root_folder_name(asmtSubmission):
 
     return userID
 
+
 def add_source_folder(name, parent):
     """
     :name String
     :parent SourceFolder
     """
     return SourceFolder.objects.get_or_create(name=name, parent=parent)
+
 
 def add_source_file(name, folder, srcPath):
     """
@@ -73,6 +79,7 @@ def add_source_file(name, folder, srcPath):
     """
     f = srcPath
     return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
+
 
 def traverse_tree(tree, thisFolder, path):
     """
@@ -98,31 +105,33 @@ def traverse_tree(tree, thisFolder, path):
 
     for blob in blobs:
         filepath = os.path.join(path, blob.name)
-	add_source_file(blob.name, thisFolder, filepath)
+        add_source_file(blob.name, thisFolder, filepath)
 
     # Get folders directly underneath this folder.
     folders = tree.trees
     for folder in folders:
-	srcFolderObj = add_source_folder(folder.name, thisFolder)[0]
-	traverse_tree(folder, srcFolderObj, path)
+        srcFolderObj = add_source_folder(folder.name, thisFolder)[0]
+        traverse_tree(folder, srcFolderObj, path)
 
     return
 
-"""
+    """
     :asmtSubmission AssignmentSubmission the student's submission;
     when this method is called it will have lots of nulls.
     We will populate it by extracting stuff from it.
     At this stage we assume we just have:
-	by, ReviewUser
-	submission_repository
-	submission_for
+    by, ReviewUser
+    submission_repository
+    submission_for
 
     :directory String the path to which to clone this student's
     repo, relative to MEDIA_ROOT. This should be the directory in which
     the student assignments are stored, rather than this student's repo;
     i.e., directory should be something like "DECO3801/asmt1" rather than
     "DECO3801/asmt1/studentA_submission1"
-"""
+    """
+
+
 def populate_db(asmtSubmission, directory):
     rootFolderName = root_folder_name(asmtSubmission)
 
