@@ -1,4 +1,4 @@
-Python code style guide for Kassdt
+Coding Style guide for Kassdt
 
 IMPORTANT: if you make any changes to this document, please let the
 other team members know via Facebook for some other means, and point out
@@ -84,4 +84,8 @@ COMMENTING
 
 
 
+
+CSS naming conventions
+	-Reference in Alphabetical Order in stylesheet in camelcaps.
+		<example> sidebarBody </example>
 
