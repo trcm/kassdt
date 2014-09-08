@@ -37,8 +37,14 @@
 
 }
 
+/*The Navigation bar on every page */
+#sidebarBody {
+  padding-top: 100px;
+
+}
 #startLine {
   visibility: hidden;
+
 }
 
 
