@@ -8,6 +8,8 @@ $(document).ready( function() {
 	console.log("logout");
     });
     
+    //make drop down draggable
+    $( "#draggable" ).draggable({ axis: "y" });    
 
     $("#appTest").click(function() {
 	console.log("app");
