@@ -10,6 +10,14 @@ Methods:
     add_source_folder(name, parent) -- add SourceFolder object to database
     with name name and parent folder parent. 
 
+    add_source_file(name, folder, srcPath) -- 
+    Add a SourceFile with name `name', in `folder', with the path `srcPath'.
+    
+    traverse_tree(tree, thisFolder, path) --
+    Traverse a git repo tree and populate the database appropriately.
+
+    populate_db(asmtSubmission, directory) -- 
+    Store the folders and files associated with asmtSubmission to the database.
 
 Dependencies:
     Install gitpython with pip install gitpython.
@@ -28,25 +36,25 @@ from pygments.formatters import *
 
 
 def clone(url, directory):
-    """
-    Clone a repo from url to directory and
-    return the Repo object.
+    """Clone a repo from url to directory and return the Repo object.
+    
+    Arugments:
+        url (String) -- the url of the repo to clone. 
+        a URL including https:// if it's a public repo, and something
+        of the form git@github.com:user/repo.git if private repo and
+        using ssh. 
 
-    :url String
-    :directory String absolute path to the directory to which
-    to clone this repo; directory must be empty folder.
+        directory (String) -- absolute path to the directory to which
+        to clone this repo; directory must be an empty folder, otherwise
+        git will cause the method to raise an exception.
     """
     return Repo.clone_from(url, directory)
 
-
-
 def root_folder_name(asmtSubmission):
-    """Return the path of the root folder relative to MEDIA_ROOT.
+    """Generate the name of the root folder relative to MEDIA_ROOT.
 
-    Given an AssignmentSubmission object, generate a path for the
-    root folder using the student's id, assignment, and submission number.
-    The intended use is that this the path to the local copy of the
-    repository relative to MEDIA_ROOT.
+    Given an AssignmentSubmission object, generate a name for the
+    root folder using the user's username and the current date and time.
     
     Arguments:
         asmtSubmission (AssignmentSubmission) -- the submission for which
