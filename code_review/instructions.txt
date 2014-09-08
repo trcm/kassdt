@@ -1,0 +1,22 @@
+Manual set-up:
+In your deco3801 directory:
+source /bin/env/activate
+
+to activate the virtual environment.
+
+Then go to kassdt/code_review, run 
+python manage.py runserver 
+
+to run the server
+
+go to your web browser, type in localhost:8000 in the url bar
+to go to the review. 
+
+Automatic (from bash stuff) 
+NB your .bashrc (note the preceding period) lives in your home directory (just type cd without anything else to go to home directory). 
+
+deco - takes you to your repo kassdt/code_review, and starts virtualenv (you'll see (env) in front of your prompt) 
+
+pm runserver - run the server
+
+NB if you don't have your virtual environment running, your computer doesn't know about the existence of django.
