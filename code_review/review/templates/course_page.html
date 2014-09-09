@@ -2,7 +2,7 @@
 
 {% block assignments %}
 
-<h1>Assignments</h1>
+<h1>{{ course.course_code }} Assignments</h1>
 
 {% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
@@ -13,7 +13,7 @@
   <table>
     <tr>
       <th>Assignment Name:</th>
-      <th>Submission Open Date:</th>
+      <th>Submission Status:</th>
       <th>Due Date</th>
       <th>View</th>
     </tr>
@@ -21,7 +21,7 @@
 
     <tr>
       <td>{{ assignment.name}}</td>
-      <td>{{ assignment.submission_open_date }}</td>
+      <td>Need to add check for submission status</td>
       <td>{{ assignment.submission_close_date }}</td>
       <td>
         <form action="{% url 'assignment_page' course.course_code assignment.name %}">
