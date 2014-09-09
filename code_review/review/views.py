@@ -105,13 +105,13 @@ def logout(request):
 # @user_passes_test(staffTest)
 def coursePage(request, course_code):
     """
-    coursePage(request, course_code) - redirects the user to 
-    the course page for their desired course. If the course 
+    coursePage(request, course_code) - redirects the user to
+    the course page for their desired course. If the course
     does not exist then they will be redirected to a 404 page.
-    
+
     Parameters:
         request (HttpRequest) -- users http request object
-        course_code (HttpRequest) -- the desired course code embedded in the 
+        course_code (HttpRequest) -- the desired course code embedded in the
         httprequest object.
 
     Returns:
@@ -136,7 +136,7 @@ def coursePage(request, course_code):
         # get all current assignments for that course
         assignments = c.assignments.all()
         courses = U.reviewuser.courses.all()
-        
+
         context['assignments'] = assignments
         context['course'] = c
 
@@ -155,11 +155,11 @@ def create_assignment(request, course_code):
     """
     create_assignment is used by the staff memebers of the system to create
     new assignments for the students.
-    
+
     Parameters:
     request (HttpRequest) -- Request to create assignment
     course_code (String) -- encoded string of the courses code
-    
+
     Returns:
     HttpReponse rendering the new_assignment template
     """
@@ -183,7 +183,7 @@ def create_assignment(request, course_code):
 
 
 #  The following 3 views are simply for use in testing, they return all the
-#  current users and courses. 
+#  current users and courses.
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
@@ -229,12 +229,12 @@ def validateAssignment(request):
     Validates the data from the assignment creation form.
     If the data is valid then it creates the assignment,
     otherwise the user is kicked back to the form to fix the data
-    
+
     Parameters:
     request (HttpRequest) -- http request from the user to create an assignment
 
     Returns:
-    HttpResponse redirecting the usr to either the course page, 
+    HttpResponse redirecting the usr to either the course page,
     or back to the assignment creation form to fix any errors.
     """
 
@@ -287,10 +287,10 @@ def validateUser(request):
     validates the data for user creation, pretty much the same as the view above
     but for users.  Also creates a new review user for the user.  The user must
     be a staff member to use this view.
-    
+
     Parameters:
     request (HttpRequest) -- http request by the user to create a new user
-    
+
     Returns:
     HttpReponse redirecting the user to either the userList admin or
     back to the user creation form to fix any errors.
@@ -348,10 +348,10 @@ def validateCourse(request):
     validateCourse validates the data from the course creation template
     If the course is valid then it will create a new object.
     The user must be a staff member to use this view.
-    
+
     Parameters:
     request (HttpRequest) -- request from the user to create a new course
-    
+
     Returns:
     HttpResponse redirecting the user to the courseList page or back
     to the course creation page to fix any errors.
@@ -407,28 +407,28 @@ def student_homepage(request):
         context['form'] = annotationForm()
     except User.DoesNotExist as err:
         print err.args
-        return error_page(request, "User does not exist") 
-    
+        return error_page(request, "User does not exist")
+
     return render(request, 'student_homepage.html', context)
 
 def get_open_assignments(user):
     ''' Returns the list of currently open assignments for the current user
-    
+
     Here open assignment means that a student is able to make a submission
     for the assignment at the time this method is called. I.e., submissions
-    are open and the due date has not passed yet. 
+    are open and the due date has not passed yet.
 
     Arguments:
         user (User) -- the user whose open assignments we want to retrieve.
-    
+
     Returns:
-        A list whose entries are a tuple (Course, Assignment) 
+        A list whose entries are a tuple (Course, Assignment)
     '''
-    
+
     timenow = timezone.now()
     openAsmts = []
     courses = user.reviewuser.courses.all()
-    
+
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
@@ -459,14 +459,14 @@ def assignment_page(request, course_code, asmt):
         request (HttpRequest) -- the HTTP request asking to view the assignment.
         course_code (Course.course_code) -- the course code of the course to which
                                             the assignment we want to display belongs.
-        asmt (Assignment) -- the assignment we want to display. 
-    
+        asmt (Assignment) -- the assignment we want to display.
+
     Returns:
         A HttpResponse object which is used to render the webpage.
     '''
 
     context = {}
-    
+
     try:
         U = User.objects.get(id=request.user.id)
         courseList = U.reviewuser.courses.all()
@@ -487,20 +487,20 @@ def assignment_page(request, course_code, asmt):
 
     except Assignment.DoesNotExist:
         msg = "Assignment %s does not exist" %asmtName
-        return error_page(request, msg) 
-    
+        return error_page(request, msg)
+
     except Course.DoesNotExist:
         msg = "Course %s does not exist" %courseCode
-        return error_page(request, msg) 
+        return error_page(request, msg)
 
     return render(request, 'assignment_page.html', context)
 
 
 def can_submit(asmt):
-    '''Check whether a student can make a submission to an assignment. 
+    '''Check whether a student can make a submission to an assignment.
 
     Checks whether asmt is open for submission; i.e., determine whether or not
-    submissions have opened, and whether the due date has passed. 
+    submissions have opened, and whether the due date has passed.
 
     Arguments:
         asmt (Assignment) -- the assignment for which we want to check whether
@@ -514,7 +514,7 @@ def can_submit(asmt):
 
 
 def user_can_submit(user, asmt):
-    """Return true if this user has not yet made a submission for this asmt or 
+    """Return true if this user has not yet made a submission for this asmt or
        if multiple submission are allowed.
 
     Not to be confused with can_submit, which only checks that the the current
@@ -526,8 +526,8 @@ def user_can_submit(user, asmt):
 
     Returns:
         True if the user can make a submission, i.e., if they have not yet
-        made a submission, or if multiple submissions are allowed. Return 
-        False otherwise. 
+        made a submission, or if multiple submissions are allowed. Return
+        False otherwise.
     """
 
     # multiple submissions allowed
@@ -538,29 +538,29 @@ def user_can_submit(user, asmt):
         return True
     else:
         return False
-        
+
 @login_required(login_url='/review/login_redirect/')
 def submit_assignment(request, course_code, asmt):
     """Make a submission for an assignment.
 
-    When the user enters the address of their reposistory (e.g., on github) 
+    When the user enters the address of their reposistory (e.g., on github)
     into the submission page, this method is called to clone the contents of the
-    given repository and populate the database with an AssignmentSubmission and 
+    given repository and populate the database with an AssignmentSubmission and
     SourceFolder and SourceFile objects. If submissions are closed and the user
-    somehow landed on the submission URL, displays a page saying that submissions 
+    somehow landed on the submission URL, displays a page saying that submissions
     are not open.
 
     Arguments:
         request (HttpRequest) -- the HTTP request object asking to make a submission.
         course_code (String) -- the course code of the course to which
-                                the assignment belongs. 
+                                the assignment belongs.
         asmt (Assignment) -- the assignment for which the student wants to submit.
-    
+
     Returns:
         A HttpReponse object which renders a confirmation page if the submission
         is successful (the given repository exists, cloning succeeded), or which
-        re-renders the submission page with appropriate error messages 
-        (e.g., URL entered does not exist) if the submission is unsuccessful. 
+        re-renders the submission page with appropriate error messages
+        (e.g., URL entered does not exist) if the submission is unsuccessful.
 
     TODO - handle multiple submission and single-submission assignments
            differently
@@ -619,12 +619,83 @@ def submit_assignment(request, course_code, asmt):
 
     return render(request, template, context)
 
+
+@login_required(login_url='/review/login_redirect')
+def grabFileData(request, submissionUuid, file_uuid):
+    """
+    Refactored from reviewFile so cut down on code repetition.
+    Grabs a dictionary containng all the file information.
+
+    Parameters:
+    submission_uuid (string) - identifier for the submission
+    file_uuid (string) - identifier for the file
+
+    Returns:
+    type
+    """
+    context = {}
+    uuid = submissionUuid
+    try:
+        currentUser = User.objects.get(id=request.session['_auth_user_id'])
+        print currentUser
+        file = SourceFile.objects.get(file_uuid=file_uuid)
+        print 'get file'
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="table"))
+        print code
+        folders = []
+
+        # grab submission and all the associated files and folders
+
+        sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+        for f in sub.root_folder.files.all():
+            folders.append(f)
+        for f in sub.root_folder.folders.all():
+            folders.append(f)
+            for s in f.files.all():
+                folders.append(s)
+
+        # get root folder
+        iter = file.folder
+        while iter.parent is not None:
+            iter = iter.parent
+        # get owner id
+        owner = AssignmentSubmission.objects.get(root_folder=iter).by
+
+        # get all annotations for the current file
+        # if user is the owner of the files or super user get all annotations
+        if currentUser.is_staff or currentUser == owner:
+            annotations = SourceAnnotation.objects.filter(source=file)
+        else:
+            annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
+
+        annotationRanges = []
+        aDict = []
+
+        # get all the ranges for the annotations
+        for a in annotations:
+            annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
+            aDict.append(a)
+
+        print annotationRanges
+
+        context['annotations'] = zip(aDict, annotationRanges)
+        context['sub'] = submissionUuid
+        context['uuid'] = file_uuid
+        context['files'] = folders
+        context['code'] = code
+
+        return context
+    except AssignmentSubmission.DoesNotExist:
+        error_page(request, "Submission does not exit")
+
+
 @login_required(login_url='/review/login_redirect/')
 def createAnnotation(request, submission_uuid, file_uuid):
     """
     Creates an annotation form the currently opened file.
     If it succesfully creates an annotation then the user is returned the current file.
-    
+
     Parameters:
     submission_uuid (string) -- the uuid of the current submission
     file_uuid (string) -- the uuid of the current file
@@ -646,7 +717,8 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         text = form['text'].value()
         start = rangeForm['start'].value()
-        end = rangeForm['end'].value()
+        end = 0
+        # end = rangeForm['end'].value()
 
         if form.is_valid() and rangeForm.is_valid():
 
@@ -667,14 +739,17 @@ def createAnnotation(request, submission_uuid, file_uuid):
             print newAnnotation, newRange
 
             return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
-            
+
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
     except SourceFile.DoesNotExit:
         return error_page(request, "This file does not exist")
 
-    return HttpResponse("test")
+    context = grabFileData(request, submission_uuid, file_uuid)
+    context['form'] = form
+    context['rangeform'] = rangeForm
+    return render(request, 'review.html', context)
 
 
 @login_required(login_url='/review/login_redirect/')
@@ -751,11 +826,11 @@ def reviewFile(request, submissionUuid, file_uuid):
     """
     Grabs all the files for the current submission, but it also
     grabs and pygmentizes the current file and displays it to the user.
-    
+
     Parameters:
     submissionUuid (string) - submission identifer for the current sub.
     file_uuid (String) -- file identifier
-    
+
     Returns:
     HttpReponse redirecting the user to the review.html template
     showing the selected file or else redirects to a 404.
@@ -768,61 +843,15 @@ def reviewFile(request, submissionUuid, file_uuid):
     print currentUser
 
     try:
-        file = SourceFile.objects.get(file_uuid=file_uuid)
-        print 'get file'
-        code = highlight(file.content, guess_lexer(file.content),
-                         HtmlFormatter(linenos="table"))
-        print code
-        folders = []
-
-        # grab submission and all the associated files and folders
-        
-        sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        for f in sub.root_folder.files.all():
-            folders.append(f)
-        for f in sub.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
-
-        # get root folder
-        iter = file.folder
-        while iter.parent is not None:
-            iter = iter.parent
-        # get owner id
-        owner = AssignmentSubmission.objects.get(root_folder=iter).by
-
-        # get all annotations for the current file
-        # if user is the owner of the files or super user get all annotations
-        if currentUser.is_staff or currentUser == owner:
-            annotations = SourceAnnotation.objects.filter(source=file)
-        else:
-            annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
-
-        annotationRanges = []
-        aDict = []
-
-        # get all the ranges for the annotations
-        for a in annotations:
-            annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
-            aDict.append(a)
-
-        print annotationRanges
 
         # create the forms for annotation creation
         form = annotationForm()
         rangeForm = annotationRangeForm()
-        
-        context['annotations'] = zip(aDict, annotationRanges)
-        context['sub'] = submissionUuid
+
+        # grab dictionary contatining all the pertinant information
+        context = grabFileData(request, uuid, file_uuid)
         context['form'] = form
         context['rangeform'] = rangeForm
-        # files = root_files.all()
-        context['uuid'] = file_uuid
-        context['files'] = folders
-        context['code'] = code
-        # context['files'] = files
-        # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)
 
     except AssignmentSubmission.DoesNotExist:
@@ -834,10 +863,10 @@ def review(request, submissionUuid, **kwargs):
     """
     Grabs all the files for the current submission, and shows them
     as a list to the user
-    
+
     Parameters:
     submissionUuid (string) - submission identifer for the current sub.
-    
+
     Returns:
     HttpReponse redirecting the user to the review.html template or else
     redirects to a 404.
@@ -859,7 +888,7 @@ def review(request, submissionUuid, **kwargs):
         folders = []
 
         # grab the submission and the associated files and folders
-        
+
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
         for f in sub.root_folder.files.all():
             folders.append(f)
