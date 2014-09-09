@@ -18,9 +18,21 @@
     {% csrf_token %}
     {{ course.code_code }}
     {{ asmt.name }}
+    
+    {% if submissions %}
+    <div>
+        <h3>Your last submission was at: {{submissions.last.submission_date }} </h3>
+        <a href="{% url 'submission' submissions.last.submission_uuid %}" >
+            <!--<button>View Submission</button>-->
+            View your last submission.
+        </a>
+    </div>
+    {% endif %}
+    
     <b> Repository URL </b><br>
     {{ form.submission_repository }}
     <input type="submit" value="Submit Assignment">
+
     {% if errMsg %}
         <h3> ERROR! </h3>
         {{ errMsg }}
