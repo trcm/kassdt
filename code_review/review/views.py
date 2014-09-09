@@ -154,7 +154,6 @@ def coursePage(request, course_code):
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
     """
-<<<<<<< HEAD
     create_assignment is used by the staff memebers of the system to create
     new assignments for the students.
     
@@ -476,12 +475,14 @@ def assignment_page(request, course_code, asmt):
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
         assignment = Assignment.objects.get(name=asmtName)
+        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=U.reviewuser)
 
         context['user'] = U
         context['course'] = course
         context['asmt'] = assignment
         context['courses'] = courseList
         context['canSubmit'] = can_submit(assignment)
+        context['submissions'] = submissions
 
     except User.DoesNotExist:
         print("User doesn't exist!")

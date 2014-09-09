@@ -27,5 +27,25 @@
   Submissions are closed now <br>
   {% endif %}
 
+  {% if submissions %}
+    Submimissions 
+    <tr>
+        <th>Submission Time</th>
+        <th>Submission Repository</th>
+        <th>View Submission</th>
+    </tr>
+    {% for sub in submissions %}
+    <tr>
+        <td>{{ sub.submission_date }} </td>
+        <td>{{ sub.submission_repository }}</td>
+        <td>
+            <form action="{% url 'submission' sub.submission_uuid %}">
+                <input type="submit" value="View Submission">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+  {% endif %}
+
 </div>
 {% endblock %}
