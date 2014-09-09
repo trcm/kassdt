@@ -7,14 +7,13 @@
 
 /*Assignment List on Default Landing Page*/
 #assignmentList {
-	padding-top: 40px;
-	padding-left: 40px;
-	padding-right: 40px;
+	padding: 40px;
 	width: 100%;
-	background-color: blue;
+	background-color: #E0E0D1;
+	
 }
 
-/* the entire table of assignment details */
+/* the entire table of assignments details */
 #assignmentList table {
 	
 	width:100%;
@@ -25,12 +24,21 @@
 #assignmentList td {
 	padding-top: 5px;
 	border-style:solid;
+	text-align:center;
 	
 	
 }
 
-/* cells within the table of a SINGLE ASSIGNMENTS details */
+/* title of a SINGLE ASSIGNMENTS details */
 #assignmentList b {
+	padding-top: 5px;
+	
+	
+	
+}
+
+/*  a SINGLE ASSIGNMENTS details */
+#assignmentList p {
 	padding-top: 5px;
 	border-style:solid;
 	
@@ -45,12 +53,25 @@
 
 }
 
+/* Assingment page table div */
+#assignmentView {
+padding-top: 40px;
+	padding-left: 40px;
+	padding-right: 40px;
+	
+	
+}
+
+/* global background */
+body {
+	background-color: black; 
+}
 
 /* The table for viewing a specific 
  course Assignments */
 #courseAssignments {
 
-	background-color: red;
+	
 
 }
 
