@@ -62,10 +62,11 @@ class annotationRangeForm(ModelForm):
     """
     class Meta:
         model = SourceAnnotationRange
-        fields = ['start', 'end']
+        # fields = ['start', 'end']
+        fields = ['start']
         widgets = {
             'start': NumberInput(),
-            'end': NumberInput()
+            # 'end': NumberInput()
         }
 
 

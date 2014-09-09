@@ -646,7 +646,8 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         text = form['text'].value()
         start = rangeForm['start'].value()
-        end = rangeForm['end'].value()
+        end = 0
+        # end = rangeForm['end'].value()
 
         if form.is_valid() and rangeForm.is_valid():
 
