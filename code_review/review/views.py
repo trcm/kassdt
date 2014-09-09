@@ -474,12 +474,14 @@ def assignment_page(request, course_code, asmt):
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
         assignment = Assignment.objects.get(name=asmtName)
+        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=U.reviewuser)
 
         context['user'] = U
         context['course'] = course
         context['asmt'] = assignment
         context['courses'] = courseList
         context['canSubmit'] = can_submit(assignment)
+        context['submissions'] = submissions
 
     except User.DoesNotExist:
         print("User doesn't exist!")
@@ -573,6 +575,7 @@ def submit_assignment(request, course_code, asmt):
     course = Course.objects.get(course_code=courseCode)
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
+    submissions = AssignmentSubmission.objects.filter(by=U.reviewuser, submission_for=assignment)
 
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST)
@@ -616,6 +619,7 @@ def submit_assignment(request, course_code, asmt):
     context['course'] = course
     context['asmt'] = assignment
     context['courses'] = courseList
+    context['submissions'] = submissions
 
     return render(request, template, context)
 
