@@ -136,7 +136,6 @@ def coursePage(request, course_code):
         # get all current assignments for that course
         assignments = c.assignments.all()
         courses = U.reviewuser.courses.all()
-
         
         context['assignments'] = assignments
         context['course'] = c
@@ -154,7 +153,6 @@ def coursePage(request, course_code):
 @user_passes_test(staffTest)
 def create_assignment(request, course_code):
     """
-<<<<<<< HEAD
     create_assignment is used by the staff memebers of the system to create
     new assignments for the students.
     
@@ -497,6 +495,7 @@ def assignment_page(request, course_code, asmt):
 
     return render(request, 'assignment_page.html', context)
 
+
 def can_submit(asmt):
     '''Check whether a student can make a submission to an assignment. 
 
@@ -505,7 +504,6 @@ def can_submit(asmt):
 
     Arguments:
         asmt (Assignment) -- the assignment for which we want to check whether
-                             or not submission are open. 
 
     Returns:
         True if allowed to submit asmt now, False otherwise
@@ -636,6 +634,8 @@ def createAnnotation(request, submission_uuid, file_uuid):
     """
 
     context = {}
+    form = None
+    rangeForm = None
 
     try:
         print request
@@ -671,7 +671,6 @@ def createAnnotation(request, submission_uuid, file_uuid):
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
-        # raise Http404
     except SourceFile.DoesNotExit:
         return error_page(request, "This file does not exist")
 

@@ -64,5 +64,3 @@ def user_post_save(sender, instance, created, **kwargs):
         p.save()
 
 post_save.connect(user_post_save, sender=User)
-
-
