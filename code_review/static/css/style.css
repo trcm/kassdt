@@ -17,7 +17,7 @@
 #assignmentList table {
 	
 	width:100%;
-	border-style:solid;
+	
 }
 
 /* cells within the table of assignment details */
@@ -35,12 +35,13 @@
 	
 	
 	
+	
 }
 
 /*  a SINGLE ASSIGNMENTS details */
 #assignmentList p {
 	padding-top: 5px;
-	border-style:solid;
+	
 	
 	
 }
