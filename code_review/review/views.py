@@ -77,13 +77,13 @@ def index(request):
         try:
             courses = U.reviewuser.courses.all()
             context['courses'] = courses
-            return render(request, 'sidebar.html', context)
+            return render(request, 'navbar.html', context)
         except Exception as UserExcept:
             print UserExcept.args
     else:  # user is student
         return student_homepage(request)
 
-    return render(request, 'sidebar.html', context)
+    return render(request, 'navbar.html', context)
 
 
 def logout(request):
