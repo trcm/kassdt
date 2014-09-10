@@ -30,6 +30,8 @@ class AssignmentForm(ModelForm):
                   'submission_close_date', 'review_open_date',
                   'review_close_date']
         widgets = {
+            'name': TextInput(),
+            'repository_format': TextInput(),
             'first_display_date': SplitDateTimeWidget(),
             'submission_open_date': SplitDateTimeWidget(),
             'submission_close_date': SplitDateTimeWidget(),
