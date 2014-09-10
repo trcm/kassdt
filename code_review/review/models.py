@@ -404,6 +404,7 @@ class SourceAnnotationTag(models.Model):
 
 def get_user_for_django_user(usr):
     """
+    Helper method to get the User object from a reviewuser
 
     :param usr: django.contrib.auth.models.AbstractBaseUser
     """

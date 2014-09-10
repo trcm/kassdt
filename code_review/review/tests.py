@@ -1,3 +1,13 @@
+"""
+test.py - beginning of unit and functional testing for the code_review
+project. 
+
+Currently this uses some basic unit tests and we have written
+the base of some tests using selenium.  One of the next sprints
+we will be running in development is to write tests for the project 
+as it is.
+"""
+
 from django.test import TestCase
 
 from django.contrib.auth.models import User, Group
