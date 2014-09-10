@@ -1,8 +1,8 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
-
-<h1>New {{ course.course_code }} Assignment</h1>
+<div id="assignmentCreation">
+<h1>Create new {{ course.course_code }} Assignment</h1>
 
 <form method="post" action="{% url 'generate_assignment' %}">
   {% csrf_token %}
@@ -15,5 +15,5 @@
   <input type="submit" name="Submit" value="Submit" />
 </form>
 
-
+</div>
 {% endblock %}

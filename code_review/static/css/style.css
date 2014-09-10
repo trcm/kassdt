@@ -5,11 +5,38 @@
   display: inline;
 }
 
+/* settings div on an assignment page */
+#assignmentAdmin {
+	display: block;
+	float: right;
+	background-color:red;
+}
+
+
+/*Assignment creation forms on assignment creation Page*/
+#assignmentCreation {
+	padding: 40px;
+	
+	
+	
+}
+
+/*Assignment creation forms on assignment creation Page*/
+#assignmentCreation ul {
+	
+	
+	
+	
+}
+
 /*Assignment List on Default Landing Page*/
 #assignmentList {
 	padding: 40px;
+	;
 	width: 100%;
+	
 	background-color: #E0E0D1;
+	background-repeat: repeat-x; 
 	
 }
 
@@ -65,16 +92,37 @@ padding-top: 40px;
 
 /* global background */
 body {
-	background-color: black; 
-}
-
-/* The table for viewing a specific 
- course Assignments */
-#courseAssignments {
-
+	background-color: black;
 	
+	width: 1024px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* The title on course Assignments page */
+#courseAssignments h1 {
+
+	display:inline;
+	float:left;
 
 }
+
+/* create assignment and settings div on course page */
+#courseAdminSettings {
+	
+	background-color: red;
+	float: right;
+
+}
+
+/* create assignment and settings div on course page */
+#courseAdminCreate {
+	
+	background-color: blue;
+	float: right;
+
+}
+
 
 #files > ul li {
   list-style: none;

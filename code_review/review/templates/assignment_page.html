@@ -1,10 +1,10 @@
 {% extends 'navbar.html' %}
-<div id="assignmentView">
-  {% block main %}
 
+  {% block main %}
+<div id="assignmentView">
   <!-- This page can only be called if an assignment exists, obviously -->
   <h1>{{ asmt.name }}</h1>
-
+<div id="assignmentAdmin">
   {% if user.is_superuser %}
   <!-- Add stuff to allow superuser to edit assignment -->
 
@@ -13,7 +13,7 @@
   {% if user.is_superuser %}
   <h2>Settings</h2>
   {% endif %}
-
+</div>
   <p><b>Submission Status: </b> I dont Know How To Do This</p> 
   <p><b>Assignment due at: </b> {{ asmt.submission_close_date }}</p> 
   <p><b>Review opens at: </b> {{ asmt.review_open_date }}</p> 
