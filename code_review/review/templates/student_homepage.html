@@ -1,3 +1,5 @@
+<!-- This is the main landing page for students and staff memebers,
+it will show them all upcoming assignments and allow them to navigate to the submission page -->
 {% extends 'navbar.html' %}
 
 {% block main %}
@@ -11,6 +13,7 @@
 		<th> Submissions Open: </th>
 		<th> Submissions Close: </th>
 	    </tr>
+	    <!-- grab all upcoming assignments and display them in a table -->
 	    {% for asmt in open_assignments %}
 		<tr> 
 		    <td>{{ asmt.0.course_code }}</td>

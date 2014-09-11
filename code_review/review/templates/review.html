@@ -1,6 +1,10 @@
+<!-- Template for viewing and creation annotations on source code -->
 {% extends 'navbar.html' %}
+
+<!-- Load obfuscation library -->
 {% load unfriendly_tags %}
 {% block main %}
+
 <script>
   $(document).ready(function() {
     annotationHighlight();
@@ -27,11 +31,14 @@
 
 <h4 id="fileName"> Currently displaying </h4>
 <div id="code">
+  <!-- render the source file in the html -->
   {% if code %}
   {{ code | safe}} 
   {% endif%}
 </div>
+
 <div id="annotations">
+  <!-- display all the current annotations -->
   {% for annote, range in annotations %}
   <p>Line: {{ range.start }}</p>
   <p>Comment: {{ annote.text }}</p>
@@ -39,6 +46,7 @@
 {% url 'create_annotation' sub uuid as annotateUrl %}
   <!-- Obfucations doesn't work on get -->
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
+  <!-- display forms for annotation creation if a file is selected -->
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}

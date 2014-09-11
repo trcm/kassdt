@@ -604,7 +604,7 @@ def submit_assignment(request, course_code, asmt):
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
 
-    else: # not POST; show the submission page, if assignment submission are open.
+    else:  # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
         if(not can_submit(assignment)):
             template = 'cannot_submit.html'
