@@ -1,14 +1,16 @@
+<!-- Template for user creation -->
 {% extends 'navbar.html' %}
 
 {% block main %}
 
-
+<!-- Display any errors from previous creation attempt -->
 {% if error %}
 <p id=error>{{ error }}</p>
 {% endif%}
 
 
 <form method="POST" action="/review/validateUser/">
+  <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
   {% for field in form %}
   <p>

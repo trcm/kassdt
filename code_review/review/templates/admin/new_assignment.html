@@ -1,10 +1,13 @@
+<!-- Template for assignment creation -->
 {% extends 'navbar.html' %}
 
 {% block main %}
 <div id="assignmentCreation">
+
 <h1>Create new {{ course.course_code }} Assignment</h1>
 
 <form method="post" action="{% url 'generate_assignment' %}">
+  <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
   {% for field in form %}
   <ul> 
