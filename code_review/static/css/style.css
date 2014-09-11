@@ -51,18 +51,14 @@
 #assignmentList td {
 	padding-top: 5px;
 	border-style:solid;
-	text-align:center;
-	
-	
+	/*Putting text align here causes the review page to also center	 */
 }
 
 /* title of a SINGLE ASSIGNMENTS details */
 #assignmentList b {
 	padding-top: 5px;
 	
-	
-	
-	
+
 }
 
 /*  a SINGLE ASSIGNMENTS details */
@@ -83,7 +79,7 @@
 
 /* Assingment page table div */
 #assignmentView {
-padding-top: 40px;
+  padding-top: 40px;
 	padding-left: 40px;
 	padding-right: 40px;
 	
@@ -92,12 +88,40 @@ padding-top: 40px;
 
 /* global background */
 body {
-	background-color: black;
-	
+	background-color: black;	
 	width: 1024px;
 	margin-left: auto;
 	margin-right: auto;
 }
+
+/* The code div is the div that
+ * contains the code the user is
+ * reviewing when on the review page */
+#code {
+  width:85%;
+  height:500px;
+  overflow:scroll;
+  float:left;
+}
+/* The annotations div is the div
+ * that contains the annotations and
+ * ability to add annotations on the
+ * review page */
+#annotations {
+float: right;
+width: 15%;
+padding-left: 20px;
+
+
+}
+.highlightTable {
+  background-color: red;
+  width:512px;
+
+
+}
+
+
 
 /* The title on course Assignments page */
 #courseAssignments h1 {
@@ -144,7 +168,10 @@ body {
 
 }
 
+#reviewAnnotation td{
+  text-align: none;
 
+}
 
 
 
