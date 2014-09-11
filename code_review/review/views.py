@@ -688,7 +688,7 @@ def grabFileData(request, submissionUuid, file_uuid):
         context['uuid'] = file_uuid
         context['files'] = folders
         context['code'] = code
-
+        context['file'] = file
         return context
     except AssignmentSubmission.DoesNotExist:
         error_page(request, "Submission does not exit")
