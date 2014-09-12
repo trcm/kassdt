@@ -1,4 +1,6 @@
 """
+Code originally sourced from: 
+    https://pypi.python.org/pypi/django-uocLTI/0.1.2
 lti/views.py contains the controller for handling LTI-related requests,
 namely the launch request, which sends the Learning Management System's (LMS)
 user and course details and causes the CPRS to show the home page of the
@@ -26,7 +28,8 @@ from review.models import *
 @csrf_exempt
 def launch_lti(request):
     """Process launch (start cprs) request from a leaning management system.
-    
+    This was modified from the original source.
+
     The method extracts the user's details such as name, ID, email, course
     and role (e.g., teacher, student) from the request and checks whether the
     user has permission to enter the system (see Raises section for details). 

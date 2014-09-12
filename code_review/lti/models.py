@@ -1,4 +1,6 @@
 """
+Code originally source from:
+    https://pypi.python.org/pypi/django-uocLTI/0.1.2
 lti/models.py -- this file contains the representations of database 
 tables used in association with LTI integration. 
 The unicode method in each class determines how the model's information
