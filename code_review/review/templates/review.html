@@ -10,12 +10,10 @@
     annotationHighlight();
     });
 </script>
-<div id="files">
+<div id="reviewFiles">
   <ul>
-    <h4>Files</h4>
-    <p>Root</p>
+    <h4>Files:</h4>
     {% for file in files %}
-
     {% if file.folder_uuid %}
     <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
       {% endif%}
@@ -28,15 +26,20 @@
   </ul>
 
 </div>
-<h4 id="fileName"> Currently displaying: {{ file.name }}</h4>
-<div id="code">
+<div id="reviewFileName">
+	<h4> Currently displaying: {{ file.name }}</h4>
+	</div>
+</div>
+
+<div id="reviewPane">
+<div id="reviewCode">
   <!-- render the source file in the html -->
   {% if code %}
   {{ code | safe}} 
   {% endif%}
 </div>
 
-<div id="annotations">
+<div id="reviewAnnotation">
   <!-- display all the current annotations -->
   {% for annote, range in annotations %}
   <p>Line: {{ range.start }}</p>
@@ -51,6 +54,7 @@
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
   </form>
+</div>
 </div>
 
 
