@@ -9,7 +9,7 @@
 #assignmentAdmin {
 	display: block;
 	float: right;
-	background-color:red;
+  /* background-color:red; */
 }
 
 
@@ -115,7 +115,7 @@ padding-left: 20px;
 
 }
 .highlightTable {
-  background-color: red;
+  /* background-color: red; */
   width:512px;
 
 
@@ -134,7 +134,7 @@ padding-left: 20px;
 /* create assignment and settings div on course page */
 #courseAdminSettings {
 	
-	background-color: red;
+  /* background-color: red; */
 	float: right;
 
 }
@@ -142,7 +142,7 @@ padding-left: 20px;
 /* create assignment and settings div on course page */
 #courseAdminCreate {
 	
-	background-color: blue;
+  /* background-color: blue; */
 	float: right;
 
 }
