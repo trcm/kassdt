@@ -6,6 +6,7 @@
 {% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
 {% endif%}
+</div>
 {% if assignments %}
   <div id="courseAssignments">
   <table>
