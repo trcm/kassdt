@@ -32,7 +32,7 @@
 /*Assignment List on Default Landing Page*/
 #assignmentList {
 	padding: 40px;
-	;
+	
 	width: 100%;
 	
 	background-color: #E0E0D1;
@@ -89,7 +89,7 @@
 /* global background */
 body {
 	background-color: black;	
-	width: 1024px;
+	width: 1280px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -142,7 +142,7 @@ padding-left: 20px;
 /* create assignment and settings div on course page */
 #courseAdminCreate {
 	
-  /* background-color: blue; */
+	background-color: yellow;
 	float: right;
 
 }
@@ -155,6 +155,26 @@ padding-left: 20px;
 /*Code for highlighting specific lines on review/annotations*/
 .highlight {
   background-color: yellow;
+
+}
+
+/* login block div on non-lti login page */
+#loginBlock {
+	margin-top: 50px;
+	margin-bottom:50px;
+	padding:5px;
+	padding-bottom:40px;
+	background-color: white;
+	margin-left:auto;
+	margin-right:auto;
+	
+
+}
+
+/* login form div on non-lti login page */
+#loginBlock form input {
+	float: left;
+	padding:2px;
 
 }
 

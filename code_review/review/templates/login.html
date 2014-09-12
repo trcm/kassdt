@@ -3,7 +3,9 @@ standalone non-LTI version -->
 {% extends "base.djhtml" %}
 
 {% block content %}
-
+<div id="loginBlock">
+	<h1> Peer code review </h1>
+	<h4>(Non-LTI test login)</h4>
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
@@ -29,5 +31,6 @@ standalone non-LTI version -->
 <form action="{% url 'register' %}">
   <input type="submit" name="register" value="Register" />
 </form>
-
+</div>
 {% endblock %}
+
