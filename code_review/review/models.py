@@ -392,6 +392,36 @@ class SourceAnnotationRange(models.Model):
     startOffset = models.PositiveIntegerField()
     endOffset = models.PositiveIntegerField()
 
+class SubmissionReview(models.Model):
+    
+    """Represents a user's review of a particular submission. 
+
+    Attributes:
+        review_uuid (UUIDField) -- the uuid of this review. 
+        by (ReviewUser) -- the user who is reviewing the code. 
+        submission (Submission) -- the submission being reviewed 
+
+    """
+    review_uuid = UUIDField() 
+    by = models.ForeignKey(ReviewUser)
+    submission = models.ForeignKey(AssignmentSubmission)
+    
+    def __unicode__(self):
+        return "(%s) by %s" % (self.review_uuid, by.djangoUser.username)
+
+    def __repr__(self):
+        return repr({
+            "assignment_uuid": self.assignment_uuid,
+            "name": self.name,
+            "repository_format": self.repository_format,
+            "first_display_date": self.first_display_date,
+            "submission_open_date": self.submission_open_date,
+            "submission_close_date": self.submission_close_date,
+            "review_open_date": self.review_open_date,
+            "review_close_date": self.review_close_date,
+            "multiple_submissions": self.multiple_submissions,
+            })
+
 # Source Annotation Tag is scheduled to be deleted from the database
 
 
