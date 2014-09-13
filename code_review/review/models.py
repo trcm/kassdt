@@ -133,7 +133,8 @@ class SourceFile(models.Model):
         folder (SourceFolder) -- the folder in which this file lives
         file_uuid (UUIDField) -- the UUID of this file
         name (TextField) -- the name of this file, e.g., "hello.c"
-
+        submission (AssignmentSubmission) -- the assignment submission 
+                                             to which this file belongs.
     Methods:
         content(self) -- gets the contents of this file.
 
@@ -143,6 +144,7 @@ class SourceFile(models.Model):
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
     file = models.FileField(upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
+    submission = models.ForeignKey('AssignmentSubmission', null=True)
 
     def __unicode__(self):
         return "(%s)%s" % (self.file_uuid, self.name)
@@ -394,17 +396,21 @@ class SourceAnnotationRange(models.Model):
 
 class SubmissionReview(models.Model):
     
-    """Represents a user's review of a particular submission. 
+    """Represents a user's review of a particular assignment.
+
+    Needed mostly to store which submissions a user is tasked to
+    review; system randomly picks submissions and gives them to students
+    to review.
 
     Attributes:
         review_uuid (UUIDField) -- the uuid of this review. 
         by (ReviewUser) -- the user who is reviewing the code. 
-        submission (Submission) -- the submission being reviewed 
+        submission (ManyToManyField) -- the submissions being reviewed 
 
     """
     review_uuid = UUIDField() 
     by = models.ForeignKey(ReviewUser)
-    submission = models.ForeignKey(AssignmentSubmission)
+    submissions = models.ManyToManyField(AssignmentSubmission, null=False)
     
     def __unicode__(self):
         return "(%s) by %s" % (self.review_uuid, by.djangoUser.username)
