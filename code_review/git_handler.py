@@ -93,7 +93,7 @@ def add_source_folder(name, parent):
     return SourceFolder.objects.get_or_create(name=name, parent=parent)
 
 
-def add_source_file(name, folder, srcPath):
+def add_source_file(name, folder, srcPath, submission):
     """Add a SourceFile with name `name', in `folder', with the path `srcPath'.
 
     We note SourceFile has a FileField, which only stores the upload
@@ -107,6 +107,8 @@ def add_source_file(name, folder, srcPath):
         name (String) -- name of file
         folder (SourceFolder) -- the folder containing this file.
         srcPath (String) -- the path to this file, relative to MEDIA_ROOT.
+        submission (AssignmentSubmission) -- the assignment submission to 
+        which this file belongs.
     
     Returns:
         A 2-tuple (object, created) such that:
@@ -115,10 +117,9 @@ def add_source_file(name, folder, srcPath):
             - created is True if SourceFile was created, False if retrieved.
     """
     f = srcPath
-    return SourceFile.objects.get_or_create(name=name, folder=folder, file=f)
+    return SourceFile.objects.get_or_create(name=name, folder=folder, file=f, submission=submission)
 
-
-def traverse_tree(tree, thisFolder, path):
+def traverse_tree(tree, thisFolder, path, submission):
     """Traverse a git repo tree and populate the database appropriately.
 
     Recurvise tree traversal; creates the appropriate
@@ -146,6 +147,8 @@ def traverse_tree(tree, thisFolder, path):
         that directory, rather than the root git directory. 
         E.g. path might be/courseABCD/assign1/s012345_<uuid> and the student 
         might have named their repository i_hate_this_course.  
+        
+        submission (AssignmentSubmission) -- the assignment submission...
 
     Returns:
         Nothing
@@ -161,13 +164,13 @@ def traverse_tree(tree, thisFolder, path):
 
     for blob in blobs:
         filepath = os.path.join(path, blob.name)
-        add_source_file(blob.name, thisFolder, filepath)
+        add_source_file(blob.name, thisFolder, filepath, submission)
 
     # Get folders directly underneath this folder.
     folders = tree.trees
     for folder in folders:
         srcFolderObj = add_source_folder(folder.name, thisFolder)[0]
-        traverse_tree(folder, srcFolderObj, path)
+        traverse_tree(folder, srcFolderObj, path, submission)
 
     return
 
@@ -224,4 +227,4 @@ def populate_db(asmtSubmission, directory):
     # Get repo root directory relative to MEDIA_ROOT
     relativeRoot = os.path.join(directory, rootFolderName)
     # Now make the rest of the SourceFolder and SourceFile objects.
-    traverse_tree(root, rootFolder, relativeRoot)
+    traverse_tree(root, rootFolder, relativeRoot, asmtSubmission)
