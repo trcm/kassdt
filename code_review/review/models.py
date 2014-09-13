@@ -340,6 +340,9 @@ class AssignmentSubmission(models.Model):
             "root_folder": self.root_folder,
             })
 
+    class Meta:
+        get_latest_by = "submission_date"
+
 
 # BEGIN ANNOTATION STORAGE ###
 # The following models represent the annotation on the source files by the users;
@@ -411,6 +414,7 @@ class SubmissionReview(models.Model):
     review_uuid = UUIDField() 
     by = models.ForeignKey(ReviewUser)
     submissions = models.ManyToManyField(AssignmentSubmission, null=False)
+    assignment = models.ForeignKey(Assignment, null=False)
     
     def __unicode__(self):
         return "(%s) by %s" % (self.review_uuid, by.djangoUser.username)
