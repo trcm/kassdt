@@ -170,6 +170,7 @@ def viewPost(request, post_uuid):
         context['question'] = post.question
         context['title'] = post.title
         context['post'] = post
+        context['course_code'] = post.course_code.course_code
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
@@ -276,6 +277,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         context['annotations'] = zip(aDict, annotationRanges)
         context['post_uuid'] = submissionUuid
         context['post'] = post
+        context['course_code'] = post.course_code.course_code
         context['uuid'] = file_uuid
         context['files'] = folders
         context['code'] = code
@@ -287,10 +289,10 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         error_page(request, "Submission does not exit")
 
 
-def deletePost(request, post_uuid):
+def deletePost(request, course_code, post_uuid):
 
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
-
+    course_code = course_code.encode('ascii', 'ignore')
     try:
         post = Post.objects.get(post_uuid=post_uuid)
         if post.by == currentUser.reviewuser or currentUser.reviewuser.isStaff:
@@ -298,7 +300,7 @@ def deletePost(request, post_uuid):
         else:
             error_page(request, "you're trying to delete something you don't have the persmissions for")
 
-        return HttpResponseRedirect('/help')
+        return HttpResponseRedirect('/help/' + course_code)
     except Post.DoesNotExit:
         error_page(request, "Post does not exist")
     return HttpResponse("delete")

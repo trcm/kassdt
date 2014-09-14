@@ -12,6 +12,6 @@ urlpatterns = patterns('',
                            views.viewPost, name="view_post"),
                        url(r'file/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<file_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
                            views.viewPostFile, name="view_post_file"),
-                       url(r'delete/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})',
+                       url(r'delete/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.deletePost, name="delete_post"),
 )
