@@ -448,7 +448,7 @@ def error_page(request, message):
     Returns:
         HttpResponse object to display error page.
     """
-    context = {'errorMessage':message}
+    context = {'errorMessage': message}
     return render(request, 'error.html', context, status=404)
 
 @login_required(login_url='/review/login_redirect/')

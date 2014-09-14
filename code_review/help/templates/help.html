@@ -1,0 +1,39 @@
+{% extends 'navbar.html' %}
+
+{% block main %}
+
+<div id="help">
+  <a class="btn btn-primary" href="{% url 'new_post' %}">New Post</a>
+  <a class="btn btn-info" href="">View Posts</a>
+  <table class="table table-hover" id="posts">
+    
+    {% if Posts %}
+    <th>Title</th>
+    <th>User</th>
+    <th>Created</th>
+    <th></th>
+
+    {% for post in Posts %}
+    <tr>
+      <td>{{ post.title }}</td>
+      <td>{{ post.by }}</td>
+      <td>{{ post.created }}</td>
+      <td>
+	{% if post.by == user.reviewuser %}
+        <a class="btn btn-danger" href="{% url 'delete_post' post.post_uuid %}">Delete</a> 
+	{% endif%}
+	<a class="btn btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+
+    {% else %}
+    No posts
+    {% endif%}
+
+  </table>
+  
+</div>
+
+
+{% endblock %}
