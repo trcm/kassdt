@@ -33,6 +33,8 @@ from pygments.styles import *
 
 from review.models import *
 
+from help.models import Post
+
 # imports any helpers we might need to write
 from helpers import staffTest
 
@@ -713,12 +715,12 @@ def createAnnotation(request, submission_uuid, file_uuid):
     rangeForm = None
 
     try:
-        print request
+        # print request
         # Get the current user and form data
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
-
+        
         text = form['text'].value()
         start = rangeForm['start'].value()
         end = 0
@@ -741,13 +743,19 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
             newRange.save()
             print newAnnotation, newRange
-
+            try:
+                p = Post.objects.get(post_uuid=submission_uuid)
+                print p
+                return HttpResponseRedirect('/help/file/' + submission_uuid +
+                                    '/' + file_uuid + '/')
+            except Post.DoesNotExist:
+                print "This is a assignment submission"
             return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
 
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
-    except SourceFile.DoesNotExit:
+    except SourceFile.DoesNotExist:
         return error_page(request, "This file does not exist")
 
     context = grabFileData(request, submission_uuid, file_uuid)
