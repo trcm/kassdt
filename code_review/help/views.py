@@ -148,11 +148,13 @@ def viewPost(request, post_uuid):
                 for s in f.files.all():
                     folders.append(s)
                     # root_files = post.root_folder.files
+        user = User.objects.get(id=request.session['_auth_user_id'])
 
         # return all the data for the postmission to the context
+        context['user'] = user
         context['question'] = post.question
         context['title'] = post.title
-        context['post'] = post.post_uuid
+        context['post'] = post
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
@@ -255,7 +257,8 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         print annotationRanges
 
         context['annotations'] = zip(aDict, annotationRanges)
-        context['post'] = submissionUuid
+        context['post_uuid'] = submissionUuid
+        context['post'] = post
         context['uuid'] = file_uuid
         context['files'] = folders
         context['code'] = code

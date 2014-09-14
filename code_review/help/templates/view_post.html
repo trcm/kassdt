@@ -20,7 +20,7 @@
       <!-- {% if file.file_uuid %} -->
       <!-- {% url 'view_post_file' post file.file_uuid as fileurl %} -->
       <!-- <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li> -->
-      <li><a href="/help/file/{{ post }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
+      <li><a href="/help/file/{{ post_uuid }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
       {% endif%}
       {% endfor %}
   </ul>
@@ -28,6 +28,13 @@
 </div>
 <div id="title">Post Title: {{ title }}</div>
 <div id="question">Post Question: {{ question }}</div>
+
+{% if user.reviewuser == post.by%}
+<a class="btn btn-danger" href="{% url 'delete_post' post.post_uuid %}">Delete</a>
+<button class="btn btn-info" data-toggle="modal" data-target="#myModal">
+  Edit 
+</button>
+{% endif%}
 
 <div id="reviewFileName">
   <h4> Currently displaying: {{ file.name }}</h4>
@@ -69,5 +76,23 @@
   <ul>{{ range.start }}</ul>
   {% endfor %}
 </div>
-{% endblock %}
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit post</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
