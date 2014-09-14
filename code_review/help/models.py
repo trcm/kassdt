@@ -1,7 +1,7 @@
 from django.db import models
 # from django.contrib.auth.models import User
 from django_extensions.db.fields import UUIDField
-from review.models import ReviewUser, SourceFolder  # , SourceFile
+from review.models import ReviewUser, SourceFolder, Course  # , SourceFile
 
 
 class Post(models.Model):
@@ -9,6 +9,7 @@ class Post(models.Model):
     This model represents a post in the cprs help system
     Attributes:
         post_uuid (UUIDField) -- unique identifier for the post
+        course_code
         user (ForeignKey)
         Question
         datetime created
@@ -22,6 +23,7 @@ class Post(models.Model):
     post_uuid = UUIDField()
     # user = models.ForeignKey(ReviewUser, related_name="posts")
     by = models.ForeignKey(ReviewUser, related_name="posts")
+    course_code = models.ForeignKey(Course, related_name="posts")
     title = models.CharField(max_length=100)
     question = models.TextField()
     created = models.DateTimeField(auto_now_add=True)

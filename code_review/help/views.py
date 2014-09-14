@@ -14,7 +14,7 @@ from help.forms import PostForm
 from git_handler import *
 
 @login_required(login_url='/review/login_direct/')
-def index(request):
+def index(request, course_code):
     
     """
     This is the default index page for the help application. It shows the currently open 
@@ -26,22 +26,31 @@ def index(request):
     Returns:
     HttpResponse rendering the page, or a relevant error page.
     """
-
+    
     context = {}
-    openPosts = Post.objects.filter(open=True).order_by('-created')
+    course_code = course_code.encode('ascii', 'ignore')
+    openPosts = []
     U = None
     try:
+        c = Course.objects.get(course_code=course_code)
+        # for p in c.posts.all():
+        #     if p.open:
+        #         openPosts.append(p)
+        #  TODO sort posts by date
+        openPosts = c.posts.all().filter(open=True).order_by('-created')
         U = User.objects.get(id=request.user.id)
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
         error_page(request, error)
     
     context['user'] = U
+    context['course_code'] = course_code
     context['Posts'] = openPosts
+    print "help index"
     return render(request, 'help.html', context)
 
 
-def newPost(request):
+def newPost(request, course_code):
     
     """
     Displays all the data for creating a new help post
@@ -54,7 +63,8 @@ def newPost(request):
     """
 
     context = {}
-
+    course_code = course_code.encode('ascii', 'ignore')
+    print "new post"
     U = None
     try:
         U = User.objects.get(id=request.user.id)
@@ -62,14 +72,14 @@ def newPost(request):
         error = "User %s does not exist" % request.user
         error_page(request, error)
 
-    
     form = PostForm()
     context['user'] = U
+    context['course_code'] = course_code
     context['form'] = form
     return render(request, 'new_post.html', context)
 
 
-def createPost(request):
+def createPost(request, course_code):
     
     """
     Validate the data from the new post form, grabs the form data
@@ -81,8 +91,11 @@ def createPost(request):
     Returns:
 
     """
+
     context = {}
     form = {}
+    course_code = course_code.encode('ascii', 'ignore')
+    print "creating course"
     if request.method == "POST":
         form = PostForm(request.POST)
         print request
@@ -94,7 +107,9 @@ def createPost(request):
             try:
                 print "Creating Post"
                 U = User.objects.get(id=request.user.id)
+                c = Course.objects.get(course_code=course_code)
                 post = Post.objects.create(by=U.reviewuser,
+                                           course_code=c,
                                            question=question,
                                            title=title,
                                            submission_repository=repo)
@@ -102,7 +117,7 @@ def createPost(request):
                 relDir = os.path.join('help', post.by.djangoUser.username)
                 populate_db(post, relDir)
 
-                return HttpResponseRedirect('/help')
+                return HttpResponseRedirect('/help/' + course_code)
             except GitCommandError as giterr:
                 print giterr.args
                 sub.delete()
@@ -178,6 +193,8 @@ def viewPostFile(request, post_uuid, file_uuid):
     returns
     """
     uuid = post_uuid.encode('ascii', 'ignore')
+    print post_uuid
+    print "Post uuid %s " % uuid
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
     try:

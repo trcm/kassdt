@@ -20,7 +20,7 @@
       <!-- {% if file.file_uuid %} -->
       <!-- {% url 'view_post_file' post file.file_uuid as fileurl %} -->
       <!-- <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li> -->
-      <li><a href="/help/file/{{ post_uuid }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
+      <li><a href="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
       {% endif%}
       {% endfor %}
   </ul>
