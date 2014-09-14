@@ -68,7 +68,7 @@ INSTALLED_APPS = (
     'south',
     'lti',
     'unfriendly',
-
+    'help',
     # 'ims_lti_py',
 )
 

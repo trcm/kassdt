@@ -18,6 +18,7 @@
           					{% endfor %}
   						  </ul>
 						</li>
+                                                <li><a href="{% url 'help' %}">Help</a></li>
 						<!-- Staff specific navigation options -->
 						{% if user.is_staff %}
         				<li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>

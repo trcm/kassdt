@@ -1,0 +1,73 @@
+{% extends 'navbar.html' %}
+
+<!-- Load obfuscation library -->
+{% load unfriendly_tags %}
+{% block main %}
+
+<script>
+ $(document).ready(function() {
+   annotationHighlight();
+ });
+</script>
+<div id="reviewFiles">
+  <ul>
+    <h4>Files:</h4>
+    {% for file in files %}
+    {% if file.folder_uuid %}
+    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
+      {% endif%}
+
+      <!-- {% if file.file_uuid %} -->
+      <!-- {% url 'view_post_file' post file.file_uuid as fileurl %} -->
+      <!-- <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li> -->
+      <li><a href="/help/file/{{ post }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
+      {% endif%}
+      {% endfor %}
+  </ul>
+
+</div>
+<div id="title">Post Title: {{ title }}</div>
+<div id="question">Post Question: {{ question }}</div>
+
+<div id="reviewFileName">
+  <h4> Currently displaying: {{ file.name }}</h4>
+</div>
+</div>
+
+<div id="reviewPane">
+  <div id="reviewCode">
+    <!-- render the source file in the html -->
+    Code
+    {% if code %}
+    {{ code | safe}} 
+    {% endif%}
+  </div>
+
+  <div id="reviewAnnotation">
+    <div>
+    <!-- display all the current annotations -->
+    {% for annote, range in annotations %}
+    <p>Line: {{ range.start }}</p>
+    <p>Comment: {{ annote.text }}</p>
+    {% endfor %}
+
+    {% url 'create_annotation' sub uuid as annotateUrl %}
+    <!-- Obfucations doesn't work on get -->
+    <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
+    <!-- display forms for annotation creation if a file is selected -->
+    <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+      {{ rangeform.as_ul }}
+      {{ form.as_ul }}
+      <input type="Submit" name="submit" value="Submit" />
+    </form>
+  </div>
+</div>
+
+
+<div id='startLine'>
+  {% for annote, range in annotations %}
+  <ul>{{ range.start }}</ul>
+  {% endfor %}
+</div>
+{% endblock %}
+

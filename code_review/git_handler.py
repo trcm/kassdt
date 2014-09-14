@@ -174,6 +174,7 @@ def traverse_tree(tree, thisFolder, path, submission):
 
     return
 
+
 def populate_db(asmtSubmission, directory):
     """Store the folders and files associated with asmtSubmission to the database.
     
