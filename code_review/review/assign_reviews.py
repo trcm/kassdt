@@ -45,7 +45,7 @@ def distribute_reviews(asmt, perStudent):
     print 'number of submissions: ', numSubs
     
     for user in users:
-        review = SubmissionReview.objects.get_or_create(by=user, assignment=asmt)[0]
+        review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
         for i in range(perStudent):
             index = random.randint(0, numSubs-1)
             submission = latestSubmissions[index]

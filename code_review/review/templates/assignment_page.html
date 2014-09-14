@@ -56,7 +56,10 @@
 <!-- Submission to review -->
 <div>
 {% if canReview %}
+    <h3> Reviews per student: {{asmt.reviews_per_student}} reviews. </h3>
+    <h3> You have been assigned to do {{actualNumReviews }} reviews. </h3>
     <h3> Submissions you have been assigned to review: </h3>
+
     <tr>
         <th>Submission number</th>
         <th></th>

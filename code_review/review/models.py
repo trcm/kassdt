@@ -400,7 +400,7 @@ class SourceAnnotationRange(models.Model):
     startOffset = models.PositiveIntegerField()
     endOffset = models.PositiveIntegerField()
 
-class SubmissionReview(models.Model):
+class AssignmentReview(models.Model):
     
     """Represents the submissions a user has been allocated to review for a particular assignment.
 
