@@ -291,6 +291,7 @@ class Assignment(models.Model):
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
             "multiple_submissions": self.multiple_submissions,
+            "reviews_per_student": self.reviews_per_student,
             })
 
 
@@ -414,6 +415,7 @@ class AssignmentReview(models.Model):
         submission (ManyToManyField) -- the submissions being reviewed 
         assignment (Assignment) -- the assignment the submissions are for.
     """
+    
     review_uuid = UUIDField() 
     by = models.ForeignKey(ReviewUser)
     submissions = models.ManyToManyField(AssignmentSubmission, null=True)
@@ -432,6 +434,30 @@ class AssignmentReview(models.Model):
 
 # Source Annotation Tag is scheduled to be deleted from the database
 
+class SubmissionReview(models.Model):
+
+    """Represents a review by a user for a particular submission of an assignment.
+
+    Needed to represent the notion of when a reviw is "finished". Some ideas at
+    the moment include number of annotations. 
+
+    Attributes:
+
+    """
+
+    submission_review_uuid = UUIDField()
+    review_by = models.ForeignKey(ReviewUser)
+    submission = models.ForeignKey(AssignmentSubmission)
+
+    def __unicode__(self):
+        return "Review for assignment %s, submission %s by %s" %(self.submission.submission_for, self.submission, self.review_by)
+
+    def __repr__(self):
+        return repr({
+            "submission_review_uuid":self.submission_review_uuid,
+            "review_by":self.review_by,
+            "submission":self.submission,
+            })
 
 class SourceAnnotationTag(models.Model):
     tag_annotation = models.ForeignKey(SourceAnnotation, related_name="tags")

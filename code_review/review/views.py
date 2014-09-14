@@ -482,13 +482,15 @@ def assignment_page(request, course_code, asmt):
         submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
 
         # Get the reviews this user has been assigned to complete.
-        review = SubmissionReview.objects.filter(assignment=assignment, by=reviewUser)
+        review = AssignmentReview.objects.filter(assignment=assignment, by=reviewUser)
         if(len(review) > 1):
             raise Exception
-        review = review[0]
-
-        submissionsToReview = review.submissions.all()
-        print submissionsToReview
+        if(review):
+            review = review[0]
+            submissionsToReview = review.submissions.all()
+            context['submissionsToReview'] = submissionsToReview
+            context['actualNumReviews'] = len(submissionsToReview)
+            print submissionsToReview
 
         context['user'] = U
         context['course'] = course
@@ -496,10 +498,8 @@ def assignment_page(request, course_code, asmt):
         context['courses'] = courseList
         context['canSubmit'] = can_submit(assignment)
         context['submissions'] = submissions
-        
         context['canReview'] = can_review(assignment)
-        context['submissionsToReview'] = submissionsToReview
-
+        
     except User.DoesNotExist:
         print("User doesn't exist!")
         return error_page(request, 'User does not exist!')
