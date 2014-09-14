@@ -31,6 +31,7 @@
   {% endif %}
 
   <!-- shows the user their past submissions -->
+  <!-- Sheldon, this may need to be made scrollable? -->
   {% if submissions %}
     Submimissions 
     <tr>
@@ -50,6 +51,25 @@
     </tr>
     {% endfor %}
   {% endif %}
+</div>
 
+<!-- Submission to review -->
+<div>
+{% if canReview %}
+    <h3> Submissions you have been assigned to review: </h3>
+    <tr>
+        <th>Submission number</th>
+        <th></th>
+    </tr>
+    {% for review in submissionsToReview %}
+    <tr>
+        <td>{{review.submission_uuid}}</td>
+        <td><a href="{% url 'submission' review.submission_uuid %}">
+            <button>Review this submission</button>
+        </a>
+        </td>
+    </tr>
+    {% endfor %}
+{% endif %}
 </div>
 {% endblock %}

@@ -258,6 +258,8 @@ class Assignment(models.Model):
         multiple_submissions (BooleanField) -- true if multiple submissions (prior to the due date)
                                                are allowed for this assignment, false otherwise. 
                                                (default True)
+        reviews_per_student (IntegerField) -- the number of submissions each student will be 
+                                              assigned to review.
 
     """
 
@@ -273,6 +275,7 @@ class Assignment(models.Model):
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
     multiple_submissions = models.BooleanField(default=True)
+    reviews_per_student = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "(%s)%s" % (self.assignment_uuid, self.name)
@@ -399,7 +402,7 @@ class SourceAnnotationRange(models.Model):
 
 class SubmissionReview(models.Model):
     
-    """Represents a user's review of a particular assignment.
+    """Represents the submissions a user has been allocated to review for a particular assignment.
 
     Needed mostly to store which submissions a user is tasked to
     review; system randomly picks submissions and gives them to students
@@ -409,7 +412,7 @@ class SubmissionReview(models.Model):
         review_uuid (UUIDField) -- the uuid of this review. 
         by (ReviewUser) -- the user who is reviewing the code. 
         submission (ManyToManyField) -- the submissions being reviewed 
-
+        assignment (Assignment) -- the assignment the submissions are for.
     """
     review_uuid = UUIDField() 
     by = models.ForeignKey(ReviewUser)

@@ -471,13 +471,24 @@ def assignment_page(request, course_code, asmt):
     context = {}
 
     try:
+        # Assingment submission related stuff 
         U = User.objects.get(id=request.user.id)
+        reviewUser = U.reviewuser
         courseList = U.reviewuser.courses.all()
         courseCode = course_code.encode('ascii', 'ignore')
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
         assignment = Assignment.objects.get(name=asmtName)
-        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=U.reviewuser)
+        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
+
+        # Get the reviews this user has been assigned to complete.
+        review = SubmissionReview.objects.filter(assignment=assignment, by=reviewUser)
+        if(len(review) > 1):
+            raise Exception
+        review = review[0]
+
+        submissionsToReview = review.submissions.all()
+        print submissionsToReview
 
         context['user'] = U
         context['course'] = course
@@ -485,6 +496,9 @@ def assignment_page(request, course_code, asmt):
         context['courses'] = courseList
         context['canSubmit'] = can_submit(assignment)
         context['submissions'] = submissions
+        
+        context['canReview'] = can_review(assignment)
+        context['submissionsToReview'] = submissionsToReview
 
     except User.DoesNotExist:
         print("User doesn't exist!")
@@ -509,6 +523,7 @@ def can_submit(asmt):
 
     Arguments:
         asmt (Assignment) -- the assignment for which we want to check whether
+        whether or not submission are open. 
 
     Returns:
         True if allowed to submit asmt now, False otherwise
@@ -517,6 +532,21 @@ def can_submit(asmt):
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
+def can_review(asmt):
+    '''Checks whether a student can review other students' submissions. 
+
+    Checks whether an assignment is open for review; i.e., determine whether or not
+    reviews have opened and are not yet closed. 
+
+    Arguments:
+        asmt (Assignment) -- the assignment we want to check to see if reviews are open.
+
+    Returns:
+        True if user can review submissions now, False otherwise.
+    '''
+
+    now = timezone.now()
+    return now < asmt.review_close_date and now > asmt.review_open_date
 
 def user_can_submit(user, asmt):
     """Return true if this user has not yet made a submission for this asmt or
