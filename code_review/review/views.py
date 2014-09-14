@@ -473,7 +473,7 @@ def assignment_page(request, course_code, asmt):
         courseCode = course_code.encode('ascii', 'ignore')
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
-        assignment = Assignment.objects.get(name=asmtName)
+        assignment = Assignment.objects.get(course_code=course, name=asmtName)
         submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=U.reviewuser)
 
         context['user'] = U
