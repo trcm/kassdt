@@ -2,16 +2,22 @@ from review.models import *
 import random
 
 def get_latest(course, asmt, submissions, users):
+    """
+
+    Arguments:
+        users (QuerySet<ReviewUser>) 
+    """
     latestSubmissions = []
 
     # Filter submissions by student
     for user in users:
-        userSubs = submissions.objects.filter(by=user)
-        latestSubmissions.append(userSubs.latest())
+        userSubs = submissions.filter(by=user)
+        if userSubs:
+            latestSubmissions.append(userSubs.latest())
 
     return latestSubmissions
 
-def assign_reviews(asmt, perStudent):
+def distribute_reviews(asmt, perStudent):
     """Randomly allocate reviews to students. 
     
     Arguments:
@@ -29,17 +35,29 @@ def assign_reviews(asmt, perStudent):
 
     # Get all submissions for this assignment.
     subs = AssignmentSubmission.objects.filter(submission_for=asmt)
+    print subs
     course = asmt.course_code
-    users = Course.objects.filter(course_code=course.course_code)
+    users = ReviewUser.objects.filter(courses=course)
     numUsers = len(users)
-    subs = get_latest(course, asmt, subs, users)
-    numSubs = len(subs)
-
+    latestSubmissions = get_latest(course, asmt, subs, users)
+    print 'filtered subs are ', latestSubmissions
+    numSubs = len(latestSubmissions)
+    print 'number of submissions: ', numSubs
+    
     for user in users:
-        review = SubmissionReview.objects.create(by=user, assignment=asmt)
+        review = SubmissionReview.objects.get_or_create(by=user, assignment=asmt)[0]
         for i in range(perStudent):
             index = random.randint(0, numSubs-1)
-            review.submissions.add(subs[index])
+            submission = latestSubmissions[index]
+            
+            # Make sure user isn't assigned to review their own submission
+            # NB in the amazing edge case where this user is the only person who 
+            # submitted the assignment, we get an infinite loopevi
+            while(submission.by == user):
+                index = random.randint(0, numSubs-1)
+                submission = latestSubmissions[index]
+             
+            review.submissions.add(submission)
 
     return
 

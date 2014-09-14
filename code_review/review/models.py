@@ -413,23 +413,18 @@ class SubmissionReview(models.Model):
     """
     review_uuid = UUIDField() 
     by = models.ForeignKey(ReviewUser)
-    submissions = models.ManyToManyField(AssignmentSubmission, null=False)
-    assignment = models.ForeignKey(Assignment, null=False)
+    submissions = models.ManyToManyField(AssignmentSubmission, null=True)
+    assignment = models.ForeignKey(Assignment, null=True)
     
     def __unicode__(self):
-        return "(%s) by %s" % (self.review_uuid, by.djangoUser.username)
+        return "(%s) by %s for %s" % (self.review_uuid, self.by, self.assignment)
 
     def __repr__(self):
         return repr({
-            "assignment_uuid": self.assignment_uuid,
-            "name": self.name,
-            "repository_format": self.repository_format,
-            "first_display_date": self.first_display_date,
-            "submission_open_date": self.submission_open_date,
-            "submission_close_date": self.submission_close_date,
-            "review_open_date": self.review_open_date,
-            "review_close_date": self.review_close_date,
-            "multiple_submissions": self.multiple_submissions,
+            "review_uuid":self.review_uuid,
+            "by":self.by,
+            "submissions":self.submissions,
+            "assignment":self.assignment,
             })
 
 # Source Annotation Tag is scheduled to be deleted from the database

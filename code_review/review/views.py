@@ -44,6 +44,9 @@ from django.utils import timezone
 # For handling assignments submitted via git repo
 from git_handler import *
 
+# For randomly assigning students to review particular submissions.
+from assign_reviews import *
+
 import os
 import os.path
 
@@ -459,7 +462,7 @@ def assignment_page(request, course_code, asmt):
         request (HttpRequest) -- the HTTP request asking to view the assignment.
         course_code (Course.course_code) -- the course code of the course to which
                                             the assignment we want to display belongs.
-        asmt (Assignment) -- the assignment we want to display.
+        asmt (String) -- the name of the assignment we want to display.
 
     Returns:
         A HttpResponse object which is used to render the webpage.
@@ -942,3 +945,11 @@ def get_list(root_folder, theList):
         theList.append(get_list(folder, []))
 
     return theList
+
+@login_required
+@user_passes_test(staffTest)
+def assign_reviews(request, course_code, asmt):
+    asmtName = asmt.encode('ascii', 'ignore')
+    assignment = Assignment.objects.get(name=asmtName)
+    distribute_reviews(assignment, 3)
+    return HttpResponse('Reviews assigned for %s' %asmtName)
