@@ -48,11 +48,10 @@
 }
 
 /* cells within the table of assignment details */
-#assignmentList td {
+/*#assignmentList td {
 	padding-top: 5px;
 	border-style:solid;
-	/*Putting text align here causes the review page to also center	 */
-}
+}*/
 
 /* title of a SINGLE ASSIGNMENTS details */
 #assignmentList b {
