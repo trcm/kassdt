@@ -24,18 +24,13 @@
 /*Assignment creation forms on assignment creation Page*/
 #assignmentCreation ul {
 	
-	
-	
-	
 }
 
 /*Assignment List on Default Landing Page*/
 #assignmentList {
 	padding: 40px;
-	
 	width: 100%;
-	
-	background-color: #E0E0D1;
+	background-color: white;
 	background-repeat: repeat-x; 
 	
 }
