@@ -14,4 +14,6 @@ urlpatterns = patterns('',
                            views.viewPostFile, name="view_post_file"),
                        url(r'delete/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.deletePost, name="delete_post"),
+                       url(r'update/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.updatePost, name="update_post"),
 )

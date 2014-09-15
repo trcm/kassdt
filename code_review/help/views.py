@@ -9,7 +9,8 @@ from review.views import error_page
 from review.forms import annotationForm, annotationRangeForm
 # import needed code from help
 from help.models import Post
-from help.forms import PostForm
+
+from help.forms import postForm, editForm
 
 from git_handler import *
 
@@ -72,7 +73,7 @@ def newPost(request, course_code):
         error = "User %s does not exist" % request.user
         error_page(request, error)
 
-    form = PostForm()
+    form = postForm()
     context['user'] = U
     context['course_code'] = course_code
     context['form'] = form
@@ -97,7 +98,7 @@ def createPost(request, course_code):
     course_code = course_code.encode('ascii', 'ignore')
     print "creating course"
     if request.method == "POST":
-        form = PostForm(request.POST)
+        form = postForm(request.POST)
         print request
         if form.is_valid():
             title = form.cleaned_data['title']
@@ -174,6 +175,7 @@ def viewPost(request, post_uuid):
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
+        context['editForm'] = editForm()
         # context['files'] = files
         # context['files'] = get_list(post.root_folder, [])
         return render(request, 'view_post.html', context)
@@ -208,7 +210,8 @@ def viewPostFile(request, post_uuid, file_uuid):
         print uuid
         # context['post'] = uuid
         context['form'] = annotationForm()
-        context['rangeform'] = rangeForm
+        context['rangeform'] = rangeForm()
+        context['editForm'] = editForm()
         return render(request, 'view_post.html', context)
 
     except User.DoesNotExist:
@@ -304,3 +307,41 @@ def deletePost(request, course_code, post_uuid):
     except Post.DoesNotExit:
         error_page(request, "Post does not exist")
     return HttpResponse("delete")
+
+
+def updatePost(request, post_uuid):
+    
+    """
+    Updates a post uses a model on the view_post template, users can only edit
+    the title and question of the post.
+    
+    Parameters:
+    request (HttpRequest) -- request from the user to update a post
+    
+    Returns:
+    HttpReponse to render with the post view or an error page
+    """
+
+    uuid = post_uuid.encode('ascii', 'ignore')
+    print uuid
+    if request.method == "POST":
+        try:
+            form = editForm(request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                question = form.cleaned_data['question']
+                print title, question
+                post = Post.objects.get(post_uuid=uuid)
+                post.title = title
+                post.question = question
+                post.save()
+                return HttpResponseRedirect("/help/view/" + uuid +'/')
+            else:
+                # TODO redirect if form not valid
+                pass
+        except Post.DoesNotExist:
+            error_page(request, "Post does not exist")
+                
+    else:
+        # TODO redirect if not a post request
+        pass
