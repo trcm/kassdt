@@ -99,6 +99,7 @@ def launch_lti(request):
     
 #    avatar = tool_provider.custom_params['custom_photo'] 
     roles = get_lti_value(settings.LTI_ROLES, tool_provider, encoding=encoding)
+    print roles[0]
     # uoc_roles = get_lti_value(settings.LTI_CUSTOM_UOC_ROLES, tool_provider, encoding=encoding)
     user_id = get_lti_value('user_id', tool_provider, encoding=encoding)
     test = get_lti_value('context_title', tool_provider, encoding=encoding)
@@ -137,6 +138,15 @@ def launch_lti(request):
     try:
         """ Check if user already exists using email, if not create new """    
         user = User.objects.get(email=email)
+        if roles[0].__eq__("Instructor"):
+            user.reviewuser.isStaff = True
+            user.is_staff = True
+            user.save()
+            print "User is Staff Member"
+        else:
+            user.reviewouser.isStaff = False
+            user.is_staff = False
+            user.save()
         if user.username != lti_username:
             """ If the username is not in the format user_id, change it and save.  This could happen
             if there was a previously populated User table. """
@@ -166,6 +176,8 @@ def launch_lti(request):
         if last_name: user.last_name = last_name
         user.save()
         ru = ReviewUser.objects.create(djangoUser=user)
+        if roles[0] .__eq__("Instructor"):
+            ru.isStaff = True
         ru.save()
         try:
             print "adding course"
