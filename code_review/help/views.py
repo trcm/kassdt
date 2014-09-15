@@ -210,7 +210,7 @@ def viewPostFile(request, post_uuid, file_uuid):
         print uuid
         # context['post'] = uuid
         context['form'] = annotationForm()
-        context['rangeform'] = rangeForm()
+        context['rangeform'] = rangeForm
         context['editForm'] = editForm()
         return render(request, 'view_post.html', context)
 
