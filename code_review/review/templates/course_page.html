@@ -1,7 +1,7 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
-<h1>{{ course.course_code }}Assignments</h1>
+<h1>Assignments for {{ course.course_code }} </h1>
 <div id="courseAdminCreate">
 {% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
@@ -9,7 +9,7 @@
 </div>
 {% if assignments %}
   <div id="courseAssignments">
-  <table>
+  <table class="table">
     <tr>
       <th>Assignment Name:</th>
       <th>Submission Status:</th>
@@ -30,7 +30,7 @@
 
     </tr>
     {% endfor %}
-
+	</table>
     {% else %}
     <p><strong>No assignments</strong></p>
     {% endif%}
