@@ -8,8 +8,14 @@ $(document).ready( function() {
 	console.log("logout");
     });
     
+    //styling login form
+    $("#id_username").addClass("form-control");
+    $("#id_username").attr("placeholder","Username");
+    $("#id_password").addClass("form-control");
+    $("#id_password").attr("placeholder","Password");
+    
     //make drop down draggable
-    $( "#draggable" ).draggable({ axis: "y" });    
+    $("#draggable").draggable({ axis: "y" });    
 
     $("#appTest").click(function() {
 	console.log("app");
