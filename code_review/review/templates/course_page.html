@@ -8,6 +8,11 @@
 {% endif%}
 </div>
 <a class="btn btn-primary" href="{% url 'help' course.course_code %}">Get help</a>
+
+{% if tutor %}
+Tutor Dawg
+{% endif%}
+
 {% if assignments %}
   <div id="courseAssignments">
   <table>
@@ -18,6 +23,7 @@
       <th>View</th>
     </tr>
     {% for assignment in assignments %}
+    
 
     <tr>
       <td>{{ assignment.name}}</td>

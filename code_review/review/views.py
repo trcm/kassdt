@@ -36,7 +36,7 @@ from review.models import *
 from help.models import Post
 
 # imports any helpers we might need to write
-from helpers import staffTest
+from helpers import staffTest, isTutor
 
 # imports the form for assignment creation
 from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
@@ -139,6 +139,8 @@ def coursePage(request, course_code):
         assignments = c.assignments.all()
         courses = U.reviewuser.courses.all()
 
+        context['tutor'] = isTutor(U, c)
+        
         context['assignments'] = assignments
         context['course'] = c
 

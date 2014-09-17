@@ -89,10 +89,31 @@ class Course(models.Model):
     def __unicode__(self):
         return "%s" % (self.course_code)
 
+
+class Enrol(models.Model):
+    
+    """
+    respresents a users enrolment in a course, also handles permissions for 
+    different levels of user.  This will allow us to have various level of 
+    users and account for the problem of tutors being both staff and students.
+    
+    Attributes:
+    attributes
+    
+    Methods:
+    methods
+    """
+    user = models.ForeignKey('ReviewUser', related_name='enrolment')
+    course = models.ForeignKey('Course')
+    student = models.BooleanField(default=True)
+    tutor = models.BooleanField(default=False)
+    staff = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "%s %s %s %s %s" % (self.user, self.course, self.student, self.tutor, self.staff)
+
 # The following two models are used in conjuction with each other to give the applciation
 # a representation of the file structure used to upload and retrieve assignment files
-
-
 class SourceFolder(models.Model):
 
     """Represents a folder (containing folders and/or files)

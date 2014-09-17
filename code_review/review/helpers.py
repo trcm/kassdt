@@ -37,3 +37,19 @@ def getUser(request):
 
 def getCourses(request):
     pass
+
+
+def isTutor(user, course):
+    e = user.reviewuser.enrolment.filter(course=course)
+    for item in e:
+        if item.tutor:
+            return True
+    return False
+
+
+def createTutor(user, course):
+    e = Enrol.objects.create(user=user,
+                             course=course,
+                             student=False,
+                             tutor=True)
+    e.save()
