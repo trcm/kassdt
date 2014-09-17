@@ -50,6 +50,7 @@
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
   <!-- display forms for annotation creation if a file is selected -->
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />

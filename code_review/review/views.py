@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 # used to make django objects into json
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.forms.util import ErrorList
 import json
 
 #  Imports all the lexers and the formatters currently needed
@@ -34,7 +35,7 @@ from pygments.styles import *
 from review.models import *
 
 # imports any helpers we might need to write
-from helpers import staffTest
+from helpers import staffTest, LineException
 
 # imports the form for assignment creation
 from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
@@ -646,7 +647,7 @@ def grabFileData(request, submissionUuid, file_uuid):
         print 'get file'
         code = highlight(file.content, guess_lexer(file.content),
                          HtmlFormatter(linenos="table"))
-        print code
+        # print code
         folders = []
 
         # grab submission and all the associated files and folders
@@ -718,7 +719,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
     rangeForm = None
 
     try:
-        print request
+        # print request
         # Get the current user and form data
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
@@ -732,6 +733,14 @@ def createAnnotation(request, submission_uuid, file_uuid):
         if form.is_valid() and rangeForm.is_valid():
 
             file = SourceFile.objects.get(file_uuid=file_uuid)
+            lineCount = 0
+            with open(file.file.path) as f:
+                lineCount = sum(1 for _ in f)
+
+            # start is actually a unicode object
+            if int(start) > lineCount or int(start) <= 0:
+                print "Excepting"
+                raise LineException()
             # Create and try saving the new annotation and range
             newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
                                                             source=file,
@@ -745,16 +754,19 @@ def createAnnotation(request, submission_uuid, file_uuid):
                                                             endOffset=end)
 
             newRange.save()
-            print newAnnotation, newRange
+            # print newAnnotation, newRange
 
             return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
 
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
-    except SourceFile.DoesNotExit:
+    except SourceFile.DoesNotExist:
         return error_page(request, "This file does not exist")
-
+    except LineException:
+        errorMessage = "Please enter a line number between 1 and %s" % lineCount
+        context['rangeform'] = rangeForm
+        rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
     context = grabFileData(request, submission_uuid, file_uuid)
     context['form'] = form
     context['rangeform'] = rangeForm
