@@ -681,7 +681,12 @@ def grabFileData(request, submissionUuid, file_uuid):
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
             aDict.append(a)
 
-        print annotationRanges
+        # sort the annotations by starting line
+        annotationRanges.sort(key=lambda x: x.start)
+        sortedAnnotations = []
+        # grab the annotations again based on the sorted order
+        for a in annotationRanges:
+            sortedAnnotations.append(a.range_annotation)
 
         context['annotations'] = zip(aDict, annotationRanges)
         context['sub'] = submissionUuid
