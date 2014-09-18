@@ -7,8 +7,20 @@
 <script>
  $(document).ready(function() {
    annotationHighlight();
+
  });
 </script>
+
+
+{% if editError %}
+<script>
+ $(document).ready(function() {
+   $("#editBtn").click();
+ });
+</script>
+{% endif%}
+
+
 <div id="reviewFiles">
   <ul>
     <h4>Files:</h4>
@@ -31,7 +43,7 @@
 
 {% if user.reviewuser == post.by%}
 <a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a>
-<button class="btn btn-info" data-toggle="modal" data-target="#myModal">
+<button id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">
   Edit 
 </button>
 {% endif%}
@@ -89,7 +101,7 @@
         <form action="{% url 'update_post' post.post_uuid %}" method="POST">
 	  {% csrf_token %}
 	  {% if editForm %}
-	  {{ editForm.as_ul }}
+	  {{ editForm.as_p }}
 	  {% endif%}
 	  <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

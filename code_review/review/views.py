@@ -121,7 +121,6 @@ def coursePage(request, course_code):
     to the desired course page using render(), with the correct context
     dictionary, otherwise they will redirected toa 404.
     """
-    print request
     context = {}
     # get the current assignments for the subject
 
@@ -136,7 +135,10 @@ def coursePage(request, course_code):
         c = Course.objects.get(course_code=code)
 
         if not enrolledTest(U.reviewuser, c):
-            return HttpResponseRedirect('/')
+            error_message = "You are not enrolled in " + c.course_code
+            print "Not enrolled"
+            return error_page(request, error_message)
+            # return HttpResponseRedirect('/')
 
         # get all current assignments for that course
         assignments = c.assignments.all()
@@ -444,6 +446,7 @@ def get_open_assignments(user):
                 openAsmts.append((course, assignment))
 
     return openAsmts
+
 
 def error_page(request, message):
     """Display an error page with Http status 404.
