@@ -41,7 +41,7 @@ from helpers import staffTest, LineException
 from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm
 
 from django.utils import timezone
 
@@ -790,7 +790,16 @@ def createAnnotation(request, submission_uuid, file_uuid):
                                                             source=file,
                                                             text=text,
                                                             quote=text)
+            # Get the submission
+            uuid = submission_uuid.encode('ascii', 'ignore')
+            # TODO this could possibly break depending on whether Tom is using this 
+            # for help centre or not. We just need to check whether or not this 
+            # submission is associated with an assignment.
+
+            sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+            newAnnotation.submission=sub
             newAnnotation.save()
+
             newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
                                                             start=start,
                                                             end=end,
@@ -1016,5 +1025,26 @@ def get_list(root_folder, theList):
 def assign_reviews(request, course_code, asmt):
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
-    distribute_reviews(assignment, 3)
-    return HttpResponse('Reviews assigned for %s' %asmtName)
+    courseCode = course_code.encode('ascii', 'ignore')
+    course = Course.objects.get(course_code=courseCode)
+
+    context = {}
+
+    if request.method == 'POST':
+        form = AllocateReviewsForm(request.POST)
+        if form.is_valid():
+            numReviews = form.cleaned_data['reviews_per_student']
+            distribute_reviews(assignment, numReviews)
+            print "Reviews assigned!"
+            template = "confirm_reviews_assigned.html"
+        else:
+            print form.errors
+    else:
+        form = AllocateReviewsForm()
+        template = "assign_reviews.html"
+    
+    context['form'] = form
+    context['asmt'] = assignment
+    context['course'] = course
+
+    return render(request, template,  context)

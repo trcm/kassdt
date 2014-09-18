@@ -388,6 +388,7 @@ class SourceAnnotation(models.Model):
         updates (DateTimeField) -- field to show when the annotation is updated
         text (TextField) -- the actual content of the annotation
         quote (TextField) -- a quote from the annotation text
+        submission (ForeignKey) -- the assignment submission on which we are annotating.
 
     Methods:
         __str__(self) -- returns a string representation of the object
@@ -396,6 +397,7 @@ class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
     user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
+    submission = models.ForeignKey(AssignmentSubmission, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()

@@ -10,6 +10,15 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms import *
 from models import *
 
+class AllocateReviewsForm(ModelForm):
+    '''
+    Form for allowing course administrator to allocate assignments to review
+    to students.
+    '''
+
+    class Meta:
+        model = Assignment
+        fields = ['reviews_per_student']
 
 class AssignmentSubmissionForm(ModelForm):
     submission_repository = forms.CharField(label='repo_address')

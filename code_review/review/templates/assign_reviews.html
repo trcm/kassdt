@@ -1,0 +1,24 @@
+<!-- Template for submitting assignments -->
+{% extends 'navbar.html' %}
+<div id="assignReviews">
+  {% block main %}
+
+  <!-- This page can only be called if an assignment exists, obviously -->
+  <h1>Assign Reviews for {{ asmt.name }}</h1>
+
+  <form id="assign_reviews" method="post" action="">
+    {% csrf_token %}
+    {{ course.code_code }}
+    {{ asmt.name }}
+    
+    <h3>Enter the number of submissions you want each student to review</h3>
+    {{ form.reviews_per_student }}
+    <input type="submit" value="Assign Reviews">
+
+    {% if errMsg %}
+        <h3> ERROR! </h3>
+        {{ errMsg }}
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
