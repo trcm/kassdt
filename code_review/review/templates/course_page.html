@@ -1,7 +1,10 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
-<h1>{{ course.course_code }}Assignments</h1>
+<br />
+<h1>Assignments for {{ course.course_code }} </h1>
+<br />
+
 <div id="courseAdminCreate">
 {% if user.is_superuser %}
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
@@ -9,13 +12,15 @@
 </div>
 {% if assignments %}
   <div id="courseAssignments">
-  <table>
-    <tr>
-      <th>Assignment Name:</th>
-      <th>Submission Status:</th>
-      <th>Due Date</th>
-      <th>View</th>
-    </tr>
+  <table class="table table-bordered table-hover">
+    <thead>
+    	<tr>
+      		<th>Assignment Name:</th>
+      		<th>Submission Status:</th>
+      		<th>Due Date:</th>
+      		<th>View:</th>
+    	</tr>
+    </thead>
     {% for assignment in assignments %}
 
     <tr>
@@ -24,13 +29,13 @@
       <td>{{ assignment.submission_close_date }}</td>
       <td>
         <form action="{% url 'assignment_page' course.course_code assignment.name %}">
-          <input type="submit" value="View Assignment">
+          <input class="btn btn-primary" type="submit" value="View Assignment">
         </form>
       </td>
 
     </tr>
     {% endfor %}
-
+	</table>
     {% else %}
     <p><strong>No assignments</strong></p>
     {% endif%}

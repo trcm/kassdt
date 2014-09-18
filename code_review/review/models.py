@@ -396,8 +396,8 @@ class SourceAnnotationRange(models.Model):
     type
     """
     range_annotation = models.ForeignKey(SourceAnnotation, related_name="ranges")
-    start = models.TextField()
-    end = models.TextField()
+    start = models.PositiveIntegerField()
+    end = models.PositiveIntegerField()
     startOffset = models.PositiveIntegerField()
     endOffset = models.PositiveIntegerField()
 

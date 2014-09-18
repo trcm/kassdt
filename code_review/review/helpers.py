@@ -37,3 +37,7 @@ def getUser(request):
 
 def getCourses(request):
     pass
+
+
+class LineException(Exception):
+    print "Not withing the line count"
