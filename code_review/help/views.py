@@ -127,12 +127,12 @@ def createPost(request, course_code):
 
         else:
             print form.errors
+            context['course_code'] = course_code
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
-            template = 'new_post.html'
 
     context['form'] = form
 
-    return render(request, template, context)
+    return render(request, 'new_post.html', context)
 
 
 def viewPost(request, post_uuid):
