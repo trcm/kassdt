@@ -99,7 +99,7 @@ def createPost(request, course_code):
     print "creating course"
     if request.method == "POST":
         form = postForm(request.POST)
-        print request
+        # print request
         if form.is_valid():
             title = form.cleaned_data['title']
             repo = form.cleaned_data['submission_repository']
@@ -264,22 +264,31 @@ def grabPostFileData(request, submissionUuid, file_uuid):
 
         # get all annotations for the current file
         # if user is the owner of the files or super user get all annotations
-        if currentUser.is_staff or currentUser == owner:
-            annotations = SourceAnnotation.objects.filter(source=file)
-        else:
-            annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
+        # if currentUser.is_staff or currentUser == owner:
+        #     annotations = SourceAnnotation.objects.filter(source=file)
+        # else:
+        annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
 
         annotationRanges = []
-        aDict = []
+        # aDict = []
 
         # get all the ranges for the annotations
         for a in annotations:
-            annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
-            aDict.append(a)
+            ranges = a.ranges.all()
+            for r in ranges:
+                annotationRanges.append(r)
+            # annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
+            # aDict.append(a)
 
-        print annotationRanges
+        # print annotationRanges
 
-        context['annotations'] = zip(aDict, annotationRanges)
+        annotationRanges.sort(key=lambda x: x.start)
+        sortedAnnotations = []
+        # grab the annotations again based on the sorted order
+        for a in annotationRanges:
+            sortedAnnotations.append(a.range_annotation)
+
+        context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['post_uuid'] = submissionUuid
         context['post'] = post
         context['course_code'] = post.course_code.course_code
