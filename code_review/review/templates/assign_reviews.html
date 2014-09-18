@@ -13,6 +13,10 @@
     
     <h3>Enter the number of submissions you want each student to review</h3>
     {{ form.reviews_per_student }}
+    
+    <h3>Enter the minimum number of annotations a student must make per submission.</h3>
+    {{ form.min_annotations }}
+    <br>
     <input type="submit" value="Assign Reviews">
 
     {% if errMsg %}

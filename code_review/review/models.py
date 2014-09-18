@@ -284,7 +284,8 @@ class Assignment(models.Model):
                                                (default True)
         reviews_per_student (IntegerField) -- the number of submissions each student will be 
                                               assigned to review.
-
+        min_annotations (IntegerField) -- the minimum number of annotations a student must make
+                                          on a submission for the review to be complete.
     """
 
     course_code = models.ForeignKey('Course',
@@ -300,6 +301,7 @@ class Assignment(models.Model):
     review_close_date = models.DateTimeField()
     multiple_submissions = models.BooleanField(default=True)
     reviews_per_student = models.IntegerField(default=0)
+    min_annotations = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "(%s)%s" % (self.assignment_uuid, self.name)
@@ -447,6 +449,32 @@ class AssignmentReview(models.Model):
     submissions = models.ManyToManyField(AssignmentSubmission, null=True)
     assignment = models.ForeignKey(Assignment, null=True)
     
+    def numAnnotations(self, sub):
+        """Get the number of annotations the user had made on a submission sub.
+
+        Arguments:
+            sub (AssignmentSubmission)
+        """
+        annotations = SourceAnnotation.objects.filter(submission=sub, user=self.by)
+        return len(annotations)
+
+    def numReviewsRemaining(self):
+        """Return the number of reviews the user needs to complete.
+
+        A review, for now, is considered complete when the at least 
+        minimum number of annotations required has been made.
+        """
+        subs = self.submissions.all()
+        total = len(subs)
+        done = 0
+        minAnnotations = self.assignment.min_annotations
+
+        for sub in subs:
+            if(minAnnotations <= self.numAnnotations(sub)):
+                done += 1
+        
+        return  total-done
+
     def __unicode__(self):
         return "(%s) by %s for %s" % (self.review_uuid, self.by, self.assignment)
 
@@ -484,6 +512,12 @@ class SubmissionReview(models.Model):
             "review_by":self.review_by,
             "submission":self.submission,
             })
+
+    def numAnnotations(self):
+        """Get the number of annotations associated with this submission.
+        """
+        annotations = SourceAnnotation.objects.filter(submission=submission, by=review_by)
+        return len(annotations)
 
 class SourceAnnotationTag(models.Model):
     tag_annotation = models.ForeignKey(SourceAnnotation, related_name="tags")

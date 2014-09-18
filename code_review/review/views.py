@@ -466,6 +466,14 @@ def error_page(request, message):
     context = {'errorMessage': message}
     return render(request, 'error.html', context, status=404)
 
+def reviews_remaining(user, asmtReview):
+    """Get the number of reviews this user still has to do for asmt.
+
+    Attributes:
+        user (ReviewUser)
+        asmtReview (AssignmentReview)
+    """
+
 @login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
     '''Displays the data (due date, review open date etc.) for a specific assignment.
@@ -503,6 +511,9 @@ def assignment_page(request, course_code, asmt):
             context['submissionsToReview'] = submissionsToReview
             context['actualNumReviews'] = len(submissionsToReview)
             print submissionsToReview
+
+            # Find out how many reviews user has remaining.
+            context['numRemaining'] = AssignmentReview.numReviewsRemaining(review)
 
         context['user'] = U
         context['course'] = course
@@ -1036,6 +1047,10 @@ def assign_reviews(request, course_code, asmt):
             numReviews = form.cleaned_data['reviews_per_student']
             distribute_reviews(assignment, numReviews)
             print "Reviews assigned!"
+
+            numAnnotations = form.cleaned_data['min_annotations']
+            assignment.min_annotations = numAnnotations
+            assignment.reviews_per_student = numReview
             template = "confirm_reviews_assigned.html"
         else:
             print form.errors

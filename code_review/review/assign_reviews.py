@@ -50,18 +50,22 @@ def distribute_reviews(asmt, perStudent):
             continue
 
         review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
-        for i in range(perStudent):
-            index = random.randint(0, numSubs-1)
-            submission = latestSubmissions[index]
-            
-            # Make sure user isn't assigned to review their own submission
-            # NB in the amazing edge case where this user is the only person who 
-            # submitted the assignment, we get an infinite loopevi
-            while(submission.by == user):
+        reviewsAssigned = len(review.submissions.all())
+        # In case lecturer assigns reviews multiple times, or number of reviews changes. 
+        # TODO also need to cater for situation where reviewsAssigned > perStudent.
+        if(reviewsAssigned < perStudent):
+            for i in range(perStudent-reviewsAssigned):
                 index = random.randint(0, numSubs-1)
                 submission = latestSubmissions[index]
-             
-            review.submissions.add(submission)
+                
+                # Make sure user isn't assigned to review their own submission
+                # NB in the amazing edge case where this user is the only person who 
+                # submitted the assignment, we get an infinite loopevi
+                while(submission.by == user):
+                    index = random.randint(0, numSubs-1)
+                    submission = latestSubmissions[index]
+                 
+                review.submissions.add(submission)
 
     return
 
