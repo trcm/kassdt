@@ -36,7 +36,7 @@ from review.models import *
 from help.models import Post
 
 # imports any helpers we might need to write
-from helpers import staffTest, isTutor
+from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
 from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
@@ -121,7 +121,7 @@ def coursePage(request, course_code):
     to the desired course page using render(), with the correct context
     dictionary, otherwise they will redirected toa 404.
     """
-
+    print request
     context = {}
     # get the current assignments for the subject
 
@@ -129,11 +129,14 @@ def coursePage(request, course_code):
     try:
         U = User.objects.get(id=request.user.id)
         context['user'] = U
-
+        
         # grab course code from http reqest and attempt to find course
         # in database
         code = course_code.encode('ascii', 'ignore')
         c = Course.objects.get(course_code=code)
+
+        if not enrolledTest(U.reviewuser, c):
+            return HttpResponseRedirect('/')
 
         # get all current assignments for that course
         assignments = c.assignments.all()

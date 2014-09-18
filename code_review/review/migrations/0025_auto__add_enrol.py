@@ -11,8 +11,8 @@ class Migration(SchemaMigration):
         # Adding model 'Enrol'
         db.create_table(u'review_enrol', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['review.ReviewUser'], unique=True)),
-            ('course', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['review.Course'], unique=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='enrolment', to=orm['review.ReviewUser'])),
+            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['review.Course'])),
             ('student', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('tutor', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
@@ -66,15 +66,15 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Assignment'},
             'assignment_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             'course_code': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'assignments'", 'to': u"orm['review.Course']"}),
-            'first_display_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 17, 0, 0)'}),
+            'first_display_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 18, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'multiple_submissions': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
             'repository_format': ('django.db.models.fields.TextField', [], {}),
             'review_close_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'review_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 17, 0, 0)'}),
+            'review_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 18, 0, 0)'}),
             'submission_close_date': ('django.db.models.fields.DateTimeField', [], {}),
-            'submission_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 17, 0, 0)'})
+            'submission_open_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 18, 0, 0)'})
         },
         u'review.assignmentsubmission': {
             'Meta': {'object_name': 'AssignmentSubmission'},
@@ -82,7 +82,7 @@ class Migration(SchemaMigration):
             'error_occurred': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'root_folder': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'assignment'", 'unique': 'True', 'null': 'True', 'to': u"orm['review.SourceFolder']"}),
-            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 17, 0, 0)'}),
+            'submission_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 18, 0, 0)'}),
             'submission_for': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'submissions'", 'to': u"orm['review.Assignment']"}),
             'submission_repository': ('django.db.models.fields.TextField', [], {}),
             'submission_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'})
@@ -97,12 +97,12 @@ class Migration(SchemaMigration):
         },
         u'review.enrol': {
             'Meta': {'object_name': 'Enrol'},
-            'course': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['review.Course']", 'unique': 'True'}),
+            'course': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['review.Course']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'student': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'tutor': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['review.ReviewUser']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'enrolment'", 'to': u"orm['review.ReviewUser']"})
         },
         u'review.reviewuser': {
             'Meta': {'object_name': 'ReviewUser'},

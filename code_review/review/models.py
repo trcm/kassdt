@@ -82,8 +82,10 @@ class Course(models.Model):
         students (ManyToManyField) -- Many to many relationship to show enrolment
     """
     course_uuid = UUIDField()
-    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
-    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    course_code = models.CharField(max_length=10, blank=False,
+                                   null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=100, blank=False,
+                                   null=False, default="Intro to learning")
     students = models.ManyToManyField('ReviewUser')
 
     def __unicode__(self):
@@ -110,7 +112,8 @@ class Enrol(models.Model):
     staff = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return "%s %s %s %s %s" % (self.user, self.course, self.student, self.tutor, self.staff)
+        return "%s %s %s %s %s" % (self.user, self.course, self.student,
+                                   self.tutor, self.staff)
 
 # The following two models are used in conjuction with each other to give the applciation
 # a representation of the file structure used to upload and retrieve assignment files
