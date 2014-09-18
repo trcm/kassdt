@@ -9,52 +9,63 @@ from review.views import error_page
 from review.forms import annotationForm, annotationRangeForm
 # import needed code from help
 from help.models import Post
-from help.forms import PostForm
+
+from help.forms import postForm, editForm
 
 from git_handler import *
 
 @login_required(login_url='/review/login_direct/')
-def index(request):
-    
+def index(request, course_code):
+
     """
-    This is the default index page for the help application. It shows the currently open 
+    This is the default index page for the help application. It shows the currently open
     posts and allows the user to view their posts and create a new post.
-    
+
     Parameters:
     request (HttpRequest) -- request from the user to view the help page
-    
+
     Returns:
     HttpResponse rendering the page, or a relevant error page.
     """
 
     context = {}
-    openPosts = Post.objects.filter(open=True).order_by('-created')
+    course_code = course_code.encode('ascii', 'ignore')
+    openPosts = []
     U = None
     try:
+        c = Course.objects.get(course_code=course_code)
+        # for p in c.posts.all():
+        #     if p.open:
+        #         openPosts.append(p)
+        #  TODO sort posts by date
+        openPosts = c.posts.all().filter(open=True).order_by('-created')
         U = User.objects.get(id=request.user.id)
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
         error_page(request, error)
-    
+
     context['user'] = U
+    context['course_code'] = course_code
     context['Posts'] = openPosts
+    print "help index"
     return render(request, 'help.html', context)
 
 
-def newPost(request):
-    
+def newPost(request, course_code):
+
     """
     Displays all the data for creating a new help post
-    
+
     Parameters:
     request (HttpRequest) -- request from the user to start creating a new post
-    
+
     Returns:
     HttpReponse rendering the new post page or a redirect to an relevant error page.
     """
 
     context = {}
-
+    course_code = course_code.encode('ascii', 'ignore')
+    print "new post"
     U = None
     try:
         U = User.objects.get(id=request.user.id)
@@ -62,39 +73,44 @@ def newPost(request):
         error = "User %s does not exist" % request.user
         error_page(request, error)
 
-    
-    form = PostForm()
+    form = postForm()
     context['user'] = U
+    context['course_code'] = course_code
     context['form'] = form
     return render(request, 'new_post.html', context)
 
 
-def createPost(request):
-    
+def createPost(request, course_code):
+
     """
     Validate the data from the new post form, grabs the form data
     from the post request to generate data for the new Post object
-    
+
     Parameters:
     request (HttpRequest) -- http request from the user to create a new Post
-    
+
     Returns:
 
     """
+
     context = {}
     form = {}
+    course_code = course_code.encode('ascii', 'ignore')
+    print "creating course"
     if request.method == "POST":
-        form = PostForm(request.POST)
+        form = postForm(request.POST)
         print request
         if form.is_valid():
             title = form.cleaned_data['title']
             repo = form.cleaned_data['submission_repository']
             question = form.cleaned_data['question']
-            
+
             try:
                 print "Creating Post"
                 U = User.objects.get(id=request.user.id)
+                c = Course.objects.get(course_code=course_code)
                 post = Post.objects.create(by=U.reviewuser,
+                                           course_code=c,
                                            question=question,
                                            title=title,
                                            submission_repository=repo)
@@ -102,7 +118,7 @@ def createPost(request):
                 relDir = os.path.join('help', post.by.djangoUser.username)
                 populate_db(post, relDir)
 
-                return HttpResponseRedirect('/help')
+                return HttpResponseRedirect('/help/' + course_code)
             except GitCommandError as giterr:
                 print giterr.args
                 sub.delete()
@@ -120,14 +136,14 @@ def createPost(request):
 
 
 def viewPost(request, post_uuid):
-    
+
     """
     view a post from the help system
-    
+
     Parameters:
     request (HttpRequest) -- request from the user to view the post
     postUuid (String) -- identifier for the specific post
-    
+
     Returns:
 
     """
@@ -141,21 +157,26 @@ def viewPost(request, post_uuid):
         # grab the submission and the associated files and folders
 
         post = Post.objects.get(post_uuid=uuid)
-        for f in post.root_folder.files.all():
-            folders.append(f)
-            for f in post.root_folder.folders.all():
-                folders.append(f)
-                for s in f.files.all():
-                    folders.append(s)
+        # for f in post.root_folder.files.all():
+        #     folders.append(f)
+        #     for f in post.root_folder.folders.all():
+        #         folders.append(f)
+        #         for s in f.files.all():
+        #             folders.append(s)
                     # root_files = post.root_folder.files
 
+        user = User.objects.get(id=request.session['_auth_user_id'])
+        folders = grabPostFiles(post)
         # return all the data for the postmission to the context
+        context['user'] = user
         context['question'] = post.question
         context['title'] = post.title
-        context['post'] = post.post_uuid
+        context['post'] = post
+        context['course_code'] = post.course_code.course_code
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
+        context['editForm'] = editForm()
         # context['files'] = files
         # context['files'] = get_list(post.root_folder, [])
         return render(request, 'view_post.html', context)
@@ -165,17 +186,19 @@ def viewPost(request, post_uuid):
 
 
 def viewPostFile(request, post_uuid, file_uuid):
-    
+
     """
     View a specific file from the post
-    
+
     Parameters:
     parameters
-    
+
     Returns:
     returns
     """
     uuid = post_uuid.encode('ascii', 'ignore')
+    print post_uuid
+    print "Post uuid %s " % uuid
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
     try:
@@ -189,13 +212,14 @@ def viewPostFile(request, post_uuid, file_uuid):
         # context['post'] = uuid
         context['form'] = annotationForm()
         context['rangeform'] = rangeForm
+        context['editForm'] = editForm()
         return render(request, 'view_post.html', context)
 
     except User.DoesNotExist:
         error = "User does not exist"
         error_page(request, error)
 
-        
+
 def grabPostFileData(request, submissionUuid, file_uuid):
     """
     Refactored from reviewFile so cut down on code repetition.
@@ -223,12 +247,13 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         # grab submission and all the associated files and folders
 
         post = Post.objects.get(post_uuid=uuid)
-        for f in post.root_folder.files.all():
-            folders.append(f)
-        for f in post.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
+        folders = grabPostFiles(post)
+        # for f in post.root_folder.files.all():
+        #     folders.append(f)
+        # for f in post.root_folder.folders.all():
+        #     folders.append(f)
+        #     for s in f.files.all():
+        #         folders.append(s)
 
         # get root folder
         iter = file.folder
@@ -255,7 +280,9 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         print annotationRanges
 
         context['annotations'] = zip(aDict, annotationRanges)
-        context['post'] = submissionUuid
+        context['post_uuid'] = submissionUuid
+        context['post'] = post
+        context['course_code'] = post.course_code.course_code
         context['uuid'] = file_uuid
         context['files'] = folders
         context['code'] = code
@@ -267,10 +294,10 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         error_page(request, "Submission does not exit")
 
 
-def deletePost(request, post_uuid):
+def deletePost(request, course_code, post_uuid):
 
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
-
+    course_code = course_code.encode('ascii', 'ignore')
     try:
         post = Post.objects.get(post_uuid=post_uuid)
         if post.by == currentUser.reviewuser or currentUser.reviewuser.isStaff:
@@ -278,7 +305,66 @@ def deletePost(request, post_uuid):
         else:
             error_page(request, "you're trying to delete something you don't have the persmissions for")
 
-        return HttpResponseRedirect('/help')
+        return HttpResponseRedirect('/help/' + course_code)
     except Post.DoesNotExit:
         error_page(request, "Post does not exist")
     return HttpResponse("delete")
+
+
+def updatePost(request, post_uuid):
+
+    """
+    Updates a post uses a model on the view_post template, users can only edit
+    the title and question of the post.
+
+    Parameters:
+    request (HttpRequest) -- request from the user to update a post
+
+    Returns:
+    HttpReponse to render with the post view or an error page
+    """
+
+    uuid = post_uuid.encode('ascii', 'ignore')
+    print uuid
+    if request.method == "POST":
+        try:
+            form = editForm(request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                question = form.cleaned_data['question']
+                print title, question
+                post = Post.objects.get(post_uuid=uuid)
+                post.title = title
+                post.question = question
+                post.save()
+                return HttpResponseRedirect("/help/view/" + uuid + '/')
+            else:
+                # TODO redirect back if form not valid
+                post = Post.objects.get(post_uuid=uuid)
+                folders = grabPostFiles(post)
+                context = {}
+                context['editForm'] = editForm(request.POST)
+                context['post'] = post
+                context['question'] = post.question
+                context['title'] = post.title
+                context['course_code'] = post.course_code.course_code
+                context['user'] = post.by.djangoUser
+                context['editError'] = True
+                return render(request, 'view_post.html', context)
+        except Post.DoesNotExist:
+            error_page(request, "Post does not exist")
+
+    else:
+        # Request is not a POST request, redirect back to the help index page
+        return HttpResponseRedirect('/help')
+
+def grabPostFiles(post):
+    folders = []
+    for f in post.root_folder.files.all():
+        folders.append(f)
+        for f in post.root_folder.folders.all():
+            folders.append(f)
+            for s in f.files.all():
+                folders.append(s)
+                # root_files = post.root_folder.files
+    return folders

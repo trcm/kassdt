@@ -50,10 +50,13 @@ class AssignmentAdmin(admin.ModelAdmin):
     list_display = ('course_code', 'name', 'first_display_date',
                     'submission_close_date')
 
-    
+
+class EnrolAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'student', 'tutor', 'staff')
 # Register all the admin templates for the django admin
 
 admin.site.unregister(User)
+admin.site.register(Enrol, EnrolAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReviewUser, ReviewUserAdmin)
 admin.site.register(Course, CourseAdmin)

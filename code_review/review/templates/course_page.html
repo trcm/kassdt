@@ -10,6 +10,12 @@
 <h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
 {% endif%}
 </div>
+<a class="btn btn-primary" href="{% url 'help' course.course_code %}">Get help</a>
+
+{% if tutor %}
+Tutor Dawg
+{% endif%}
+
 {% if assignments %}
   <div id="courseAssignments">
   <table class="table table-bordered table-hover">
@@ -22,6 +28,7 @@
     	</tr>
     </thead>
     {% for assignment in assignments %}
+    
 
     <tr>
       <td>{{ assignment.name}}</td>

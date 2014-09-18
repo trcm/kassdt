@@ -3,8 +3,8 @@
 {% block main %}
 
 <div id="help">
-  <a class="btn btn-primary" href="{% url 'new_post' %}">New Post</a>
-  <a class="btn btn-info" href="">View Posts</a>
+  <a class="btn btn-primary" href="{% url 'new_post' course_code %}">New Post</a>
+  <!-- <a class="btn btn-info" href="">View Posts</a> -->
   <table class="table table-hover" id="posts">
     
     {% if Posts %}
@@ -20,7 +20,8 @@
       <td>{{ post.created }}</td>
       <td>
 	{% if post.by == user.reviewuser %}
-        <a class="btn btn-danger" href="{% url 'delete_post' post.post_uuid %}">Delete</a> 
+        <a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
+
 	{% endif%}
 	<a class="btn btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
       </td>

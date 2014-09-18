@@ -3,7 +3,7 @@
 
 {% block main %}
 
-<form action="{% url 'create_post' %}" method="POST">
+<form action="{% url 'create_post' course_code %}" method="POST">
   {% csrf_token %}
   <ul>
     {% for field in form %}

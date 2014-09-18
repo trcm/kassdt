@@ -20,6 +20,27 @@ def staffTest(User):
     return User.is_staff
 
 
+def enrolledTest(user, course):
+
+    """
+    enrolledTest - test to check that a user is actually enrolled in a course.
+    If the user is not enrolled in the course that they are trying to
+    access then they will be redirected to the index page with an appropriate
+    error.
+    
+    Parameters:
+    user (ReviewUser) -- ReviewUser object
+    course (Course) -- course object for the user to be checked against
+
+    Returns:
+    Either a boolean object "True" or it will redirect the user to the index page 
+    with an appropriate error
+    """
+
+    if course in user.courses.all():
+        return True
+
+    
 def getUser(request):
     """
     getUser - grabs the current user object based on the user id
@@ -41,3 +62,18 @@ def getCourses(request):
 
 class LineException(Exception):
     print "Not withing the line count"
+
+def isTutor(user, course):
+    e = user.reviewuser.enrolment.filter(course=course)
+    for item in e:
+        if item.tutor:
+            return True
+    return False
+
+
+def createTutor(user, course):
+    e = Enrol.objects.create(user=user,
+                             course=course,
+                             student=False,
+                             tutor=True)
+    e.save()

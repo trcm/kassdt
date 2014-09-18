@@ -82,17 +82,41 @@ class Course(models.Model):
         students (ManyToManyField) -- Many to many relationship to show enrolment
     """
     course_uuid = UUIDField()
-    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
-    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    course_code = models.CharField(max_length=10, blank=False,
+                                   null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=100, blank=False,
+                                   null=False, default="Intro to learning")
     students = models.ManyToManyField('ReviewUser')
 
     def __unicode__(self):
         return "%s" % (self.course_code)
 
+
+class Enrol(models.Model):
+    
+    """
+    respresents a users enrolment in a course, also handles permissions for 
+    different levels of user.  This will allow us to have various level of 
+    users and account for the problem of tutors being both staff and students.
+    
+    Attributes:
+    attributes
+    
+    Methods:
+    methods
+    """
+    user = models.ForeignKey('ReviewUser', related_name='enrolment')
+    course = models.ForeignKey('Course')
+    student = models.BooleanField(default=True)
+    tutor = models.BooleanField(default=False)
+    staff = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "%s %s %s %s %s" % (self.user, self.course, self.student,
+                                   self.tutor, self.staff)
+
 # The following two models are used in conjuction with each other to give the applciation
 # a representation of the file structure used to upload and retrieve assignment files
-
-
 class SourceFolder(models.Model):
 
     """Represents a folder (containing folders and/or files)

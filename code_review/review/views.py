@@ -34,8 +34,11 @@ from pygments.styles import *
 
 from review.models import *
 
+from help.models import Post
+
 # imports any helpers we might need to write
 from helpers import staffTest, LineException
+from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
 from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
@@ -123,7 +126,6 @@ def coursePage(request, course_code):
     to the desired course page using render(), with the correct context
     dictionary, otherwise they will redirected toa 404.
     """
-
     context = {}
     # get the current assignments for the subject
 
@@ -131,16 +133,24 @@ def coursePage(request, course_code):
     try:
         U = User.objects.get(id=request.user.id)
         context['user'] = U
-
+        
         # grab course code from http reqest and attempt to find course
         # in database
         code = course_code.encode('ascii', 'ignore')
         c = Course.objects.get(course_code=code)
 
+        if not enrolledTest(U.reviewuser, c):
+            error_message = "You are not enrolled in " + c.course_code
+            print "Not enrolled"
+            return error_page(request, error_message)
+            # return HttpResponseRedirect('/')
+
         # get all current assignments for that course
         assignments = c.assignments.all()
         courses = U.reviewuser.courses.all()
 
+        context['tutor'] = isTutor(U, c)
+        
         context['assignments'] = assignments
         context['course'] = c
 
@@ -441,6 +451,7 @@ def get_open_assignments(user):
                 openAsmts.append((course, assignment))
 
     return openAsmts
+
 
 def error_page(request, message):
     """Display an error page with Http status 404.
@@ -757,7 +768,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
-
+        
         text = form['text'].value()
         start = rangeForm['start'].value()
         end = 0
@@ -788,7 +799,14 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
             newRange.save()
             # print newAnnotation, newRange
-
+            print newAnnotation, newRange
+            try:
+                p = Post.objects.get(post_uuid=submission_uuid)
+                print p
+                return HttpResponseRedirect('/help/file/' + submission_uuid +
+                                    '/' + file_uuid + '/')
+            except Post.DoesNotExist:
+                print "This is a assignment submission"
             return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
 
     except User.DoesNotExist:
