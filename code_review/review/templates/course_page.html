@@ -24,9 +24,9 @@
     {% for assignment in assignments %}
 
     <tr>
-      <td>{{ assignment.name}}</td>
-      <td>Need to add check for submission status</td>
-      <td>{{ assignment.submission_close_date }}</td>
+      <td><p>{{ assignment.name}}</p></td>
+      <td><p>Need to add check for submission status</p></td>
+      <td><p>{{ assignment.submission_close_date }}</p></td>
       <td>
         <form action="{% url 'assignment_page' course.course_code assignment.name %}">
           <input class="btn btn-primary" type="submit" value="View Assignment">
