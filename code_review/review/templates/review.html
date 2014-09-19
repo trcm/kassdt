@@ -27,7 +27,7 @@
 
 </div>
 <div id="reviewFileName">
-	<h4> Currently displaying: {{ file.name }}</h4>
+	<h5> Currently displaying: {{ file.name }}</h5>
 	</div>
 </div>
 
@@ -42,7 +42,7 @@
 <div id="reviewAnnotation">
   <!-- display all the current annotations -->
   {% for annote, range in annotations %}
-  <p>Line: {{ range.start }}</p>
+  <h5>Line: {{ range.start }}</h5>
   <p>Comment: {{ annote.text }}</p>
   
   {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
@@ -60,16 +60,7 @@
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
     </form>
-    <!-- display all the current annotations -->
-    {% for annote, range in annotations %}
-    <p>Line: {{ range.start }}</p>
-    <p>Comment: {{ annote.text }}</p>
-    {% endfor %}
-    {% url 'create_annotation' sub uuid as annotateUrl %}
-    <!-- Obfucations doesn't work on get -->
-    <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
-    <!-- display forms for annotation creation if a file is selected -->
-    
+   
   </div>
 </div>
 
