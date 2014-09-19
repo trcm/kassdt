@@ -3,16 +3,19 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 {% extends 'navbar.html' %}
 
 {% block main %}
-    <div id="assignmentList" class="col-md-8">
+	<br />
 	<h1>Upcoming assignments</h1>
+	<br />
 	{% if open_assignments %}
 	    <table cellpadding="10" class="table table-bordered table-hover">
-	    <tr>
-		<th> Course </th>
-		<th> Assignment Name </th>
-		<th> Submissions Open: </th>
-		<th> Submissions Close: </th>
-	    </tr>
+	    <thead>
+	    	<tr>
+				<th> Course </th>
+				<th> Assignment Name </th>
+				<th> Submissions Open: </th>
+				<th> Submissions Close: </th>
+	    	</tr>
+	    </thead>
 	    <!-- grab all upcoming assignments and display them in a table -->
 	    {% for asmt in open_assignments %}
 		<tr> 
@@ -22,7 +25,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 		    <td><p>{{ asmt.1.submission_close_date }}</p></td>
                     <td>
                         <form action="{% url 'assignment_page' asmt.0.course_code asmt.1.name %}">
-                            <input class="btn btn-link btn-block" type="submit" value="Go to assignment page">
+                            <input class="btn btn-block btn-primary" type="submit" value="View Assignment">
                         </form>
                     </td>
                     <td> 
@@ -37,6 +40,5 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 	{% else %}
 	    <h2>No upcoming assignments</h2>
 	{% endif %}
-    </div>
 
 {% endblock %}
