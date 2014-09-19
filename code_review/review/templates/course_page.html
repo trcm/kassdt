@@ -5,11 +5,20 @@
 <h1>Assignments for {{ course.course_code }} </h1>
 <br />
 
-<div id="courseAdminCreate">
 {% if user.is_superuser %}
-<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
-{% endif%}
+<div class="row">
+	<div class="col-md-3">
+		<div class="btn-group">
+			<a class="btn btn-success" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
+			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+		</div>
+	</div>
+	<div class="col-md-9"></div>
 </div>
+{% endif%}
+
+<br />
+
 {% if assignments %}
   <div id="courseAssignments">
   <table class="table table-bordered table-hover">
@@ -25,7 +34,7 @@
 
     <tr>
       <td><p>{{ assignment.name}}</p></td>
-      <td><p>Need to add check for submission status</p></td>
+      <td><p><span class="label label-default">Need to add check for submission status</span></p></td>
       <td><p>{{ assignment.submission_close_date }}</p></td>
       <td>
         <form action="{% url 'assignment_page' course.course_code assignment.name %}">
@@ -39,11 +48,6 @@
     {% else %}
     <p><strong>No assignments</strong></p>
     {% endif%}
-  </div>
-  <div id="courseAdminSettings">
-  {% if user.is_superuser %}
-  <h3>Settings</h3>
-  {% endif %}
   </div>
 
 
