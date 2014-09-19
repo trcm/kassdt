@@ -33,15 +33,16 @@ def index(request, course_code):
     openPosts = []
     U = None
     try:
+        # Get the course object for the course code
         c = Course.objects.get(course_code=course_code)
-        # for p in c.posts.all():
-        #     if p.open:
-        #         openPosts.append(p)
-        #  TODO sort posts by date
+        # get all the open posts for the course and sort them by creation date
         openPosts = c.posts.all().filter(open=True).order_by('-created')
         U = User.objects.get(id=request.user.id)
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
+        error_page(request, error)
+    except Course.DoesNotExist:
+        error = "Course %s does not exist" % course_code
         error_page(request, error)
 
     context['user'] = U
@@ -176,7 +177,9 @@ def viewPost(request, post_uuid):
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
-        context['editForm'] = editForm()
+        edit = editForm(instance=post)
+        context['editForm'] = edit
+
         # context['files'] = files
         # context['files'] = get_list(post.root_folder, [])
         return render(request, 'view_post.html', context)
@@ -348,7 +351,6 @@ def updatePost(request, post_uuid):
                 post.save()
                 return HttpResponseRedirect("/help/view/" + uuid + '/')
             else:
-                # TODO redirect back if form not valid
                 post = Post.objects.get(post_uuid=uuid)
                 folders = grabPostFiles(post)
                 context = {}
