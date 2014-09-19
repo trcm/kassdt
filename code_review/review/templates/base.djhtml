@@ -19,6 +19,7 @@
     <script type="text/javascript" src="{% static "js/jquery-timepicker/jquery.timepicker.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/jasny-bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/review.js" %}"></script>
   </head>
   <body>
 
