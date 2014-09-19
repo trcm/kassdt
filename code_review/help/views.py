@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 # import models from review
 from review.models import *
-from review.views import error_page
 from review.forms import annotationForm, annotationRangeForm
 # import needed code from help
 from help.models import Post
@@ -33,15 +32,16 @@ def index(request, course_code):
     openPosts = []
     U = None
     try:
+        # Get the course object for the course code
         c = Course.objects.get(course_code=course_code)
-        # for p in c.posts.all():
-        #     if p.open:
-        #         openPosts.append(p)
-        #  TODO sort posts by date
+        # get all the open posts for the course and sort them by creation date
         openPosts = c.posts.all().filter(open=True).order_by('-created')
         U = User.objects.get(id=request.user.id)
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
+        error_page(request, error)
+    except Course.DoesNotExist:
+        error = "Course %s does not exist" % course_code
         error_page(request, error)
 
     context['user'] = U
@@ -99,7 +99,7 @@ def createPost(request, course_code):
     print "creating course"
     if request.method == "POST":
         form = postForm(request.POST)
-        print request
+        # print request
         if form.is_valid():
             title = form.cleaned_data['title']
             repo = form.cleaned_data['submission_repository']
@@ -127,12 +127,12 @@ def createPost(request, course_code):
 
         else:
             print form.errors
+            context['course_code'] = course_code
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
-            template = 'new_post.html'
 
     context['form'] = form
 
-    return render(request, template, context)
+    return render(request, 'new_post.html', context)
 
 
 def viewPost(request, post_uuid):
@@ -166,7 +166,7 @@ def viewPost(request, post_uuid):
                     # root_files = post.root_folder.files
 
         user = User.objects.get(id=request.session['_auth_user_id'])
-        folders = grabPostFiles(post)
+        folders = grabPostFiles(post.root_folder)
         # return all the data for the postmission to the context
         context['user'] = user
         context['question'] = post.question
@@ -176,7 +176,9 @@ def viewPost(request, post_uuid):
         # files = root_files.all()
         context['files'] = folders
         context['code'] = code
-        context['editForm'] = editForm()
+        edit = editForm(instance=post)
+        context['editForm'] = edit
+
         # context['files'] = files
         # context['files'] = get_list(post.root_folder, [])
         return render(request, 'view_post.html', context)
@@ -247,7 +249,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         # grab submission and all the associated files and folders
 
         post = Post.objects.get(post_uuid=uuid)
-        folders = grabPostFiles(post)
+        folders = grabPostFiles(post.root_folder)
         # for f in post.root_folder.files.all():
         #     folders.append(f)
         # for f in post.root_folder.folders.all():
@@ -264,22 +266,31 @@ def grabPostFileData(request, submissionUuid, file_uuid):
 
         # get all annotations for the current file
         # if user is the owner of the files or super user get all annotations
-        if currentUser.is_staff or currentUser == owner:
-            annotations = SourceAnnotation.objects.filter(source=file)
-        else:
-            annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
+        # if currentUser.is_staff or currentUser == owner:
+        #     annotations = SourceAnnotation.objects.filter(source=file)
+        # else:
+        annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
 
         annotationRanges = []
-        aDict = []
+        # aDict = []
 
         # get all the ranges for the annotations
         for a in annotations:
-            annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
-            aDict.append(a)
+            ranges = a.ranges.all()
+            for r in ranges:
+                annotationRanges.append(r)
+            # annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
+            # aDict.append(a)
 
-        print annotationRanges
+        # print annotationRanges
 
-        context['annotations'] = zip(aDict, annotationRanges)
+        annotationRanges.sort(key=lambda x: x.start)
+        sortedAnnotations = []
+        # grab the annotations again based on the sorted order
+        for a in annotationRanges:
+            sortedAnnotations.append(a.range_annotation)
+
+        context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['post_uuid'] = submissionUuid
         context['post'] = post
         context['course_code'] = post.course_code.course_code
@@ -290,7 +301,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         context['title'] = post.title
         context['question'] = post.question
         return context
-    except AssignmentSubmission.DoesNotExist:
+    except Post.DoesNotExist:
         error_page(request, "Submission does not exit")
 
 
@@ -339,9 +350,8 @@ def updatePost(request, post_uuid):
                 post.save()
                 return HttpResponseRedirect("/help/view/" + uuid + '/')
             else:
-                # TODO redirect back if form not valid
                 post = Post.objects.get(post_uuid=uuid)
-                folders = grabPostFiles(post)
+                folders = grabPostFiles(post.root_folder)
                 context = {}
                 context['editForm'] = editForm(request.POST)
                 context['post'] = post
@@ -350,6 +360,7 @@ def updatePost(request, post_uuid):
                 context['course_code'] = post.course_code.course_code
                 context['user'] = post.by.djangoUser
                 context['editError'] = True
+                context['files'] = folders
                 return render(request, 'view_post.html', context)
         except Post.DoesNotExist:
             error_page(request, "Post does not exist")
@@ -358,13 +369,35 @@ def updatePost(request, post_uuid):
         # Request is not a POST request, redirect back to the help index page
         return HttpResponseRedirect('/help')
 
-def grabPostFiles(post):
+
+def grabPostFiles(root):
+    # dfs first search
     folders = []
-    for f in post.root_folder.files.all():
-        folders.append(f)
-        for f in post.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
-                # root_files = post.root_folder.files
+    s = []
+    s.append(root)
+    while len(s) > 0:
+        v = s.pop()
+        if v not in folders:
+            folders.append(v)
+            print v
+            for i in v.folders.all():
+                s.append(i)
+            for i in v.files.all():
+                if i not in folders:
+                    folders.append(i)
+    
     return folders
+
+    
+def error_page(request, message):
+    """Display an error page with Http status 404.
+
+    Arguments:
+        request (HttpRequest) -- the request which provoked the error.
+        message (String) -- message to display on the 404 page.
+
+    Returns:
+        HttpResponse object to display error page.
+    """
+    context = {'errorMessage': message}
+    return render(request, 'error.html', context, status=404)

@@ -26,6 +26,7 @@ Dependencies:
 
 from git import *
 from review.models import *
+from help.models import Post
 import os.path
 from django.db import models
 from django.conf import settings
@@ -117,6 +118,10 @@ def add_source_file(name, folder, srcPath, submission):
             - created is True if SourceFile was created, False if retrieved.
     """
     f = srcPath
+    # check if the submission if for the help system
+    if isinstance(submission, Post):
+        return SourceFile.objects.get_or_create(name=name, folder=folder, file=f, submission=None)
+    
     return SourceFile.objects.get_or_create(name=name, folder=folder, file=f, submission=submission)
 
 def traverse_tree(tree, thisFolder, path, submission):
