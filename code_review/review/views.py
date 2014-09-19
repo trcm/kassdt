@@ -832,7 +832,6 @@ def createAnnotation(request, submission_uuid, file_uuid):
             print newAnnotation, newRange
             try:
                 p = Post.objects.get(post_uuid=submission_uuid)
-                print p
                 return HttpResponseRedirect('/help/file/' + submission_uuid +
                                     '/' + file_uuid + '/')
             except Post.DoesNotExist:

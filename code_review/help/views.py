@@ -167,7 +167,7 @@ def viewPost(request, post_uuid):
                     # root_files = post.root_folder.files
 
         user = User.objects.get(id=request.session['_auth_user_id'])
-        folders = grabPostFiles(post)
+        folders = grabPostFiles(post.root_folder)
         # return all the data for the postmission to the context
         context['user'] = user
         context['question'] = post.question
@@ -250,7 +250,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         # grab submission and all the associated files and folders
 
         post = Post.objects.get(post_uuid=uuid)
-        folders = grabPostFiles(post)
+        folders = grabPostFiles(post.root_folder)
         # for f in post.root_folder.files.all():
         #     folders.append(f)
         # for f in post.root_folder.folders.all():
@@ -352,7 +352,7 @@ def updatePost(request, post_uuid):
                 return HttpResponseRedirect("/help/view/" + uuid + '/')
             else:
                 post = Post.objects.get(post_uuid=uuid)
-                folders = grabPostFiles(post)
+                folders = grabPostFiles(post.root_folder)
                 context = {}
                 context['editForm'] = editForm(request.POST)
                 context['post'] = post
@@ -361,6 +361,7 @@ def updatePost(request, post_uuid):
                 context['course_code'] = post.course_code.course_code
                 context['user'] = post.by.djangoUser
                 context['editError'] = True
+                context['files'] = folders
                 return render(request, 'view_post.html', context)
         except Post.DoesNotExist:
             error_page(request, "Post does not exist")
@@ -369,13 +370,21 @@ def updatePost(request, post_uuid):
         # Request is not a POST request, redirect back to the help index page
         return HttpResponseRedirect('/help')
 
-def grabPostFiles(post):
+
+def grabPostFiles(root):
+    # dfs first search
     folders = []
-    for f in post.root_folder.files.all():
-        folders.append(f)
-        for f in post.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
-                # root_files = post.root_folder.files
+    s = []
+    s.append(root)
+    while len(s) > 0:
+        v = s.pop()
+        if v not in folders:
+            folders.append(v)
+            print v
+            for i in v.folders.all():
+                s.append(i)
+            for i in v.files.all():
+                if i not in folders:
+                    folders.append(i)
+    
     return folders
