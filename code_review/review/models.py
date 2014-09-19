@@ -163,11 +163,11 @@ class SourceFile(models.Model):
         content(self) -- gets the contents of this file.
 
     """
-
+    
     folder = models.ForeignKey(SourceFolder, null=False, blank=False, related_name="files")
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
-    file = models.FileField(upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
+    file = models.FileField(max_length=500, upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
     submission = models.ForeignKey('AssignmentSubmission', null=True)
 
     def __unicode__(self):
