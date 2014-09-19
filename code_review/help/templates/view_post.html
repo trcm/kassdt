@@ -65,7 +65,7 @@
     <div>
     <!-- display all the current annotations -->
     {% for annote, range in annotations %}
-    <p>User: {{ annote.user }}
+    <p>User: {{ annote.user.djangoUser.first_name }} {{ annote.user.djangoUser.last_name }}
     <p>Line: {{ range.start }}</p>
     <p>Comment: {{ annote.text }}</p>
     {% endfor %}
