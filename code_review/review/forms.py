@@ -18,7 +18,7 @@ class AllocateReviewsForm(ModelForm):
 
     class Meta:
         model = Assignment
-        fields = ['reviews_per_student']
+        fields = ['reviews_per_student', 'min_annotations']
 
 class AssignmentSubmissionForm(ModelForm):
     submission_repository = forms.CharField(label='repo_address')

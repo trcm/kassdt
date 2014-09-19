@@ -61,7 +61,8 @@ def distribute_reviews(asmt, perStudent):
                 # Make sure user isn't assigned to review their own submission
                 # NB in the amazing edge case where this user is the only person who 
                 # submitted the assignment, we get an infinite loopevi
-                while(submission.by == user):
+                # Also don't want student to be assigned same submission twice.
+                while(submission.by == user or submission in review.submissions.all()):
                     index = random.randint(0, numSubs-1)
                     submission = latestSubmissions[index]
                  
