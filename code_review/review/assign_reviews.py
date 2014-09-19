@@ -1,5 +1,6 @@
 from review.models import *
 import random
+from operator import itemgetter 
 
 def get_errors(course, asmt, numReviews):
     
@@ -50,7 +51,7 @@ def distribute_reviews(asmt, perStudent):
         Nothing. 
 
     Precondition: 
-        numberOfSubmissions >= perStudent
+        numberOfSubmissions >= perStudent+1
     """
 
     # Get all submissions for this assignment.
@@ -87,7 +88,30 @@ def distribute_reviews(asmt, perStudent):
                     submission = latestSubmissions[index]
                  
                 review.submissions.add(submission)
+        # Lecturer has reduced number of reviews per user 
+        elif(reviewsAssigned > perStudent):
+            # Number of submissions we want to de-assign
+            deassign = reviewsAssigned - perStudent 
+            # Get all the submissions the student has not yet completed.
+            incomplete = []
+            for sub in review.submissions.all():
+                annotationsDone = AssignmentReview.numAnnotations(review, sub)
+                if(annotationsDone < asmt.min_annotations):
+                    incomplete.append((sub, annotationsDone))
 
+            # Choose the least-complete deassign submission reviews to remove.
+            # Ascending list 
+            sortedList = sorted(incomplete, key=itemgetter(1))
+            removeFromIncomplete = min(deassign, len(sortedList))
+            for i in range(removeFromIncomplete):
+                 review.submissions.remove(sortedList[i][0])    
+            
+            if deassign > len(sortedList):
+                for i in range(deassign):
+                    review.submissions.remove(reviews.submissions.all()[i])
+        else: # nothing to assign or remove
+            return 
+            
     return
 
 
