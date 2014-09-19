@@ -1,6 +1,26 @@
 from review.models import *
 import random
 
+def get_errors(course, asmt, numReviews):
+    
+    """
+    Arguments:
+        course (Course)
+        asmt (Assignment)
+        numReviews (int) 
+    """
+    # Check that there are enough submissions for each user to get
+    # numReviews each; this means there should be at least numReviews+1
+    # submissions. 
+    allSubs = AssignmentSubmission.objects.all()
+    users = ReviewUser.objects.filter(courses=course)
+    latest = get_latest(course, asmt, allSubs, users)
+    numSubs = len(latest)
+    if(numSubs < numReviews + 1):
+        return "There are not enough submissions to be able to assign %d reviews; need %d submissions but only have %d" %(numReviews, numReviews+1, numSubs)
+    
+    return ""
+        
 def get_latest(course, asmt, submissions, users):
     """
 
