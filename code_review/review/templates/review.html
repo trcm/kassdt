@@ -11,16 +11,16 @@
     });
 </script>
 <div id="reviewFiles">
+  <h5>Files: Root/ </h5>
   <ul>
-    <h4>Files:</h4>
     {% for file in files %}
-    {% if file.folder_uuid %}
-    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
+      {% if file.folder_uuid %}
+        <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</li>
       {% endif%}
 
       {% if file.file_uuid %}
-      {% url 'review_file' sub file.file_uuid as fileurl %}
-      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
+        {% url 'review_file' sub file.file_uuid as fileurl %}
+        <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
       {% endif%}
     {% endfor %}
   </ul>
@@ -32,12 +32,12 @@
 </div>
 
 <div id="reviewPane">
-<div id="reviewCode">
-  <!-- render the source file in the html -->
-  {% if code %}
-  {{ code | safe}} 
-  {% endif%}
-</div>
+  <div id="reviewCode">
+    <!-- render the source file in the html -->
+    {% if code %}
+    {{ code | safe}} 
+    {% endif%}
+  </div>
 
 <div id="reviewAnnotation">
   <!-- display all the current annotations -->
@@ -56,12 +56,21 @@
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
   <!-- display forms for annotation creation if a file is selected -->
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
-
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
-  </form>
-</div>
+    </form>
+    <!-- display all the current annotations -->
+    {% for annote, range in annotations %}
+    <p>Line: {{ range.start }}</p>
+    <p>Comment: {{ annote.text }}</p>
+    {% endfor %}
+    {% url 'create_annotation' sub uuid as annotateUrl %}
+    <!-- Obfucations doesn't work on get -->
+    <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
+    <!-- display forms for annotation creation if a file is selected -->
+    
+  </div>
 </div>
 
 
