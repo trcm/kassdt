@@ -1068,7 +1068,9 @@ def assign_reviews(request, course_code, asmt):
             numReviews = form.cleaned_data['reviews_per_student']
             errMsg = get_errors(course, assignment, numReviews)
             if(errMsg):
-
+                context['errors'] = errMsg
+                form = AllocateReviewsForm(request.POST)
+                template = "assign_reviews.html"
             else:
                 distribute_reviews(assignment, numReviews)
                 print "Reviews assigned!"

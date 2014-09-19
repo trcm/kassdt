@@ -10,6 +10,11 @@
     {% csrf_token %}
     {{ course.code_code }}
     {{ asmt.name }}
+
+    {% if errors %}
+    <h3>Something Wrong:</h3>
+    <h4>{{ errors }}</h4>
+    {% endif %}
     
     <h3>Enter the number of submissions you want each student to review</h3>
     {{ form.reviews_per_student }}
