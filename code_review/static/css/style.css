@@ -128,6 +128,11 @@ padding-left: 20px;
 	color: gray;
 }
 
+/* ------------------------------------------ template - student_homepage.html ----------------------------------------- */
+.middle{
+	vertical-align: middle;
+}
+
 /*The Navigation bar on every page */
 #sidebarBody {
   padding-top:0px;

@@ -6,7 +6,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
     <div id="assignmentList" class="col-md-8">
 	<h1>Upcoming assignments</h1>
 	{% if open_assignments %}
-	    <table cellpadding="10">
+	    <table cellpadding="10" class="table table-bordered table-hover">
 	    <tr>
 		<th> Course </th>
 		<th> Assignment Name </th>
@@ -16,16 +16,18 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 	    <!-- grab all upcoming assignments and display them in a table -->
 	    {% for asmt in open_assignments %}
 		<tr> 
-		    <td>{{ asmt.0.course_code }}</td>
-		    <td>{{ asmt.1.name }}</td>
-		    <td>{{ asmt.1.submission_open_date }}</td>
-		    <td>{{ asmt.1.submission_close_date }}</td>
+		    <td><p>{{ asmt.0.course_code }}</p></td>
+		    <td><p>{{ asmt.1.name }}</p></td>
+		    <td><p>{{ asmt.1.submission_open_date }}</p></td>
+		    <td><p>{{ asmt.1.submission_close_date }}</p></td>
                     <td>
                         <form action="{% url 'assignment_page' asmt.0.course_code asmt.1.name %}">
-                            <input type="submit" value="Go to assignment page">
+                            <input class="btn btn-link btn-block" type="submit" value="Go to assignment page">
                         </form>
                     </td>
-                    <td> <a href="/review/course/{{asmt.0.course_code}}/{{asmt.1.name}}/submit/">
+                    <td> 
+                    	
+                    <a class="btn btn-danger btn-block" href="/review/course/{{asmt.0.course_code}}/{{asmt.1.name}}/submit/">
                             Submit Assignment
                         </a>
                     </td>
