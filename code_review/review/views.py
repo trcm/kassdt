@@ -35,6 +35,8 @@ from pygments.styles import *
 from review.models import *
 
 from help.models import Post
+from help.views import grabPostFileData
+from help.forms import editForm
 
 # imports any helpers we might need to write
 from helpers import staffTest, LineException
@@ -57,7 +59,6 @@ import os.path
 
 @login_required(login_url='/review/login_redirect/')
 def index(request):
-
     """
     index(HttpRequest) is the default index view for the application.
     If the user is a student then they are redirected to the student_homepage
@@ -466,6 +467,7 @@ def error_page(request, message):
     context = {'errorMessage': message}
     return render(request, 'error.html', context, status=404)
 
+    
 def reviews_remaining(user, asmtReview):
     """Get the number of reviews this user still has to do for asmt.
 
@@ -844,9 +846,23 @@ def createAnnotation(request, submission_uuid, file_uuid):
     except SourceFile.DoesNotExist:
         return error_page(request, "This file does not exist")
     except LineException:
+        # if this is true then this is a post object not a submission
+        if Post.objects.get(post_uuid=submission_uuid):
+            p = Post.objects.get(post_uuid=submission_uuid)
+            currentUser = User.objects.get(id=request.session['_auth_user_id'])
+            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            # context['post'] = uuid
+            context['form'] = form
+            errorMessage = "Please enter a line number between 1 and %s" % lineCount
+            context['rangeform'] = rangeForm
+            rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+            context['editform'] = editForm()
+            return render(request, 'view_post.html', context)
+            
         errorMessage = "Please enter a line number between 1 and %s" % lineCount
         context['rangeform'] = rangeForm
         rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+
     context = grabFileData(request, submission_uuid, file_uuid)
     context['form'] = form
     context['rangeform'] = rangeForm

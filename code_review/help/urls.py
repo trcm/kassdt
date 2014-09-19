@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from help import views
+
 urlpatterns = patterns('',
                        url(r'create_post/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
                            views.createPost, name="create_post"),

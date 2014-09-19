@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 # import models from review
 from review.models import *
-from review.views import error_page
 from review.forms import annotationForm, annotationRangeForm
 # import needed code from help
 from help.models import Post
@@ -302,7 +301,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         context['title'] = post.title
         context['question'] = post.question
         return context
-    except AssignmentSubmission.DoesNotExist:
+    except Post.DoesNotExist:
         error_page(request, "Submission does not exit")
 
 
@@ -388,3 +387,17 @@ def grabPostFiles(root):
                     folders.append(i)
     
     return folders
+
+    
+def error_page(request, message):
+    """Display an error page with Http status 404.
+
+    Arguments:
+        request (HttpRequest) -- the request which provoked the error.
+        message (String) -- message to display on the 404 page.
+
+    Returns:
+        HttpResponse object to display error page.
+    """
+    context = {'errorMessage': message}
+    return render(request, 'error.html', context, status=404)
