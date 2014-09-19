@@ -710,13 +710,13 @@ def grabFileData(request, submissionUuid, file_uuid):
         # grab submission and all the associated files and folders
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        for f in sub.root_folder.files.all():
-            folders.append(f)
-        for f in sub.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
-
+        # for f in sub.root_folder.files.all():
+        #     folders.append(f)
+        # for f in sub.root_folder.folders.all():
+        #     folders.append(f)
+        #     for s in f.files.all():
+        #         folders.append(s)
+        folders = grabFiles(sub.root_folder)
         # get root folder
         iter = file.folder
         while iter.parent is not None:
@@ -1007,14 +1007,14 @@ def review(request, submissionUuid, **kwargs):
         # grab the submission and the associated files and folders
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        for f in sub.root_folder.files.all():
-            folders.append(f)
-        for f in sub.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
+        # for f in sub.root_folder.files.all():
+        #     folders.append(f)
+        # for f in sub.root_folder.folders.all():
+        #     folders.append(f)
+        #     for s in f.files.all():
+        #         folders.append(s)
         # root_files = sub.root_folder.files
-
+        folders = grabFiles(sub.root_folder)
         # return all the data for the submission to the context
         context['sub'] = submissionUuid
         # files = root_files.all()
@@ -1027,6 +1027,26 @@ def review(request, submissionUuid, **kwargs):
     except AssignmentSubmission.DoesNotExist:
         raise Http404
 
+
+def grabFiles(root):
+    # Tree traversal
+    folders = []
+    s = []
+    s.append(root)
+    while len(s) > 0:
+        v = s.pop()
+        if v not in folders:
+            folders.append(v)
+            print v
+            for i in v.folders.all():
+                s.append(i)
+            for i in v.files.all():
+                if i not in folders:
+                    folders.append(i)
+    
+    return folders
+
+        
 def get_list(root_folder, theList):
     """
     Gets all the folders and files underneath root_folder

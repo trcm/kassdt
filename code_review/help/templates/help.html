@@ -16,7 +16,7 @@
     {% for post in Posts %}
     <tr>
       <td>{{ post.title }}</td>
-      <td>{{ post.by }}</td>
+      <td>{{ post.by.djangoUser.first_name }} {{ post.by.djangoUser.last_name }}</td>
       <td>{{ post.created }}</td>
       <td>
 	{% if post.by == user.reviewuser %}
