@@ -449,6 +449,17 @@ class AssignmentReview(models.Model):
     submissions = models.ManyToManyField(AssignmentSubmission, null=True)
     assignment = models.ForeignKey(Assignment, null=True)
     
+    def submissionsAnnotations(self):
+        """Get a dictionary {submission: num_annotations_on_submissions}
+
+        """
+        subAnn = {}
+
+        for sub in self.submissions.all():
+            subAnn[sub] = self.numAnnotations(sub)
+
+        return subAnn
+
     def numAnnotations(self, sub):
         """Get the number of annotations the user had made on a submission sub.
 

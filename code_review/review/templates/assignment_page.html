@@ -67,20 +67,25 @@
     <h3> You have been assigned to do {{actualNumReviews }} reviews. </h3>
     <h3> You have {{numRemaining}} reviews left to complete. </h3>
     <h3> Submissions you have been assigned to review: </h3>
-
+    
+    <table>
     <tr>
         <th>Submission number</th>
         <th></th>
+        <th>Number of annotations completed</th>
     </tr>
-    {% for review in submissionsToReview %}
+    {% for submission, numAnnotations in submissionsToReview.items %}
     <tr>
-        <td>{{review.submission_uuid}}</td>
-        <td><a href="{% url 'submission' review.submission_uuid %}">
+        <td>{{submission.submission_uuid}}</td>
+        <td><a href="{% url 'submission' submission.submission_uuid %}">
             <button>Review this submission</button>
         </a>
         </td>
+        <td>Completed {{numAnnotations}} annotations of {{asmt.min_annotations}}</td>
     </tr>
+    
     {% endfor %}
+    </table>
 {% endif %}
 </div>
 {% endblock %}

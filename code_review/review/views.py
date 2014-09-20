@@ -508,7 +508,7 @@ def assignment_page(request, course_code, asmt):
         if(review):
             review = review[0]
             submissionsToReview = review.submissions.all()
-            context['submissionsToReview'] = submissionsToReview
+            context['submissionsToReview'] = review.submissionsAnnotations()
             context['actualNumReviews'] = len(submissionsToReview)
             print submissionsToReview
 
