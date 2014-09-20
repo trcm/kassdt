@@ -31,15 +31,20 @@ Tutor Dawg
     
 
     <tr>
-      <td>{{ assignment.name}}</td>
-      <td>Need to add check for submission status</td>
-      <td>{{ assignment.submission_close_date }}</td>
+      <td>{{ assignment.0.name}}</td>
       <td>
-        <form action="{% url 'assignment_page' course.course_code assignment.name %}">
-          <input class="btn btn-primary" type="submit" value="View Assignment">
-        </form>
+        {% if assignment.1 %}
+            Submited!
+        {% else %}
+            Not yet submitted.
+        {% endif %}
       </td>
-
+      <td>{{ assignment.0.submission_close_date }}</td>
+      <td>
+        <a href="{{assignment.0.name}}/">
+          <input class="btn btn-primary" type="submit" value="View Assignment">
+        </a>
+      </td>
     </tr>
     {% endfor %}
 	</table>

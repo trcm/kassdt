@@ -152,8 +152,7 @@ def coursePage(request, course_code):
 
         context['tutor'] = isTutor(U, c)
         
-        context['assignments'] = assignments
-#getSubmissionStatus(U.reviewuser, assignments)
+        context['assignments'] = getSubmissionStatus(U.reviewuser, assignments)
         context['course'] = c
 
         context['courses'] = courses
@@ -436,7 +435,7 @@ def getSubmissionStatus(user, asmtList):
     """
     theList = []
     for asmt in asmtList:
-        theList.append((theList, hasSubmissions(user, asmt)))
+        theList.append((asmt, hasSubmissions(user, asmt)))
 
     return theList
 
