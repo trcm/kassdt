@@ -147,11 +147,13 @@ def coursePage(request, course_code):
 
         # get all current assignments for that course
         assignments = c.assignments.all()
+        print(getSubmissionStatus(U.reviewuser, assignments))
         courses = U.reviewuser.courses.all()
 
         context['tutor'] = isTutor(U, c)
         
         context['assignments'] = assignments
+#getSubmissionStatus(U.reviewuser, assignments)
         context['course'] = c
 
         context['courses'] = courses
@@ -425,6 +427,28 @@ def student_homepage(request):
 
     return render(request, 'student_homepage.html', context)
 
+def getSubmissionStatus(user, asmtList):
+    """Return a list [(asmt, submitted)]
+    
+    Arguments:
+        user (ReviewUser) 
+        asmtList (QuerySet<Assignment>)
+    """
+    theList = []
+    for asmt in asmtList:
+        theList.append((theList, hasSubmissions(user, asmt)))
+
+    return theList
+
+def hasSubmissions(user, asmt):
+    """Return true iff user has made a submission for asmt
+
+    Arguments:
+        user (ReviewUser) 
+        asmt (Assignment)
+    """
+    return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).exists()
+
 def get_open_assignments(user):
     ''' Returns the list of currently open assignments for the current user
 
@@ -436,22 +460,23 @@ def get_open_assignments(user):
         user (User) -- the user whose open assignments we want to retrieve.
 
     Returns:
-        A list whose entries are a tuple (Course, Assignment)
+        A dictionary whose keys are courses and whose values are  a list of tuples (Assignment, Submission status)
     '''
 
     timenow = timezone.now()
-    openAsmts = []
+    openAsmts = {}
     courses = user.reviewuser.courses.all()
-
+    
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
+        openAsmts[course] = []
         for assignment in assignments:
             if(can_submit(assignment)):
-                openAsmts.append((course, assignment))
+                submitted = AssignmentSubmission.objects.filter(by=user.reviewuser, submission_for=assignment).exists()
+                openAsmts[course].append((assignment, submitted))
 
     return openAsmts
-
 
 def error_page(request, message):
     """Display an error page with Http status 404.
@@ -510,7 +535,6 @@ def assignment_page(request, course_code, asmt):
             submissionsToReview = review.submissions.all()
             context['submissionsToReview'] = review.submissionsAnnotations()
             context['actualNumReviews'] = len(submissionsToReview)
-            print submissionsToReview
 
             # Find out how many reviews user has remaining.
             context['numRemaining'] = AssignmentReview.numReviewsRemaining(review)
