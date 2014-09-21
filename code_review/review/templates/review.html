@@ -8,6 +8,10 @@
 <script>
   $(document).ready(function() {
     annotationHighlight();
+
+   $(".click").click(function() {
+     $("#id_start").val($(this).text());
+   });
  });
 </script>
 <div id="reviewFiles">
