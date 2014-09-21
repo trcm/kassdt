@@ -10,7 +10,9 @@
     annotationHighlight();
 
    $(".click").click(function() {
-     $("#id_start").val($(this).text());
+     p = parseInt( $(this).text());
+     console.log(p);
+     $("input[name*='start']").val(p); 
    });
  });
 </script>
