@@ -1,34 +1,54 @@
 <!-- Template for showing a specific assignment's information -->
 {% extends 'navbar.html' %}
 
-  {% block main %}
-<div id="assignmentView">
-  <!-- This page can only be called if an assignment exists, obviously -->
-  <!-- grabs the name of the current assignment -->
-  <h1>{{ asmt.name }}</h1>
-<div id="assignmentAdmin">
-  {% if user.is_superuser %}
-  <!-- Add stuff to allow superuser to edit assignment -->
-
-  {% endif%}
+<!-- This page can only be called if an assignment exists, obviously -->
+<!-- grabs the name of the current assignment -->
   
-  {% if user.is_superuser %}
-  <h2>Settings</h2>
+{% block main %}
+<br />
+  <h1>{{ asmt.name }}</h1>
+<br />
+
+<div class="row">  
+	{% if user.is_superuser %}
+    <!-- Add stuff to allow superuser to edit assignment -->
+	<div class="col-md-3">
+		<div class="btn-group">
+			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+		</div>
+	</div>
+	<div class="col-md-9"></div>  
+	{% endif %}
+
+</div>
+
+<br />
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+  	<!-- if the assignment is still open for submission this will be viewable -->
+  	{% if canSubmit %}
+		<h3 class="panel-title">Submissions are <span class="label label-success">Open</span></h3>
+	{% else %}
+  		<h3 class="panel-title">Submissions are <span class="label label-danger">Closed</span></h3>
+  	{% endif %}
+  </div>
+  
+  <div class="panel-body">
+  	<p><b>Submission Status: </b><br /> Need to add submission status Check</p> 
+  	<p><b>Assignment due on: </b><br /> {{ asmt.submission_close_date }}</p> 
+  	<p><b>Review opens on: </b><br /> {{ asmt.review_open_date }}</p> 
+  	<p><b>Review closes on: </b><br /> {{ asmt.review_close_date }}</p>   
+  </div>
+  
+  {% if canSubmit %}
+  <div class="panel-footer">
+  	<form action="submit/">
+    	<input class="btn btn-default" type="submit" value="Submit Assignment">
+  	</form>
+  </div>
   {% endif %}
 </div>
-  <p><b>Submission Status: </b> Need to add submission status Check</p> 
-  <p><b>Assignment due at: </b> {{ asmt.submission_close_date }}</p> 
-  <p><b>Review opens at: </b> {{ asmt.review_open_date }}</p> 
-  <p><b>Review closes at: </b> {{ asmt.review_close_date }}</p> 
-
-  <!-- if the assignment is still open for submission this will be viewable -->
-  {% if canSubmit %}
-  <form action="submit/">
-    <input type="submit" value="Submit Assignment">
-  </form>
-  {% else %}
-  Submissions are closed now <br>
-  {% endif %}
 
   <!-- shows the user their past submissions -->
   {% if submissions %}
@@ -51,5 +71,4 @@
     {% endfor %}
   {% endif %}
 
-</div>
 {% endblock %}
