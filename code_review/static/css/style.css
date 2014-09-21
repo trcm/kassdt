@@ -150,8 +150,7 @@ padding-left: 20px;
 
 /* annotation line number on review page */
 #reviewAnnotation h5 {
-  
-  background-color: white; 
+   
 }
 
 /* code pane div on review page */
@@ -228,7 +227,7 @@ padding-left: 20px;
 	width:100%;
 	overflow-y:scroll;
 	overflow-x: hidden;
-	height:500px;
+	height:550px;
 	
 	
 }
