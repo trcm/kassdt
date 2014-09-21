@@ -41,12 +41,7 @@ $(document).ready( function() {
     $(".datepicker").datepicker({ dateFormat: "yy-mm-dd" });
     $(".timepicker").timepicker({ 'timeFormat': 'H:i:s'});
 
-    $(".click").click(function() {
-	console.log("click");
-	console.log($(this).text());
-	$("#id_start").val($(this).text());
-    });
-
+    
 });
 
 function annotationHighlight() {
