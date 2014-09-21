@@ -673,17 +673,23 @@ def grabFileData(request, submissionUuid, fileUuid):
             annotations = SourceAnnotation.objects.filter(source=file)
         else:
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
-
+            
         annotationRanges = []
         aDict = []
-
         # get all the ranges for the annotations
         for a in annotations:
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
             aDict.append(a)
 
         # sort the annotations by starting line
+        hl_lines = []
         annotationRanges.sort(key=lambda x: x.start)
+        for i in annotationRanges:
+            hl_lines.append(i.start)
+
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="inline", hl_lines=hl_lines))
+        
         sortedAnnotations = []
         # grab the annotations again based on the sorted order
         for a in annotationRanges:
