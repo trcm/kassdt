@@ -6,4 +6,6 @@ $(function(){
       $(this).addClass('current');
     }
   });
+
+  $( "#accordion" ).accordion();
 });

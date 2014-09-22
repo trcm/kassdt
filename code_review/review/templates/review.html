@@ -46,17 +46,19 @@
   </div>
 
 <div id="reviewAnnotation">
+<div id="accordion">
   <!-- display all the current annotations -->
   {% for annote, range in annotations %}
-  <h5>Line: {{ range.start }}</h5>
-  <p>Comment: {{ annote.text }}</p>
+  <h3>Line: {{ range.start }}</h3>
+  <div><p>Comment: {{ annote.text }}</p>
   
   {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
       <a class="btn btn-info" href="">Edit</a>
       <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
   {% endif%}
-
+  </div>
   {% endfor %}
+  </div>
 {% url 'create_annotation' sub uuid as annotateUrl %}
   <!-- Obfucations doesn't work on get -->
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
