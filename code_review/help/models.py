@@ -33,6 +33,7 @@ class Post(models.Model):
                                        null=True,
                                        related_name="code")
     open = models.BooleanField(default=True)
+    resolved = models.BooleanField(default=False)
     submission_repository = models.TextField()
     
     def __unicode__(self):

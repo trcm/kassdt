@@ -11,19 +11,21 @@
     <th>Title</th>
     <th>User</th>
     <th>Created</th>
+    <th>Resolved</th>
     <th></th>
 
     {% for post in Posts %}
     <tr>
-      <td>{{ post.title }}</td>
+      <td><a href="{% url 'view_post' post.post_uuid %}">{{ post.title }}</a></td>
       <td>{{ post.by.djangoUser.first_name }} {{ post.by.djangoUser.last_name }}</td>
       <td>{{ post.created }}</td>
+      <td>{{ post.resolved }}</td>
       <td>
 	{% if post.by == user.reviewuser %}
-        <a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
+        <a class="btn btn-s btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
 
 	{% endif%}
-	<a class="btn btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
+	<a class="btn btn-s btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
       </td>
     </tr>
     {% endfor %}

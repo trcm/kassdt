@@ -35,6 +35,8 @@ from pygments.styles import *
 from review.models import *
 
 from help.models import Post
+from help.views import grabPostFileData
+from help.forms import editForm
 
 # imports any helpers we might need to write
 from helpers import staffTest, LineException
@@ -767,7 +769,7 @@ def grabFileData(request, submissionUuid, file_uuid):
         for a in annotationRanges:
             sortedAnnotations.append(a.range_annotation)
 
-        context['annotations'] = zip(aDict, annotationRanges)
+        context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['sub'] = submissionUuid
         context['uuid'] = file_uuid
         context['files'] = folders
@@ -795,6 +797,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
     context = {}
     form = None
     rangeForm = None
+    newAnnotation = None
 
     try:
         # print request
@@ -830,9 +833,17 @@ def createAnnotation(request, submission_uuid, file_uuid):
             # for help centre or not. We just need to check whether or not this 
             # submission is associated with an assignment.
 
-            sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-            newAnnotation.submission=sub
-            newAnnotation.save()
+            # Yes tom does use this, tom is fixing this.
+
+            try:
+                sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+                newAnnotation.submission = sub
+                newAnnotation.save()
+                # if this is called then the annotation is actually for the help system
+            except AssignmentSubmission.DoesNotExist:
+                # if this is triggered then its a post submission
+                newAnnotation.submission = None     
+                newAnnotation.save()
 
             newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
                                                             start=start,
@@ -845,9 +856,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
             print newAnnotation, newRange
             try:
                 p = Post.objects.get(post_uuid=submission_uuid)
-                print p
-                return HttpResponseRedirect('/help/file/' + submission_uuid +
-                                    '/' + file_uuid + '/')
+                return HttpResponseRedirect('/help/file/' + submission_uuid + '/' + file_uuid + '/')
             except Post.DoesNotExist:
                 print "This is a assignment submission"
             return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
@@ -858,9 +867,38 @@ def createAnnotation(request, submission_uuid, file_uuid):
     except SourceFile.DoesNotExist:
         return error_page(request, "This file does not exist")
     except LineException:
-        errorMessage = "Please enter a line number between 1 and %s" % lineCount
+        # if this is true then this is a post object not a submission
+        if Post.objects.get(post_uuid=submission_uuid):
+            p = Post.objects.get(post_uuid=submission_uuid)
+            currentUser = User.objects.get(id=request.session['_auth_user_id'])
+            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            # context['post'] = uuid
+            context['form'] = form
+            errorMessage = "Please enter a line number between 1 and %s" % lineCount
+            context['rangeform'] = rangeForm
+            rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+            context['editform'] = editForm()
+            return render(request, 'view_post.html', context)
+
         context['rangeform'] = rangeForm
         rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+
+    # check and see if the user is trying to create a help annotation
+    if not form.is_valid() or not rangeForm.is_valid():
+        print "not valid"
+        try:
+            p = Post.objects.get(post_uuid=submission_uuid)
+            currentUser = User.objects.get(id=request.session['_auth_user_id'])
+            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            # context['post'] = uuid
+            context['form'] = form
+            context['rangeform'] = rangeForm
+            context['editform'] = editForm()
+            return render(request, 'view_post.html', context)
+        except Exception as e:
+            print "caught exception"
+            print e.message
+        
     context = grabFileData(request, submission_uuid, file_uuid)
     context['form'] = form
     context['rangeform'] = rangeForm
