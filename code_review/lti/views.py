@@ -24,6 +24,7 @@ from django.conf import settings
 from utils import *
 from models import *
 from review.models import *
+from review.helpers import *
 
 @csrf_exempt
 def launch_lti(request):
@@ -138,15 +139,6 @@ def launch_lti(request):
     try:
         """ Check if user already exists using email, if not create new """    
         user = User.objects.get(email=email)
-        if roles[0].__eq__("Instructor"):
-            user.reviewuser.isStaff = True
-            user.is_staff = True
-            user.save()
-            print "User is Staff Member"
-        else:
-            user.reviewouser.isStaff = False
-            user.is_staff = False
-            user.save()
         if user.username != lti_username:
             """ If the username is not in the format user_id, change it and save.  This could happen
             if there was a previously populated User table. """
@@ -166,6 +158,18 @@ def launch_lti(request):
             user.reviewuser.courses.add(c)
             user.save()
             print("New course created in CPRS")
+        """ Detect if incoming user is a Instructor """
+        if roles[0].__eq__("Instructor"):
+            user.reviewuser.isStaff = True
+            user.is_staff = True
+            c = Course.objects.get(course_code=course)
+            createTutor(user.reviewuser, c)
+            user.save()
+            print "User is Staff Member"
+        else:
+            user.reviewouser.isStaff = False
+            user.is_staff = False
+            user.save() 
 
     except User.DoesNotExist:
         """ first time entry, create new user """
@@ -176,9 +180,6 @@ def launch_lti(request):
         if last_name: user.last_name = last_name
         user.save()
         ru = ReviewUser.objects.create(djangoUser=user)
-        if roles[0] .__eq__("Instructor"):
-            ru.isStaff = True
-        ru.save()
         try:
             print "adding course"
             c = Course.objects.get(course_code=course)
@@ -190,6 +191,18 @@ def launch_lti(request):
             ru.courses.add(c)
             ru.save()
             print("New course created in CPRS")
+        """ Detect if incoming user is a Instructor """
+        if roles[0].__eq__("Instructor"):
+            user.reviewuser.isStaff = True
+            user.is_staff = True
+            c = Course.objects.get(course_code=course)
+            createTutor(user.reviewuser, c)
+            user.save()
+            print "User is Staff Member"
+        else:
+            user.reviewouser.isStaff = False
+            user.is_staff = False
+            user.save()·
 
             
     except User.MultipleObjectsReturned:
