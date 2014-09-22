@@ -695,7 +695,7 @@ def grabFileData(request, submissionUuid, fileUuid):
         for a in annotationRanges:
             sortedAnnotations.append(a.range_annotation)
 
-        context['annotations'] = zip(aDict, annotationRanges)
+        context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['sub'] = submissionUuid
         context['uuid'] = fileUuid
         context['files'] = folders
