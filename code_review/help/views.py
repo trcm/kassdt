@@ -317,10 +317,25 @@ def deletePost(request, course_code, post_uuid):
             error_page(request, "you're trying to delete something you don't have the persmissions for")
 
         return HttpResponseRedirect('/help/' + course_code)
-    except Post.DoesNotExit:
+    except Post.DoesNotExist:
         error_page(request, "Post does not exist")
     return HttpResponse("delete")
 
+def resolvePost(request, course_code, post_uuid):
+
+    currentUser = User.objects.get(id=request.session['_auth_user_id'])
+    course_code = course_code.encode('ascii', 'ignore')
+    try:
+        post = Post.objects.get(post_uuid=post_uuid)
+        if post.resolved == False:
+            post.resolved = True
+        else:
+            post.resolved = False
+        post.save()
+        return HttpResponseRedirect('/help/' + course_code)
+    except Post.DoesNotExist:
+        error_page(request, "Post does not exist")
+    return HttpResponseRedirect('/help/' + course_code)
 
 def updatePost(request, post_uuid):
 
