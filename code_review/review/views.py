@@ -705,6 +705,42 @@ def submit_assignment(request, course_code, asmt):
     return render(request, template, context)
 
 
+@login_required(login_url='/review/login_redirect/')
+def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
+    """
+    deletes an annotation and its range from the database
+    
+    Parameters:
+    request
+    submissions_uuid
+    file_uuid
+    annotation_id
+
+    Returns:
+    returns
+    """
+
+    submission_uuid = submissionUuid.encode('ascii', 'ignore')
+    file_uuid = fileUuid.encode('ascii', 'ignore')
+    try:
+        a = SourceAnnotation.objects.get(id=annoteId)
+        r = SourceAnnotationRange.objects.get(range_annotation=a)
+        a.delete()
+        r.delete()
+
+        print "Redirect"
+        try:
+            Post.objects.get(post_uuid=submission_uuid)
+            return HttpResponseRedirect('/help/file/' + submission_uuid + '/' + file_uuid + '/')
+        except Post.DoesNotExist:
+            print "This is a assignment submission"
+            return HttpResponseRedirect('/review/file/' +
+                                        submission_uuid +
+                                        '/' + file_uuid + '/')
+
+    except SourceAnnotation.DoesNotExist:
+        return error_page(request, "Annotation doesn't exist")
+
 @login_required(login_url='/review/login_redirect')
 def grabFileData(request, submissionUuid, file_uuid):
     """
