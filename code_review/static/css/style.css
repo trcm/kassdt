@@ -71,6 +71,7 @@ body {
 	background-color: black;	
 	margin-left: auto;
 	margin-right: auto;
+	overflow-y:hidden;
 }
 
 /* The annotations div is the div
@@ -123,6 +124,18 @@ padding-left: 20px;
 /* ------------------------------------------ template - student_homepage.html ----------------------------------------- */
 .middle{
 	vertical-align: middle;
+}
+
+/*The line numbers on the review page */
+.lineno {
+	background-color: red;
+	text-align: left;
+}
+
+
+/*The line numbers on the review page */
+.lineno span{
+	
 }
 
 /*The Navigation bar on every page */
