@@ -1,10 +1,10 @@
 """
 test.py - beginning of unit and functional testing for the code_review
-project. 
+project.
 
 Currently this uses some basic unit tests and we have written
 the base of some tests using selenium.  One of the next sprints
-we will be running in development is to write tests for the project 
+we will be running in development is to write tests for the project
 as it is.
 """
 
@@ -16,7 +16,7 @@ from review.models import *
 
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.chrome import webdriver
+from selenium.webdriver.firefox import webdriver
 
 def setup_group(self):
     Group.objects.create(name='student')
@@ -25,7 +25,7 @@ def setup_group(self):
 
 
 def setup_user(self):
-        
+
     username = "test"
     password = "test"
     newUser = User.objects.create(username=username, password=password)
@@ -33,7 +33,7 @@ def setup_user(self):
     newUser.groups.add(Group.objects.get(name='student'))
     newUser.save()
 
-    
+
 def invalid_user(self):
 
     username = "invalid    "
@@ -43,11 +43,11 @@ def invalid_user(self):
     newUser.groups.add(Group.objects.get(name='student'))
     newUser.save()
     # Whatever error we throw upon invalid username/password caught here
-    # except errorName 
+    # except errorName
 
-    
+
 class UserTests(TestCase):
-    
+
     def test_user_is_a_student(self):
         setup_group(self)
         setup_user(self)
@@ -81,10 +81,10 @@ class UserTests(TestCase):
         setup_group(self)
         username="test"
         password = " I A M I N V A L I D "
-        # As error handling for invalid user/pass isnt implemented  for now this is 
+        # As error handling for invalid user/pass isnt implemented  for now this is
         # a stub test
-        # try: 
-    
+        # try:
+
         newUser = User.objects.create(username=username, password=password)
         self.assertFalse(True, "An invalid password was added to database")
         # except errorName
@@ -94,8 +94,6 @@ class UserTests(TestCase):
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
 
-
-    
     @classmethod
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
@@ -122,3 +120,5 @@ class MySeleniumTests(LiveServerTestCase):
         password_input.send_keys('tom')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
+    def test_course_page(self):
+        self.selenium.get("%s" % self.server_url)

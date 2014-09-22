@@ -129,7 +129,7 @@ class RepoTests(TestCase):
 
         # Check all the files are correct
         files = SourceFile.objects.all()
-        self.assertEqual(len(files), 3)
+        self.assertEqual(len(files), 4)
         file1 = files[0]
 
         self.assertEqual(file1.name, 'folder1_testfile.txt')
@@ -144,8 +144,3 @@ class RepoTests(TestCase):
         file3 = files[2]
         self.assertEqual(file3.name, 'folder2_testfile.py')
         self.assertEqual(file3.folder, folders[3])
-        
-       
-
-
-
