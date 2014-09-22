@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from help import views
+from review.views import deleteAnnotation
 
 urlpatterns = patterns('',
                        url(r'create_post/(?P<course_code>[A-Z]{4}[0-9]{4})/$',
@@ -19,4 +20,7 @@ urlpatterns = patterns('',
                            views.updatePost, name="update_post"),
                        url(r'resolve/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.resolvePost, name="resolve_post"),
+                       url(r'delete/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<annoteId>\d+)/$',
+                           deleteAnnotation, name="delete_annotation"),
+
 )

@@ -96,6 +96,8 @@ urlpatterns = patterns('',
                        # Views a particular submission
                        url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
                            views.review, name="submission"),
-                       
+                       url(r'delete/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<annoteId>\d+)/$',
+                           views.deleteAnnotation, name="delete_annotation"),
+
 )
 
