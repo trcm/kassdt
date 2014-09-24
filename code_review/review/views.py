@@ -240,6 +240,21 @@ def userAdmin(request):
 
     return render(request, 'admin/userList.html', context)
 
+def handle_uploaded_file(f):
+    
+    """
+    Handle file uploads
+    
+    Parameters:
+    parameters
+    
+    Returns:
+    returns
+    """
+
+    with open('some/file/name.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
@@ -262,11 +277,10 @@ def validateAssignment(request):
     context = {}
     # gets the data from the post request
     if request.method == "POST":
-        print request
         form = AssignmentForm(request.POST)
-        testForm = AssignmentTestFOrm(request.POST)
+        testForm = AssignmentTestForm(request.POST, request.FILES)
         print request.POST['course_code']
-        if form.is_valid():
+        if form.is_valid() and testForm.is_valid():
             try:
                 # gets the cleaned data from the post request
                 print "Creating assignment"
@@ -278,7 +292,7 @@ def validateAssignment(request):
                 submission_close_date = form.cleaned_data['submission_close_date']
                 review_open_date = form.cleaned_data['review_open_date']
                 review_close_date = form.cleaned_data['review_close_date']
-
+                print request.FILES
                 # Create the new assignment object and try saving it
                 ass = Assignment.objects.create(course_code=course, name=name,
                                                 repository_format=repository_format,
@@ -287,14 +301,22 @@ def validateAssignment(request):
                                                 submission_close_date=submission_close_date,
                                                 review_open_date=review_open_date,
                                                 review_close_date=review_close_date)
-                ass.save()
 
-            if testForm.is_valid():
+
                 # check if test form is valid and create the new tests object
                 # if  it is
-                pass
-
-            return HttpResponseRedirect('/review/course_admin/')
+                print "creating sub test"
+                test = SubmissionTest.objects.create(for_assignment=ass,
+                                                     test_name=ass.name + "Tests",
+                                                     test_count=testForm.cleaned_data['test_count'],
+                                                     test_pass_count=0,
+                                                     test_file=request.FILES['test_file'],
+                                                     test_command=testForm.cleaned_data['test_command'])
+                print "saving"
+                ass.save()
+                test.save()
+                print "test save"
+                return HttpResponseRedirect('/review/course_admin/')
 
             except Exception as AssError:
                 # prints the exception to console
@@ -302,6 +324,7 @@ def validateAssignment(request):
 
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
+    context['testForm'] = testForm
     context['course'] = Course.objects.get(id=request.POST['course_code'])
 
     return render(request, 'admin/new_assignment.html', context)
@@ -534,7 +557,7 @@ def assignment_page(request, course_code, asmt):
         courseCode = course_code.encode('ascii', 'ignore')
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
-        assignment = Assignment.objects.get(name=asmtName)
+        assignment = Assignment.objects.get(course_code=course, name=asmtName)
         submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
 
         # Get the reviews this user has been assigned to complete.
@@ -886,7 +909,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
         return error_page(request, "This file does not exist")
     except LineException:
         # if this is true then this is a post object not a submission
-        if Post.objects.get(post_uuid=submissionUuid):
+        try:
             p = Post.objects.get(post_uuid=submission_uuid)
             currentUser = User.objects.get(id=request.session['_auth_user_id'])
             context = grabPostFileData(request, p.post_uuid, file_uuid)
@@ -898,8 +921,10 @@ def createAnnotation(request, submissionUuid, fileUuid):
             context['editform'] = editForm()
             return render(request, 'view_post.html', context)
 
-        context['rangeform'] = rangeForm
-        rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+        except:
+            errorMessage = "Please enter a line number between 1 and %s" % lineCount
+            context['rangeform'] = rangeForm
+            rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
 
     # check and see if the user is trying to create a help annotation
     if not form.is_valid() or not rangeForm.is_valid():
@@ -917,7 +942,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
             print "caught exception"
             print e.message
         
-    context = grabFileData(request, submission_uuid, file_uuid)
+    context = grabFileData(request, submissionUuid, fileUuid)
     context['form'] = form
     context['rangeform'] = rangeForm
     return render(request, 'review.html', context)

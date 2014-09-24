@@ -6,7 +6,7 @@
 
 <h1>Create new {{ course.course_code }} Assignment</h1>
 
-<form method="post" action="{% url 'generate_assignment' %}">
+<form method="post" action="{% url 'generate_assignment' %}" enctype="multipart/form-data">
   <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
   {% for field in form %}
