@@ -15,6 +15,11 @@
   </ul>
   {% endfor %}
 
+  <ul>
+  {% for field in testForm %}
+    <li> {{ field.errors }} {{ field.label_tag }} {{ field }}</li> 
+  {% endfor %}
+  </ul> 
   <input type="submit" name="Submit" value="Submit" />
 </form>
 

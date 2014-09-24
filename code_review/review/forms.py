@@ -49,6 +49,15 @@ class AssignmentForm(ModelForm):
         }
 
 
+class AssignmentTestForm(ModelForm):
+
+    class Meta:
+        model = SubmissionTest
+        fields = ['test_count', 'test_file',
+                  'test_command',
+        ]
+           
+        
 class uploadFile(ModelForm):
     """
     Dummy form for uploading files during testing

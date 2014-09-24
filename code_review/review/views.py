@@ -43,7 +43,7 @@ from helpers import staffTest, LineException
 from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm, AssignmentTestForm
 
 from django.utils import timezone
 
@@ -192,9 +192,10 @@ def create_assignment(request, course_code):
     # generate form for new assignemnt, thing this will get changed
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
-
+    testForm = AssignmentTestForm()
     # add all the data to the context dict
     context['form'] = form
+    context['testForm'] = testForm
     context['course'] = c
 
     return render(request, 'admin/new_assignment.html', context)
@@ -257,11 +258,13 @@ def validateAssignment(request):
     """
 
     form = None
+    testForm = None
     context = {}
     # gets the data from the post request
     if request.method == "POST":
         print request
         form = AssignmentForm(request.POST)
+        testForm = AssignmentTestFOrm(request.POST)
         print request.POST['course_code']
         if form.is_valid():
             try:
@@ -285,11 +288,17 @@ def validateAssignment(request):
                                                 review_open_date=review_open_date,
                                                 review_close_date=review_close_date)
                 ass.save()
+
+            if testForm.is_valid():
+                # check if test form is valid and create the new tests object
+                # if  it is
+                pass
+
+            return HttpResponseRedirect('/review/course_admin/')
+
             except Exception as AssError:
                 # prints the exception to console
                 print AssError.args
-
-            return HttpResponseRedirect('/review/course_admin/')
 
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
