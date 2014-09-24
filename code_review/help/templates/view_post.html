@@ -71,7 +71,7 @@
     <p>Comment: {{ annote.text }}</p>
     {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
     <a class="btn btn-info" href="">Edit</a>
-    <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
+    <a class="btn btn-danger" href="{% url 'delete_post_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
     {% endif%}
     {% endfor %}
 

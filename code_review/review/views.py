@@ -706,42 +706,6 @@ def submit_assignment(request, course_code, asmt):
     return render(request, template, context)
 
 
-@login_required(login_url='/review/login_redirect/')
-def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
-    """
-    deletes an annotation and its range from the database
-    
-    Parameters:
-    request
-    submissions_uuid
-    file_uuid
-    annotation_id
-
-    Returns:
-    returns
-    """
-
-    submission_uuid = submissionUuid.encode('ascii', 'ignore')
-    file_uuid = fileUuid.encode('ascii', 'ignore')
-    try:
-        a = SourceAnnotation.objects.get(id=annoteId)
-        r = SourceAnnotationRange.objects.get(range_annotation=a)
-        a.delete()
-        r.delete()
-
-        print "Redirect"
-        try:
-            Post.objects.get(post_uuid=submission_uuid)
-            return HttpResponseRedirect('/help/file/' + submission_uuid + '/' + file_uuid + '/')
-        except Post.DoesNotExist:
-            print "This is a assignment submission"
-            return HttpResponseRedirect('/review/file/' +
-                                        submission_uuid +
-                                        '/' + file_uuid + '/')
-
-    except SourceAnnotation.DoesNotExist:
-        return error_page(request, "Annotation doesn't exist")
-
 @login_required(login_url='/review/login_redirect')
 def grabFileData(request, submissionUuid, fileUuid):
     """
@@ -759,7 +723,7 @@ def grabFileData(request, submissionUuid, fileUuid):
     uuid = submissionUuid
     try:
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
-        print currentUser
+        # print currentUser
         file = SourceFile.objects.get(file_uuid=fileUuid)
         print 'get file'
         code = highlight(file.content, guess_lexer(file.content),
@@ -972,11 +936,15 @@ def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
         r = SourceAnnotationRange.objects.get(range_annotation=a)
         a.delete()
         r.delete()
-
-        print "Redirect"
-        return HttpResponseRedirect('/review/file/' +
-                                    submission_uuid +
-                                    '/' + file_uuid + '/')
+        try:
+            Post.objects.get(post_uuid=submission_uuid)
+            print "This is a post "
+            return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+        except Post.DoesNotExist:
+            print "This is a assignment submission"
+            return HttpResponseRedirect('/review/file/' +
+                                        submission_uuid +
+                                        '/' + file_uuid + '/')
 
     except SourceAnnotation.DoesNotExist:
         return error_page(request, "Annotation doesn't exist")
@@ -1080,6 +1048,7 @@ def reviewFile(request, submissionUuid, fileUuid):
 
         # grab dictionary contatining all the pertinant information
         context = grabFileData(request, uuid, file_uuid)
+
         context['form'] = form
         context['rangeform'] = rangeForm
         return render(request, 'review.html', context)

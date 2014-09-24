@@ -199,8 +199,8 @@ def viewPostFile(request, post_uuid, file_uuid):
     returns
     """
     uuid = post_uuid.encode('ascii', 'ignore')
-    print post_uuid
-    print "Post uuid %s " % uuid
+    # print post_uuid
+    # print "Post uuid %s " % uuid
     file_uuid = file_uuid.encode('ascii', 'ignore')
     context = {}
     try:
@@ -209,8 +209,8 @@ def viewPostFile(request, post_uuid, file_uuid):
 
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         context = grabPostFileData(request, uuid, file_uuid)
-        print context
-        print uuid
+        # print context
+        # print uuid
         # context['post'] = uuid
         context['form'] = annotationForm()
         context['rangeform'] = rangeForm
@@ -310,6 +310,7 @@ def deletePost(request, course_code, post_uuid):
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
     course_code = course_code.encode('ascii', 'ignore')
     try:
+        printf("deleted")
         post = Post.objects.get(post_uuid=post_uuid)
         if post.by == currentUser.reviewuser or currentUser.reviewuser.isStaff:
             post.delete()
@@ -320,6 +321,7 @@ def deletePost(request, course_code, post_uuid):
     except Post.DoesNotExist:
         error_page(request, "Post does not exist")
     return HttpResponse("delete")
+
 
 def resolvePost(request, course_code, post_uuid):
 
@@ -336,6 +338,7 @@ def resolvePost(request, course_code, post_uuid):
     except Post.DoesNotExist:
         error_page(request, "Post does not exist")
     return HttpResponseRedirect('/help/' + course_code)
+
 
 def updatePost(request, post_uuid):
 
@@ -394,7 +397,7 @@ def grabPostFiles(root):
         v = s.pop()
         if v not in folders:
             folders.append(v)
-            print v
+            # print v
             for i in v.folders.all():
                 s.append(i)
             for i in v.files.all():

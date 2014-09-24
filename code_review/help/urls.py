@@ -21,6 +21,6 @@ urlpatterns = patterns('',
                        url(r'resolve/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<post_uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
                            views.resolvePost, name="resolve_post"),
                        url(r'delete/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<annoteId>\d+)/$',
-                           deleteAnnotation, name="delete_annotation"),
+                           deleteAnnotation, name="delete_post_annotation"),
 
 )
