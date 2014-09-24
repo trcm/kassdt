@@ -233,11 +233,13 @@ class SubmissionTestResults(models.Model):
 
 
 class SubmissionTest(models.Model):
+    for_assignment = models.ForeignKey('Assignment', related_name="assignment_tests")
     part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
     test_name = models.TextField(null=False, blank=True)
     test_count = models.PositiveIntegerField(null=False, blank=False, validators=[MinValueValidator(1)])
     test_pass_count = models.PositiveIntegerField(null=False, blank=False)
-
+    test_file = models.FileField(max_length=1000, upload_to="tests/", null=False, blank=False)
+    
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
