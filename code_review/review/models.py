@@ -239,6 +239,7 @@ class SubmissionTest(models.Model):
     test_count = models.PositiveIntegerField(null=False, blank=False, validators=[MinValueValidator(1)])
     test_pass_count = models.PositiveIntegerField(null=False, blank=False)
     test_file = models.FileField(max_length=1000, upload_to="tests/", null=False, blank=False)
+    test_command = models.CharField(null=False, blank=False, max_length=200)
     
     def clean(self):
         if self.test_count < self.test_pass_count:
