@@ -14,6 +14,10 @@ $(document).ready( function() {
     $("#id_password").addClass("form-control");
     $("#id_password").attr("placeholder","Password");
     
+    //styling assignment submission
+    $("#id_submission_repository").addClass("form-control");
+    
+    
     //make drop down draggable
     $("#draggable").draggable({ axis: "y" });    
 
@@ -37,32 +41,39 @@ $(document).ready( function() {
     $(".datepicker").datepicker({ dateFormat: "yy-mm-dd" });
     $(".timepicker").timepicker({ 'timeFormat': 'H:i:s'});
 
+    
 });
 
 function annotationHighlight() {
-  console.log("Even In Death I Still Serve");
-  var arr = $('#startLine ul').map(function(){
-                   return $(this).text();
-                               }).get();
-  console.log(arr);
-  //So say we have some list or array of start points
+    console.log("Even In Death I Still Serve");
+    var arr = $('#startLine ul').map(function(){
+        return $(this).text();
+    }).get();
+
+    console.log(arr);
+    //So say we have some list or array of start points
     var array = [1,3,5,7,9];
     //We could run this function over that array and it 
     //would find and highlight all start points as per the
     //.highlight css class
     var text = '2';
-
+    var s = $('.linenos');
+    // s.contents().wrapInner("<i id=\"click\" ></i>");
+    
     for(z = 0; z < arr.length; z++) {
-      $( '.linenos' ).html( function ( i, html ) {
-          var regexp, replacement;
-          x = parseInt(arr[z]);
-          console.log(x);
-          regexp = RegExp( '(' + x + ')' );
-          replacement = '<span class="highlight">$1</span>';
-          return html.replace( regexp, replacement );
-      });
+	$( '.linenos' ).html( function ( i, html ) {
+            var regexp, replacement;
+            x = parseInt(arr[z]);
+            console.log(x);
+            regexp = RegExp( '(' + x + ')' );
+            replacement = '<span class="highlight">$1</span>';
+            return html.replace( regexp, replacement );
+	});
     }
-
+    $(".lineno").each(function() {
+	console.log($(this).text());
+	$(this).addClass("click");
+    });
 }
 
 

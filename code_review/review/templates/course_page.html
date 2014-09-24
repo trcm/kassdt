@@ -5,16 +5,25 @@
 <h1>Assignments for {{ course.course_code }} </h1>
 <br />
 
-<div id="courseAdminCreate">
 {% if user.is_superuser %}
-<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
-{% endif%}
+<div class="row">
+	<div class="col-md-3">
+		<div class="btn-group">
+			<a class="btn btn-success" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
+			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+		</div>
+	</div>
+	<div class="col-md-9"></div>
 </div>
+{% endif %}
 <a class="btn btn-primary" href="{% url 'help' course.course_code %}">Get help</a>
 
 {% if tutor %}
 Tutor Dawg
 {% endif%}
+
+
+<br />
 
 {% if assignments %}
   <div id="courseAssignments">
@@ -30,8 +39,10 @@ Tutor Dawg
     {% for assignment in assignments %}
     
 
-    <tr>
+   <tr>
       <td>{{ assignment.0.name}}</td>
+      <td><p>{{ assignment.name}}</p></td>
+      <td><p>{{ assignment.submission_close_date }}</p></td>
       <td>
         {% if assignment.1 %}
             Submited!
@@ -49,13 +60,9 @@ Tutor Dawg
     {% endfor %}
 	</table>
     {% else %}
-    <p><strong>No assignments</strong></p>
+    <h2>No assignments</h2>
+    <br />
     {% endif%}
-  </div>
-  <div id="courseAdminSettings">
-  {% if user.is_superuser %}
-  <h3>Settings</h3>
-  {% endif %}
   </div>
 
 

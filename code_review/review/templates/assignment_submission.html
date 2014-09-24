@@ -1,6 +1,5 @@
 <!-- Template for submitting assignments -->
 {% extends 'navbar.html' %}
-<div id="assignmentSubmit">
   {% block main %}
 
   <!-- This page can only be called if an assignment exists, obviously -->
@@ -8,37 +7,58 @@
 
   {% if user.is_superuser %}
   <!-- Add stuff to allow superuser to edit assignment -->
-
-  {% endif%}
-
-  {% if user.is_superuser %}
-  <h2>Settings</h2>
+  <div class="row">
+	<div class="col-md-3">
+		<div class="btn-group">
+			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+		</div>
+	</div>
+	<div class="col-md-9"></div>
+  </div>
   {% endif %}
+ 
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-8">
+  <h2>Repository URL</h2>
+  <div class="form-group">
+    <div class="input-group">
+    <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+      {% csrf_token %}
+      {{ form.submission_repository }}
+      <span class="input-group-btn">
+      	<input class="btn btn-danger" type="submit" value="Submit Assignment">
+      </span>
+    </form>
+    </div>
+  </div>
+</div>
+<div class="col-md-2"></div>
+</div>
 
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-8">
   <!-- Show form for new submission including previous submission information -->
-  <form id="submit_assignment" method="post" action="">
+    <form method="POST" action="{% url 'submit_assignment' course.course_code asmt %}" >
     {% csrf_token %}
-    {{ course.code_code }}
-    {{ asmt.name }}
+    <h1>{{ course.code_code }}</h1>
     
     {% if submissions %}
-    <div>
-        <h3>Your last submission was at: {{submissions.last.submission_date }} </h3>
-        <a href="{% url 'submission' submissions.last.submission_uuid %}" >
-            <!--<button>View Submission</button>-->
-            View your last submission.
+    <div class="well well-sm">
+    	<p>Your last submission was at: {{submissions.last.submission_date }}</p>
+        <a class="btn btn-primary" href="{% url 'submission' submissions.last.submission_uuid %}" >
+            View your last submission
         </a>
     </div>
+    <div>
+    </div>
     {% endif %}
-    
-    <b> Repository URL </b><br>
-    {{ form.submission_repository }}
-    <input type="submit" value="Submit Assignment">
+   
 
     {% if errMsg %}
         <h3> ERROR! </h3>
         {{ errMsg }}
     {% endif %}
   </form>
-</div>
 {% endblock %}

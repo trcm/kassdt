@@ -132,6 +132,7 @@ def coursePage(request, course_code):
     # get the current assignments for the subject
 
     # grab the user from the http request
+    print "Test"
     try:
         U = User.objects.get(id=request.user.id)
         context['user'] = U
@@ -149,7 +150,7 @@ def coursePage(request, course_code):
 
         # get all current assignments for that course
         assignments = c.assignments.all()
-        print(getSubmissionStatus(U.reviewuser, assignments))
+        #print(getSubmissionStatus(U.reviewuser, assignments))
         courses = U.reviewuser.courses.all()
 
         context['tutor'] = isTutor(U, c)
@@ -742,7 +743,7 @@ def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
         return error_page(request, "Annotation doesn't exist")
 
 @login_required(login_url='/review/login_redirect')
-def grabFileData(request, submissionUuid, file_uuid):
+def grabFileData(request, submissionUuid, fileUuid):
     """
     Refactored from reviewFile so cut down on code repetition.
     Grabs a dictionary containng all the file information.
@@ -759,7 +760,7 @@ def grabFileData(request, submissionUuid, file_uuid):
     try:
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         print currentUser
-        file = SourceFile.objects.get(file_uuid=file_uuid)
+        file = SourceFile.objects.get(file_uuid=fileUuid)
         print 'get file'
         code = highlight(file.content, guess_lexer(file.content),
                          HtmlFormatter(linenos="table"))
@@ -789,17 +790,23 @@ def grabFileData(request, submissionUuid, file_uuid):
             annotations = SourceAnnotation.objects.filter(source=file)
         else:
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
-
+            
         annotationRanges = []
         aDict = []
-
         # get all the ranges for the annotations
         for a in annotations:
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
             aDict.append(a)
 
         # sort the annotations by starting line
+        hl_lines = []
         annotationRanges.sort(key=lambda x: x.start)
+        for i in annotationRanges:
+            hl_lines.append(i.start)
+
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="inline", hl_lines=hl_lines))
+        
         sortedAnnotations = []
         # grab the annotations again based on the sorted order
         for a in annotationRanges:
@@ -807,17 +814,18 @@ def grabFileData(request, submissionUuid, file_uuid):
 
         context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['sub'] = submissionUuid
-        context['uuid'] = file_uuid
+        context['uuid'] = fileUuid
         context['files'] = folders
         context['code'] = code
         context['file'] = file
+        context['user'] = currentUser
         return context
     except AssignmentSubmission.DoesNotExist:
         error_page(request, "Submission does not exit")
 
 
 @login_required(login_url='/review/login_redirect/')
-def createAnnotation(request, submission_uuid, file_uuid):
+def createAnnotation(request, submissionUuid, fileUuid):
     """
     Creates an annotation form the currently opened file.
     If it succesfully creates an annotation then the user is returned the current file.
@@ -849,7 +857,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         if form.is_valid() and rangeForm.is_valid():
 
-            file = SourceFile.objects.get(file_uuid=file_uuid)
+            file = SourceFile.objects.get(file_uuid=fileUuid)
             lineCount = 0
             with open(file.file.path) as f:
                 lineCount = sum(1 for _ in f)
@@ -864,7 +872,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
                                                             text=text,
                                                             quote=text)
             # Get the submission
-            uuid = submission_uuid.encode('ascii', 'ignore')
+            uuid = submissionUuid.encode('ascii', 'ignore')
             # TODO this could possibly break depending on whether Tom is using this 
             # for help centre or not. We just need to check whether or not this 
             # submission is associated with an assignment.
@@ -891,11 +899,12 @@ def createAnnotation(request, submission_uuid, file_uuid):
             # print newAnnotation, newRange
             print newAnnotation, newRange
             try:
-                p = Post.objects.get(post_uuid=submission_uuid)
-                return HttpResponseRedirect('/help/file/' + submission_uuid + '/' + file_uuid + '/')
+                p = Post.objects.get(post_uuid=uuid)
+                return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
             except Post.DoesNotExist:
                 print "This is a assignment submission"
-            return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
+            return HttpResponseRedirect('/review/file/' + submissionUuid + '/' + fileUuid + '/')
+
 
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
@@ -904,7 +913,7 @@ def createAnnotation(request, submission_uuid, file_uuid):
         return error_page(request, "This file does not exist")
     except LineException:
         # if this is true then this is a post object not a submission
-        if Post.objects.get(post_uuid=submission_uuid):
+        if Post.objects.get(post_uuid=submissionUuid):
             p = Post.objects.get(post_uuid=submission_uuid)
             currentUser = User.objects.get(id=request.session['_auth_user_id'])
             context = grabPostFileData(request, p.post_uuid, file_uuid)
@@ -941,6 +950,38 @@ def createAnnotation(request, submission_uuid, file_uuid):
     return render(request, 'review.html', context)
 
 
+@login_required(login_url='/review/login_redirect/')
+def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
+    """
+    deletes an annotation and its range from the database
+    
+    Parameters:
+    request
+    submissions_uuid
+    file_uuid
+    annotation_id
+
+    Returns:
+    returns
+    """
+
+    submission_uuid = submissionUuid.encode('ascii', 'ignore')
+    file_uuid = fileUuid.encode('ascii', 'ignore')
+    try:
+        a = SourceAnnotation.objects.get(id=annoteId)
+        r = SourceAnnotationRange.objects.get(range_annotation=a)
+        a.delete()
+        r.delete()
+
+        print "Redirect"
+        return HttpResponseRedirect('/review/file/' +
+                                    submission_uuid +
+                                    '/' + file_uuid + '/')
+
+    except SourceAnnotation.DoesNotExist:
+        return error_page(request, "Annotation doesn't exist")
+
+    
 @login_required(login_url='/review/login_redirect/')
 def grabFile(request):
     """
@@ -1011,7 +1052,7 @@ def upload(request):
 
 
 @login_required(login_url='/review/login_redirect/')
-def reviewFile(request, submissionUuid, file_uuid):
+def reviewFile(request, submissionUuid, fileUuid):
     """
     Grabs all the files for the current submission, but it also
     grabs and pygmentizes the current file and displays it to the user.
@@ -1026,7 +1067,7 @@ def reviewFile(request, submissionUuid, file_uuid):
     """
 
     uuid = submissionUuid.encode('ascii', 'ignore')
-    file_uuid = file_uuid.encode('ascii', 'ignore')
+    file_uuid = fileUuid.encode('ascii', 'ignore')
     context = {}
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
     print currentUser
