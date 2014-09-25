@@ -91,6 +91,7 @@ class annotationRangeForm(ModelForm):
             # 'end': NumberInput()
         }
 
+
 class editAnnotationForm(ModelForm):
     class Meta:
         model = SourceAnnotation
