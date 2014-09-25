@@ -214,6 +214,7 @@ class SubmissionTestResults(models.Model):
     """
 
     tests_completed = models.NullBooleanField()
+    part_of = models.ForeignKey('SubmissionTest', related_name="test_results")
 
     def overall_percentage(self):
         res = [test.get_result() for test in self.test_results.all()]
@@ -233,11 +234,14 @@ class SubmissionTestResults(models.Model):
 
 
 class SubmissionTest(models.Model):
-    part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
+    for_assignment = models.ForeignKey('Assignment', related_name="assignment_tests")
+    # part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
     test_name = models.TextField(null=False, blank=True)
     test_count = models.PositiveIntegerField(null=False, blank=False, validators=[MinValueValidator(1)])
     test_pass_count = models.PositiveIntegerField(null=False, blank=False)
-
+    test_file = models.FileField(max_length=1000, upload_to="tests/", null=False, blank=False)
+    test_command = models.CharField(null=False, blank=False, max_length=200)
+    
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
