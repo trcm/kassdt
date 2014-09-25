@@ -4,6 +4,8 @@ database.  The unicode methods in each model are used to determine how the model
 will be shown in the django admin
 """
 
+import os
+
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -233,13 +235,18 @@ class SubmissionTestResults(models.Model):
         return "Results: %d/%d" % (self.total_passes(), self.total_tests())
 
 
+def get_upload_path(instance, filename):
+    return "tests/" + "%s" % instance.for_assignment.course_code + "/%s/%s" % (instance.for_assignment.name, filename)
+
+        
 class SubmissionTest(models.Model):
     for_assignment = models.ForeignKey('Assignment', related_name="assignment_tests")
     # part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
     test_name = models.TextField(null=False, blank=True)
     test_count = models.PositiveIntegerField(null=False, blank=False, validators=[MinValueValidator(1)])
-    test_pass_count = models.PositiveIntegerField(null=False, blank=False)
-    test_file = models.FileField(max_length=1000, upload_to="tests/", null=False, blank=False)
+    test_pass_count = models.PositiveIntegerField(null=False, blank=False, default=0)
+
+    test_file = models.FileField(max_length=1000, upload_to=get_upload_path, null=True, blank=True)
     test_command = models.CharField(null=False, blank=False, max_length=200)
     
     def clean(self):
@@ -350,7 +357,6 @@ class AssignmentSubmission(models.Model):
                                       submission.
     
     """
-
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
     by = models.ForeignKey(ReviewUser)
