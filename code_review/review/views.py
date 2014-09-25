@@ -850,12 +850,17 @@ def createAnnotation(request, submissionUuid, fileUuid):
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
 
-        text = form['text'].value()
-        start = rangeForm['start'].value()
-        end = 0
+        # text = form['text'].value()
+        # start = rangeForm['start'].value()
+        # end = 0
         # end = rangeForm['end'].value()
 
         if form.is_valid() and rangeForm.is_valid():
+            # text = form['text'].value()
+            # start = rangeForm['start'].value()
+            end = 0
+            text = form.cleaned_data['text']
+            start = rangeForm.cleaned_data['start']
 
             file = SourceFile.objects.get(file_uuid=fileUuid)
             lineCount = 0
@@ -1003,34 +1008,34 @@ def editAnnotation(request, submissionUuid, fileUuid, annoteId):
     # I KNOW THIS IS UGLY
     if request.method == 'POST':
         editForm = editAnnotationForm(request.POST)
-
-        try:
-            annotation = SourceAnnotation.objects.get(id=annoteId.encode('ascii', 'ignore'))
-            new_text = editForm['text'].value()
-            annotation.text = new_text
-            annotation.save()
-
+        if editForm.is_valid():
             try:
-                Post.objects.get(post_uuid=submissionUuid)
-                print "This is a post "
-                return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
-            except Post.DoesNotExist:
-                print "This is a assignment submission"
-                return HttpResponseRedirect('/review/file/' +
-                                            submissionUuid +
-                                            '/' + fileUuid + '/')
+                annotation = SourceAnnotation.objects.get(id=annoteId.encode('ascii', 'ignore'))
+                new_text = editForm.cleaned_data['text']
+                annotation.text = new_text
+                annotation.save()
 
-        except SourceAnnotation.DoesNotExist:
-            try:
-                Post.objects.get(post_uuid=submissionUuid)
-                print "This is a post "
-                return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
-            except Post.DoesNotExist:
-                print "This is a assignment submission"
-                return HttpResponseRedirect('/review/file/' +
-                                            submissionUuid +
-                                            '/' + fileUuid + '/')
-    # something is really wrong redirect to the file again
+                try:
+                    Post.objects.get(post_uuid=submissionUuid)
+                    print "This is a post "
+                    return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+                except Post.DoesNotExist:
+                    print "This is a assignment submission"
+                    return HttpResponseRedirect('/review/file/' +
+                                                submissionUuid +
+                                                '/' + fileUuid + '/')
+
+            except SourceAnnotation.DoesNotExist:
+                try:
+                    Post.objects.get(post_uuid=submissionUuid)
+                    print "This is a post "
+                    return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+                except Post.DoesNotExist:
+                    print "This is a assignment submission"
+                    return HttpResponseRedirect('/review/file/' +
+                                                submissionUuid +
+                                                '/' + fileUuid + '/')
+        # something is really wrong redirect to the file again
     else:
         try:
             Post.objects.get(post_uuid=submissionUuid)
