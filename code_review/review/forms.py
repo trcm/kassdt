@@ -83,7 +83,11 @@ class annotationRangeForm(ModelForm):
             # 'end': NumberInput()
         }
 
-
+class editAnnotationForm(ModelForm):
+    class Meta:
+        model = SourceAnnotation
+        fields = ['text']
+        
 # Can these be deleted? They don't seem to be in use anymore
 
         

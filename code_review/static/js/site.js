@@ -41,7 +41,7 @@ $(document).ready( function() {
     $(".datepicker").datepicker({ dateFormat: "yy-mm-dd" });
     $(".timepicker").timepicker({ 'timeFormat': 'H:i:s'});
 
-    
+    // $("#annotationForm").hide();
 });
 
 function annotationHighlight() {

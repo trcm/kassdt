@@ -13,6 +13,9 @@
      p = parseInt( $(this).text());
      console.log(p);
      $("input[name*='start']").val(p); 
+
+     $("#annotationForm").show();
+     $("#annotationForm #id_text").focus();
    });
    
  });
