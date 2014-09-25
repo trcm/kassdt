@@ -930,9 +930,9 @@ def createAnnotation(request, submissionUuid, fileUuid):
     if not form.is_valid() or not rangeForm.is_valid():
         print "not valid"
         try:
-            p = Post.objects.get(post_uuid=submission_uuid)
+            p = Post.objects.get(post_uuid=submissionUuid)
             currentUser = User.objects.get(id=request.session['_auth_user_id'])
-            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            context = grabPostFileData(request, p.post_uuid, fileUuid)
             # context['post'] = uuid
             context['form'] = form
             context['rangeform'] = rangeForm
