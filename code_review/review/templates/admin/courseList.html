@@ -1,10 +1,13 @@
-{% extends 'base.djhtml' %}
+<!-- Displays all the courses available in the system -->
+{% extends 'navbar.html' %}
 
-{% block content %}
+{% block main %}
 
 <h3><a href="/review/create/course">Create New Course</a></h3>
 
 <ul>
+  <!-- for loop grabs the courses from the context dictionary and
+  displays them in the format course_code - course_name - number of assignments -->
   {% for course in courses  %}
   <li>{{ course.course_code }} - {{ course.course_name }} - {{ course.assignments.count }}</li>
   {% endfor %}

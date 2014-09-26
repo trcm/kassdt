@@ -1,10 +1,13 @@
-{% extends 'sidebar.html' %}
+<!-- Template for assignment creation -->
+{% extends 'navbar.html' %}
 
-{% block assignments %}
+{% block main %}
+<div id="assignmentCreation">
 
-<h1>New {{ course.course_code }} Assignment</h1>
+<h1>Create new {{ course.course_code }} Assignment</h1>
 
-<form method="post" action="{% url 'generate_assignment' %}">
+<form method="post" action="{% url 'generate_assignment' %}" enctype="multipart/form-data">
+  <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
   {% for field in form %}
   <ul> 
@@ -12,8 +15,13 @@
   </ul>
   {% endfor %}
 
+  <ul>
+  {% for field in testForm %}
+    <li> {{ field.errors }} {{ field.label_tag }} {{ field }}</li> 
+  {% endfor %}
+  </ul> 
   <input type="submit" name="Submit" value="Submit" />
 </form>
 
-
+</div>
 {% endblock %}

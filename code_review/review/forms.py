@@ -10,6 +10,15 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms import *
 from models import *
 
+class AllocateReviewsForm(ModelForm):
+    '''
+    Form for allowing course administrator to allocate assignments to review
+    to students.
+    '''
+
+    class Meta:
+        model = Assignment
+        fields = ['reviews_per_student', 'min_annotations']
 
 class AssignmentSubmissionForm(ModelForm):
     submission_repository = forms.CharField(label='repo_address')
@@ -30,6 +39,8 @@ class AssignmentForm(ModelForm):
                   'submission_close_date', 'review_open_date',
                   'review_close_date']
         widgets = {
+            'name': TextInput(),
+            'repository_format': TextInput(),
             'first_display_date': SplitDateTimeWidget(),
             'submission_open_date': SplitDateTimeWidget(),
             'submission_close_date': SplitDateTimeWidget(),
@@ -38,6 +49,14 @@ class AssignmentForm(ModelForm):
         }
 
 
+class AssignmentTestForm(ModelForm):
+
+    class Meta:
+        model = SubmissionTest
+        fields = ['test_count', 'test_file',
+                  'test_command' ]
+        
+        
 class uploadFile(ModelForm):
     """
     Dummy form for uploading files during testing
@@ -64,6 +83,9 @@ class annotationRangeForm(ModelForm):
         model = SourceAnnotationRange
         # fields = ['start', 'end']
         fields = ['start']
+        labels = {
+            'start': 'Line',
+        }
         widgets = {
             'start': NumberInput(),
             # 'end': NumberInput()

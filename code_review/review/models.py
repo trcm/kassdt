@@ -4,6 +4,8 @@ database.  The unicode methods in each model are used to determine how the model
 will be shown in the django admin
 """
 
+import os
+
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -82,17 +84,41 @@ class Course(models.Model):
         students (ManyToManyField) -- Many to many relationship to show enrolment
     """
     course_uuid = UUIDField()
-    course_code = models.CharField(max_length=10, blank=False, null=False, default="ABCD1234")
-    course_name = models.CharField(max_length=100, blank=False, null=False, default="Intro to learning")
+    course_code = models.CharField(max_length=10, blank=False,
+                                   null=False, default="ABCD1234")
+    course_name = models.CharField(max_length=100, blank=False,
+                                   null=False, default="Intro to learning")
     students = models.ManyToManyField('ReviewUser')
 
     def __unicode__(self):
         return "%s" % (self.course_code)
 
+
+class Enrol(models.Model):
+    
+    """
+    respresents a users enrolment in a course, also handles permissions for 
+    different levels of user.  This will allow us to have various level of 
+    users and account for the problem of tutors being both staff and students.
+    
+    Attributes:
+    attributes
+    
+    Methods:
+    methods
+    """
+    user = models.ForeignKey('ReviewUser', related_name='enrolment')
+    course = models.ForeignKey('Course')
+    student = models.BooleanField(default=True)
+    tutor = models.BooleanField(default=False)
+    staff = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "%s %s %s %s %s" % (self.user, self.course, self.student,
+                                   self.tutor, self.staff)
+
 # The following two models are used in conjuction with each other to give the applciation
 # a representation of the file structure used to upload and retrieve assignment files
-
-
 class SourceFolder(models.Model):
 
     """Represents a folder (containing folders and/or files)
@@ -133,16 +159,18 @@ class SourceFile(models.Model):
         folder (SourceFolder) -- the folder in which this file lives
         file_uuid (UUIDField) -- the UUID of this file
         name (TextField) -- the name of this file, e.g., "hello.c"
-
+        submission (AssignmentSubmission) -- the assignment submission 
+                                             to which this file belongs.
     Methods:
         content(self) -- gets the contents of this file.
 
     """
-
+    
     folder = models.ForeignKey(SourceFolder, null=False, blank=False, related_name="files")
     file_uuid = UUIDField()
     name = models.TextField(null=False, blank=False)
-    file = models.FileField(upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
+    file = models.FileField(max_length=1000, upload_to="source-files/%Y-%m-%d/%H-%M/%S-%f/", null=False, blank=False)
+    submission = models.ForeignKey('AssignmentSubmission', null=True)
 
     def __unicode__(self):
         return "(%s)%s" % (self.file_uuid, self.name)
@@ -188,6 +216,7 @@ class SubmissionTestResults(models.Model):
     """
 
     tests_completed = models.NullBooleanField()
+    part_of = models.ForeignKey('SubmissionTest', related_name="test_results")
 
     def overall_percentage(self):
         res = [test.get_result() for test in self.test_results.all()]
@@ -206,12 +235,20 @@ class SubmissionTestResults(models.Model):
         return "Results: %d/%d" % (self.total_passes(), self.total_tests())
 
 
+def get_upload_path(instance, filename):
+    return "tests/" + "%s" % instance.for_assignment.course_code + "/%s/%s" % (instance.for_assignment.name, filename)
+
+        
 class SubmissionTest(models.Model):
-    part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
+    for_assignment = models.ForeignKey('Assignment', related_name="assignment_tests")
+    # part_of = models.ForeignKey(SubmissionTestResults, related_name="test_results")
     test_name = models.TextField(null=False, blank=True)
     test_count = models.PositiveIntegerField(null=False, blank=False, validators=[MinValueValidator(1)])
-    test_pass_count = models.PositiveIntegerField(null=False, blank=False)
+    test_pass_count = models.PositiveIntegerField(null=False, blank=False, default=0)
 
+    test_file = models.FileField(max_length=1000, upload_to=get_upload_path, null=True, blank=True)
+    test_command = models.CharField(null=False, blank=False, max_length=200)
+    
     def clean(self):
         if self.test_count < self.test_pass_count:
             raise ValidationError("The number of passing tests(%s) cannot be larger than the number of tests(%s)." %
@@ -256,7 +293,10 @@ class Assignment(models.Model):
         multiple_submissions (BooleanField) -- true if multiple submissions (prior to the due date)
                                                are allowed for this assignment, false otherwise. 
                                                (default True)
-
+        reviews_per_student (IntegerField) -- the number of submissions each student will be 
+                                              assigned to review.
+        min_annotations (IntegerField) -- the minimum number of annotations a student must make
+                                          on a submission for the review to be complete.
     """
 
     course_code = models.ForeignKey('Course',
@@ -271,6 +311,8 @@ class Assignment(models.Model):
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
     multiple_submissions = models.BooleanField(default=True)
+    reviews_per_student = models.IntegerField(default=0)
+    min_annotations = models.IntegerField(default=0)
 
     def __unicode__(self):
         return "(%s)%s" % (self.assignment_uuid, self.name)
@@ -286,6 +328,7 @@ class Assignment(models.Model):
             "review_open_date": self.review_open_date,
             "review_close_date": self.review_close_date,
             "multiple_submissions": self.multiple_submissions,
+            "reviews_per_student": self.reviews_per_student,
             })
 
 
@@ -314,7 +357,6 @@ class AssignmentSubmission(models.Model):
                                       submission.
     
     """
-
     submission_uuid = UUIDField()
     submission_date = models.DateTimeField(default=lambda: timezone.now())
     by = models.ForeignKey(ReviewUser)
@@ -338,6 +380,9 @@ class AssignmentSubmission(models.Model):
             "root_folder": self.root_folder,
             })
 
+    class Meta:
+        get_latest_by = "submission_date"
+
 
 # BEGIN ANNOTATION STORAGE ###
 # The following models represent the annotation on the source files by the users;
@@ -355,6 +400,7 @@ class SourceAnnotation(models.Model):
         updates (DateTimeField) -- field to show when the annotation is updated
         text (TextField) -- the actual content of the annotation
         quote (TextField) -- a quote from the annotation text
+        submission (ForeignKey) -- the assignment submission on which we are annotating.
 
     Methods:
         __str__(self) -- returns a string representation of the object
@@ -363,6 +409,7 @@ class SourceAnnotation(models.Model):
     annotation_uuid = UUIDField()
     user = models.ForeignKey(ReviewUser)
     source = models.ForeignKey(SourceFile)
+    submission = models.ForeignKey(AssignmentSubmission, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
@@ -387,13 +434,111 @@ class SourceAnnotationRange(models.Model):
     type
     """
     range_annotation = models.ForeignKey(SourceAnnotation, related_name="ranges")
-    start = models.TextField()
-    end = models.TextField()
+    start = models.PositiveIntegerField()
+    end = models.PositiveIntegerField()
     startOffset = models.PositiveIntegerField()
     endOffset = models.PositiveIntegerField()
 
+class AssignmentReview(models.Model):
+    
+    """Represents the submissions a user has been allocated to review for a particular assignment.
+
+    Needed mostly to store which submissions a user is tasked to
+    review; system randomly picks submissions and gives them to students
+    to review.
+
+    Attributes:
+        review_uuid (UUIDField) -- the uuid of this review. 
+        by (ReviewUser) -- the user who is reviewing the code. 
+        submission (ManyToManyField) -- the submissions being reviewed 
+        assignment (Assignment) -- the assignment the submissions are for.
+    """
+    
+    review_uuid = UUIDField() 
+    by = models.ForeignKey(ReviewUser)
+    submissions = models.ManyToManyField(AssignmentSubmission, null=True)
+    assignment = models.ForeignKey(Assignment, null=True)
+    
+    def submissionsAnnotations(self):
+        """Get a dictionary {submission: num_annotations_on_submissions}
+
+        """
+        subAnn = {}
+
+        for sub in self.submissions.all():
+            subAnn[sub] = self.numAnnotations(sub)
+
+        return subAnn
+
+    def numAnnotations(self, sub):
+        """Get the number of annotations the user had made on a submission sub.
+
+        Arguments:
+            sub (AssignmentSubmission)
+        """
+        annotations = SourceAnnotation.objects.filter(submission=sub, user=self.by)
+        return len(annotations)
+
+    def numReviewsRemaining(self):
+        """Return the number of reviews the user needs to complete.
+
+        A review, for now, is considered complete when the at least 
+        minimum number of annotations required has been made.
+        """
+        subs = self.submissions.all()
+        total = len(subs)
+        done = 0
+        minAnnotations = self.assignment.min_annotations
+
+        for sub in subs:
+            if(minAnnotations <= self.numAnnotations(sub)):
+                done += 1
+        
+        return  total-done
+
+    def __unicode__(self):
+        return "(%s) by %s for %s" % (self.review_uuid, self.by, self.assignment)
+
+    def __repr__(self):
+        return repr({
+            "review_uuid":self.review_uuid,
+            "by":self.by,
+            "submissions":self.submissions,
+            "assignment":self.assignment,
+            })
+
 # Source Annotation Tag is scheduled to be deleted from the database
 
+class SubmissionReview(models.Model):
+
+    """Represents a review by a user for a particular submission of an assignment.
+
+    Needed to represent the notion of when a reviw is "finished". Some ideas at
+    the moment include number of annotations. 
+
+    Attributes:
+
+    """
+
+    submission_review_uuid = UUIDField()
+    review_by = models.ForeignKey(ReviewUser)
+    submission = models.ForeignKey(AssignmentSubmission)
+
+    def __unicode__(self):
+        return "Review for assignment %s, submission %s by %s" %(self.submission.submission_for, self.submission, self.review_by)
+
+    def __repr__(self):
+        return repr({
+            "submission_review_uuid":self.submission_review_uuid,
+            "review_by":self.review_by,
+            "submission":self.submission,
+            })
+
+    def numAnnotations(self):
+        """Get the number of annotations associated with this submission.
+        """
+        annotations = SourceAnnotation.objects.filter(submission=submission, by=review_by)
+        return len(annotations)
 
 class SourceAnnotationTag(models.Model):
     tag_annotation = models.ForeignKey(SourceAnnotation, related_name="tags")

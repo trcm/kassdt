@@ -1,44 +1,69 @@
-{% extends 'sidebar.html' %}
+{% extends 'navbar.html' %}
 
-{% block assignments %}
-
-<h1>{{ course.course_code }} Assignments</h1>
+{% block main %}
+<br />
+<h1>Assignments for {{ course.course_code }} </h1>
+<br />
 
 {% if user.is_superuser %}
-<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
+<div class="row">
+	<div class="col-md-3">
+		<div class="btn-group">
+			<a class="btn btn-success" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
+			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+		</div>
+	</div>
+	<div class="col-md-9"></div>
+</div>
+{% endif %}
+<a class="btn btn-primary" href="{% url 'help' course.course_code %}">Get help</a>
+
+{% if tutor %}
+Tutor Dawg
 {% endif%}
 
+
+<br />
+
 {% if assignments %}
-<div id="courseAssignments">
-  <table>
-    <tr>
-      <th>Assignment Name:</th>
-      <th>Submission Status:</th>
-      <th>Due Date</th>
-      <th>View</th>
-    </tr>
+  <div id="courseAssignments">
+  <table class="table table-bordered table-hover">
+    <thead>
+    	<tr>
+      		<th>Assignment Name:</th>
+      		<th>Submission Status:</th>
+      		<th>Due Date:</th>
+      		<th>View:</th>
+    	</tr>
+    </thead>
     {% for assignment in assignments %}
+    
 
-    <tr>
-      <td>{{ assignment.name}}</td>
-      <td>Need to add check for submission status</td>
-      <td>{{ assignment.submission_close_date }}</td>
+   <tr>
+      <td>{{ assignment.0.name}}</td>
+      <td><p>{{ assignment.name}}</p></td>
+      <td><p>{{ assignment.submission_close_date }}</p></td>
       <td>
-        <form action="{% url 'assignment_page' course.course_code assignment.name %}">
-          <input type="submit" value="View Assignment">
-        </form>
+        {% if assignment.1 %}
+            Submited!
+        {% else %}
+            Not yet submitted.
+        {% endif %}
       </td>
-
+      <td>{{ assignment.0.submission_close_date }}</td>
+      <td>
+        <a href="{{assignment.0.name}}/">
+          <input class="btn btn-primary" type="submit" value="View Assignment">
+        </a>
+      </td>
     </tr>
     {% endfor %}
-
+	</table>
     {% else %}
-    <p><strong>No assignments</strong></p>
+    <h2>No assignments</h2>
+    <br />
     {% endif%}
   </div>
-  {% if user.is_superuser %}
-  <h2>Settings</h2>
-  {% endif %}
 
 
   {% endblock %}

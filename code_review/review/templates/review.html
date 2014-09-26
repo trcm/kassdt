@@ -1,57 +1,78 @@
-{% extends 'sidebar.html' %}
+<!-- Template for viewing and creation annotations on source code -->
+{% extends 'navbar.html' %}
+
+<!-- Load obfuscation library -->
 {% load unfriendly_tags %}
-{% block assignments %}
+{% block main %}
+
 <script>
   $(document).ready(function() {
     annotationHighlight();
-    });
-</script>
-<div id="files">
-  <ul>
-    <h4>Files</h4>
-    <p>Root</p>
-    {% for file in files %}
 
-    {% if file.folder_uuid %}
-    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
+   $(".click").click(function() {
+     p = parseInt( $(this).text());
+     console.log(p);
+     $("input[name*='start']").val(p); 
+   });
+   
+ });
+</script>
+<div id="reviewFiles">
+  <h5>Files: Root/ </h5>
+  <ul>
+    {% for file in files %}
+      {% if file.folder_uuid %}
+        <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</li>
       {% endif%}
 
       {% if file.file_uuid %}
-      {% url 'review_file' sub file.file_uuid as fileurl %}
-      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
+        {% url 'review_file' sub file.file_uuid as fileurl %}
+        <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
       {% endif%}
     {% endfor %}
   </ul>
 
 </div>
-
-<h4 id="fileName"> Currently displaying </h4>
-<div id="code">
-  {% if code %}
-  {{ code | safe}}
-  {% endif%}
-
+<div id="reviewFileName">
+	<h5> Currently displaying: {{ file.name }}</h5>
+	</div>
 </div>
 
-<div id="annotation">
-  <ul id="annotations">
-    
-    {% for annote, range in annotations %}
-    <p>
-      Lines: {{ range.start }} - {{ range.end }}
-    </p>
-    <p>{{ annote.text }}</p>
-    {% endfor %}
-  </ul>
-  {% url 'create_annotation' sub uuid as annotateUrl %}
+<div id="reviewPane">
+  <div id="reviewCode">
+    <!-- render the source file in the html -->
+    {% if code %}
+    {{ code | safe}} 
+    {% endif%}
+  </div>
+
+<div id="reviewAnnotation">
+<div id="accordion">
+  <!-- display all the current annotations -->
+  {% for annote, range in annotations %}
+  <h3>Line: {{ range.start }}</h3>
+  <div><p>Comment: {{ annote.text }}</p>
+  
+  {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
+      <a class="btn btn-info" href="">Edit</a>
+      <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
+  {% endif%}
+  </div>
+  {% endfor %}
+  </div>
+{% url 'create_annotation' sub uuid as annotateUrl %}
   <!-- Obfucations doesn't work on get -->
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
+  <!-- display forms for annotation creation if a file is selected -->
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
-  </form>
+    </form>
+   
+  </div>
 </div>
+
 
 <div id='startLine'>
   {% for annote, range in annotations %}

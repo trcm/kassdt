@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 # used to make django objects into json
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.forms.util import ErrorList
 import json
 
 #  Imports all the lexers and the formatters currently needed
@@ -33,16 +34,24 @@ from pygments.styles import *
 
 from review.models import *
 
+from help.models import Post
+from help.views import grabPostFileData
+from help.forms import editForm
+
 # imports any helpers we might need to write
-from helpers import staffTest
+from helpers import staffTest, LineException
+from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm, AssignmentTestForm
 
 from django.utils import timezone
 
 # For handling assignments submitted via git repo
 from git_handler import *
+
+# For randomly assigning students to review particular submissions.
+from assign_reviews import *
 
 import os
 import os.path
@@ -77,13 +86,13 @@ def index(request):
         try:
             courses = U.reviewuser.courses.all()
             context['courses'] = courses
-            return render(request, 'sidebar.html', context)
+            return render(request, 'navbar.html', context)
         except Exception as UserExcept:
             print UserExcept.args
     else:  # user is student
         return student_homepage(request)
 
-    return render(request, 'sidebar.html', context)
+    return render(request, 'navbar.html', context)
 
 
 def logout(request):
@@ -119,25 +128,34 @@ def coursePage(request, course_code):
     to the desired course page using render(), with the correct context
     dictionary, otherwise they will redirected toa 404.
     """
-
     context = {}
     # get the current assignments for the subject
 
     # grab the user from the http request
+    print "Test"
     try:
         U = User.objects.get(id=request.user.id)
         context['user'] = U
-
+        
         # grab course code from http reqest and attempt to find course
         # in database
         code = course_code.encode('ascii', 'ignore')
         c = Course.objects.get(course_code=code)
 
+        if not enrolledTest(U.reviewuser, c):
+            error_message = "You are not enrolled in " + c.course_code
+            print "Not enrolled"
+            return error_page(request, error_message)
+            # return HttpResponseRedirect('/')
+
         # get all current assignments for that course
         assignments = c.assignments.all()
+        #print(getSubmissionStatus(U.reviewuser, assignments))
         courses = U.reviewuser.courses.all()
 
-        context['assignments'] = assignments
+        context['tutor'] = isTutor(U, c)
+        
+        context['assignments'] = getSubmissionStatus(U.reviewuser, assignments)
         context['course'] = c
 
         context['courses'] = courses
@@ -174,9 +192,10 @@ def create_assignment(request, course_code):
     # generate form for new assignemnt, thing this will get changed
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
-
+    testForm = AssignmentTestForm()
     # add all the data to the context dict
     context['form'] = form
+    context['testForm'] = testForm
     context['course'] = c
 
     return render(request, 'admin/new_assignment.html', context)
@@ -221,6 +240,21 @@ def userAdmin(request):
 
     return render(request, 'admin/userList.html', context)
 
+def handle_uploaded_file(f):
+    
+    """
+    Handle file uploads
+    
+    Parameters:
+    parameters
+    
+    Returns:
+    returns
+    """
+
+    with open('some/file/name.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 @login_required(login_url='/review/login_redirect/')
 @user_passes_test(staffTest)
@@ -239,13 +273,14 @@ def validateAssignment(request):
     """
 
     form = None
+    testForm = None
     context = {}
     # gets the data from the post request
     if request.method == "POST":
-        print request
         form = AssignmentForm(request.POST)
+        testForm = AssignmentTestForm(request.POST, request.FILES)
         print request.POST['course_code']
-        if form.is_valid():
+        if form.is_valid() and testForm.is_valid():
             try:
                 # gets the cleaned data from the post request
                 print "Creating assignment"
@@ -257,7 +292,7 @@ def validateAssignment(request):
                 submission_close_date = form.cleaned_data['submission_close_date']
                 review_open_date = form.cleaned_data['review_open_date']
                 review_close_date = form.cleaned_data['review_close_date']
-
+                print request.FILES
                 # Create the new assignment object and try saving it
                 ass = Assignment.objects.create(course_code=course, name=name,
                                                 repository_format=repository_format,
@@ -266,15 +301,30 @@ def validateAssignment(request):
                                                 submission_close_date=submission_close_date,
                                                 review_open_date=review_open_date,
                                                 review_close_date=review_close_date)
+
+
+                # check if test form is valid and create the new tests object
+                # if  it is
+                print "creating sub test"
+                test = SubmissionTest.objects.create(for_assignment=ass,
+                                                     test_name=ass.name + "Tests",
+                                                     test_count=testForm.cleaned_data['test_count'],
+                                                     test_pass_count=0,
+                                                     test_file=request.FILES['test_file'],
+                                                     test_command=testForm.cleaned_data['test_command'])
+                print "saving"
                 ass.save()
+                test.save()
+                print "test save"
+                return HttpResponseRedirect('/review/course_admin/')
+
             except Exception as AssError:
                 # prints the exception to console
                 print AssError.args
 
-            return HttpResponseRedirect('/review/course_admin/')
-
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
+    context['testForm'] = testForm
     context['course'] = Course.objects.get(id=request.POST['course_code'])
 
     return render(request, 'admin/new_assignment.html', context)
@@ -411,6 +461,28 @@ def student_homepage(request):
 
     return render(request, 'student_homepage.html', context)
 
+def getSubmissionStatus(user, asmtList):
+    """Return a list [(asmt, submitted)]
+    
+    Arguments:
+        user (ReviewUser) 
+        asmtList (QuerySet<Assignment>)
+    """
+    theList = []
+    for asmt in asmtList:
+        theList.append((asmt, hasSubmissions(user, asmt)))
+
+    return theList
+
+def hasSubmissions(user, asmt):
+    """Return true iff user has made a submission for asmt
+
+    Arguments:
+        user (ReviewUser) 
+        asmt (Assignment)
+    """
+    return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).exists()
+
 def get_open_assignments(user):
     ''' Returns the list of currently open assignments for the current user
 
@@ -422,19 +494,21 @@ def get_open_assignments(user):
         user (User) -- the user whose open assignments we want to retrieve.
 
     Returns:
-        A list whose entries are a tuple (Course, Assignment)
+        A dictionary whose keys are courses and whose values are  a list of tuples (Assignment, Submission status)
     '''
 
     timenow = timezone.now()
-    openAsmts = []
+    openAsmts = {}
     courses = user.reviewuser.courses.all()
-
+    
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
+        openAsmts[course] = []
         for assignment in assignments:
             if(can_submit(assignment)):
-                openAsmts.append((course, assignment))
+                submitted = AssignmentSubmission.objects.filter(by=user.reviewuser, submission_for=assignment).exists()
+                openAsmts[course].append((assignment, submitted))
 
     return openAsmts
 
@@ -448,8 +522,16 @@ def error_page(request, message):
     Returns:
         HttpResponse object to display error page.
     """
-    context = {'errorMessage':message}
+    context = {'errorMessage': message}
     return render(request, 'error.html', context, status=404)
+
+def reviews_remaining(user, asmtReview):
+    """Get the number of reviews this user still has to do for asmt.
+
+    Attributes:
+        user (ReviewUser)
+        asmtReview (AssignmentReview)
+    """
 
 @login_required(login_url='/review/login_redirect/')
 def assignment_page(request, course_code, asmt):
@@ -459,7 +541,7 @@ def assignment_page(request, course_code, asmt):
         request (HttpRequest) -- the HTTP request asking to view the assignment.
         course_code (Course.course_code) -- the course code of the course to which
                                             the assignment we want to display belongs.
-        asmt (Assignment) -- the assignment we want to display.
+        asmt (String) -- the name of the assignment we want to display.
 
     Returns:
         A HttpResponse object which is used to render the webpage.
@@ -468,13 +550,28 @@ def assignment_page(request, course_code, asmt):
     context = {}
 
     try:
+        # Assingment submission related stuff 
         U = User.objects.get(id=request.user.id)
+        reviewUser = U.reviewuser
         courseList = U.reviewuser.courses.all()
         courseCode = course_code.encode('ascii', 'ignore')
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
-        assignment = Assignment.objects.get(name=asmtName)
-        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=U.reviewuser)
+        assignment = Assignment.objects.get(course_code=course, name=asmtName)
+        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
+
+        # Get the reviews this user has been assigned to complete.
+        review = AssignmentReview.objects.filter(assignment=assignment, by=reviewUser)
+        if(len(review) > 1):
+            raise Exception
+        if(review):
+            review = review[0]
+            submissionsToReview = review.submissions.all()
+            context['submissionsToReview'] = review.submissionsAnnotations()
+            context['actualNumReviews'] = len(submissionsToReview)
+
+            # Find out how many reviews user has remaining.
+            context['numRemaining'] = AssignmentReview.numReviewsRemaining(review)
 
         context['user'] = U
         context['course'] = course
@@ -482,7 +579,8 @@ def assignment_page(request, course_code, asmt):
         context['courses'] = courseList
         context['canSubmit'] = can_submit(assignment)
         context['submissions'] = submissions
-
+        context['canReview'] = can_review(assignment)
+        
     except User.DoesNotExist:
         print("User doesn't exist!")
         return error_page(request, 'User does not exist!')
@@ -506,6 +604,7 @@ def can_submit(asmt):
 
     Arguments:
         asmt (Assignment) -- the assignment for which we want to check whether
+        whether or not submission are open. 
 
     Returns:
         True if allowed to submit asmt now, False otherwise
@@ -514,6 +613,21 @@ def can_submit(asmt):
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
+def can_review(asmt):
+    '''Checks whether a student can review other students' submissions. 
+
+    Checks whether an assignment is open for review; i.e., determine whether or not
+    reviews have opened and are not yet closed. 
+
+    Arguments:
+        asmt (Assignment) -- the assignment we want to check to see if reviews are open.
+
+    Returns:
+        True if user can review submissions now, False otherwise.
+    '''
+
+    now = timezone.now()
+    return now < asmt.review_close_date and now > asmt.review_open_date
 
 def user_can_submit(user, asmt):
     """Return true if this user has not yet made a submission for this asmt or
@@ -604,7 +718,7 @@ def submit_assignment(request, course_code, asmt):
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
 
-    else: # not POST; show the submission page, if assignment submission are open.
+    else:  # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
         if(not can_submit(assignment)):
             template = 'cannot_submit.html'
@@ -625,7 +739,7 @@ def submit_assignment(request, course_code, asmt):
 
 
 @login_required(login_url='/review/login_redirect')
-def grabFileData(request, submissionUuid, file_uuid):
+def grabFileData(request, submissionUuid, fileUuid):
     """
     Refactored from reviewFile so cut down on code repetition.
     Grabs a dictionary containng all the file information.
@@ -641,24 +755,24 @@ def grabFileData(request, submissionUuid, file_uuid):
     uuid = submissionUuid
     try:
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
-        print currentUser
-        file = SourceFile.objects.get(file_uuid=file_uuid)
+        # print currentUser
+        file = SourceFile.objects.get(file_uuid=fileUuid)
         print 'get file'
         code = highlight(file.content, guess_lexer(file.content),
                          HtmlFormatter(linenos="table"))
-        print code
+        # print code
         folders = []
 
         # grab submission and all the associated files and folders
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        for f in sub.root_folder.files.all():
-            folders.append(f)
-        for f in sub.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
-
+        # for f in sub.root_folder.files.all():
+        #     folders.append(f)
+        # for f in sub.root_folder.folders.all():
+        #     folders.append(f)
+        #     for s in f.files.all():
+        #         folders.append(s)
+        folders = grabFiles(sub.root_folder)
         # get root folder
         iter = file.folder
         while iter.parent is not None:
@@ -672,30 +786,42 @@ def grabFileData(request, submissionUuid, file_uuid):
             annotations = SourceAnnotation.objects.filter(source=file)
         else:
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
-
+            
         annotationRanges = []
         aDict = []
-
         # get all the ranges for the annotations
         for a in annotations:
             annotationRanges.append(SourceAnnotationRange.objects.get(range_annotation=a))
             aDict.append(a)
 
-        print annotationRanges
+        # sort the annotations by starting line
+        hl_lines = []
+        annotationRanges.sort(key=lambda x: x.start)
+        for i in annotationRanges:
+            hl_lines.append(i.start)
 
-        context['annotations'] = zip(aDict, annotationRanges)
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="inline", hl_lines=hl_lines))
+        
+        sortedAnnotations = []
+        # grab the annotations again based on the sorted order
+        for a in annotationRanges:
+            sortedAnnotations.append(a.range_annotation)
+
+        context['annotations'] = zip(sortedAnnotations, annotationRanges)
         context['sub'] = submissionUuid
-        context['uuid'] = file_uuid
+        context['uuid'] = fileUuid
         context['files'] = folders
         context['code'] = code
-
+        context['file'] = file
+        context['user'] = currentUser
         return context
     except AssignmentSubmission.DoesNotExist:
         error_page(request, "Submission does not exit")
 
 
 @login_required(login_url='/review/login_redirect/')
-def createAnnotation(request, submission_uuid, file_uuid):
+def createAnnotation(request, submissionUuid, fileUuid):
     """
     Creates an annotation form the currently opened file.
     If it succesfully creates an annotation then the user is returned the current file.
@@ -711,14 +837,15 @@ def createAnnotation(request, submission_uuid, file_uuid):
     context = {}
     form = None
     rangeForm = None
+    newAnnotation = None
 
     try:
-        print request
+        # print request
         # Get the current user and form data
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
-
+        
         text = form['text'].value()
         start = rangeForm['start'].value()
         end = 0
@@ -726,13 +853,38 @@ def createAnnotation(request, submission_uuid, file_uuid):
 
         if form.is_valid() and rangeForm.is_valid():
 
-            file = SourceFile.objects.get(file_uuid=file_uuid)
+            file = SourceFile.objects.get(file_uuid=fileUuid)
+            lineCount = 0
+            with open(file.file.path) as f:
+                lineCount = sum(1 for _ in f)
+
+            # start is actually a unicode object
+            if int(start) > lineCount or int(start) <= 0:
+                print "Excepting"
+                raise LineException()
             # Create and try saving the new annotation and range
             newAnnotation = SourceAnnotation.objects.create(user=currentUser.reviewuser,
                                                             source=file,
                                                             text=text,
                                                             quote=text)
-            newAnnotation.save()
+            # Get the submission
+            uuid = submissionUuid.encode('ascii', 'ignore')
+            # TODO this could possibly break depending on whether Tom is using this 
+            # for help centre or not. We just need to check whether or not this 
+            # submission is associated with an assignment.
+
+            # Yes tom does use this, tom is fixing this.
+
+            try:
+                sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
+                newAnnotation.submission = sub
+                newAnnotation.save()
+                # if this is called then the annotation is actually for the help system
+            except AssignmentSubmission.DoesNotExist:
+                # if this is triggered then its a post submission
+                newAnnotation.submission = None     
+                newAnnotation.save()
+
             newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
                                                             start=start,
                                                             end=end,
@@ -740,22 +892,98 @@ def createAnnotation(request, submission_uuid, file_uuid):
                                                             endOffset=end)
 
             newRange.save()
+            # print newAnnotation, newRange
             print newAnnotation, newRange
+            try:
+                p = Post.objects.get(post_uuid=uuid)
+                return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+            except Post.DoesNotExist:
+                print "This is a assignment submission"
+            return HttpResponseRedirect('/review/file/' + submissionUuid + '/' + fileUuid + '/')
 
-            return HttpResponseRedirect('/review/file/' + submission_uuid + '/' + file_uuid + '/')
 
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
         return error_page(request, "This user does not exist")
-    except SourceFile.DoesNotExit:
+    except SourceFile.DoesNotExist:
         return error_page(request, "This file does not exist")
+    except LineException:
+        # if this is true then this is a post object not a submission
+        try:
+            p = Post.objects.get(post_uuid=submission_uuid)
+            currentUser = User.objects.get(id=request.session['_auth_user_id'])
+            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            # context['post'] = uuid
+            context['form'] = form
+            errorMessage = "Please enter a line number between 1 and %s" % lineCount
+            context['rangeform'] = rangeForm
+            rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+            context['editform'] = editForm()
+            return render(request, 'view_post.html', context)
 
-    context = grabFileData(request, submission_uuid, file_uuid)
+        except:
+            errorMessage = "Please enter a line number between 1 and %s" % lineCount
+            context['rangeform'] = rangeForm
+            rangeForm._errors['start'] = ErrorList([u"%s" % errorMessage])
+
+    # check and see if the user is trying to create a help annotation
+    if not form.is_valid() or not rangeForm.is_valid():
+        print "not valid"
+        try:
+            p = Post.objects.get(post_uuid=submission_uuid)
+            currentUser = User.objects.get(id=request.session['_auth_user_id'])
+            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            # context['post'] = uuid
+            context['form'] = form
+            context['rangeform'] = rangeForm
+            context['editform'] = editForm()
+            return render(request, 'view_post.html', context)
+        except Exception as e:
+            print "caught exception"
+            print e.message
+        
+    context = grabFileData(request, submissionUuid, fileUuid)
     context['form'] = form
     context['rangeform'] = rangeForm
     return render(request, 'review.html', context)
 
 
+@login_required(login_url='/review/login_redirect/')
+def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
+    """
+    deletes an annotation and its range from the database
+    
+    Parameters:
+    request
+    submissions_uuid
+    file_uuid
+    annotation_id
+
+    Returns:
+    returns
+    """
+
+    submission_uuid = submissionUuid.encode('ascii', 'ignore')
+    file_uuid = fileUuid.encode('ascii', 'ignore')
+    try:
+        a = SourceAnnotation.objects.get(id=annoteId)
+        r = SourceAnnotationRange.objects.get(range_annotation=a)
+        a.delete()
+        r.delete()
+        try:
+            Post.objects.get(post_uuid=submission_uuid)
+            print "This is a post "
+            return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+        except Post.DoesNotExist:
+            print "This is a assignment submission"
+            return HttpResponseRedirect('/review/file/' +
+                                        submission_uuid +
+                                        '/' + file_uuid + '/')
+
+    except SourceAnnotation.DoesNotExist:
+        return error_page(request, "Annotation doesn't exist")
+
+    
 @login_required(login_url='/review/login_redirect/')
 def grabFile(request):
     """
@@ -826,7 +1054,7 @@ def upload(request):
 
 
 @login_required(login_url='/review/login_redirect/')
-def reviewFile(request, submissionUuid, file_uuid):
+def reviewFile(request, submissionUuid, fileUuid):
     """
     Grabs all the files for the current submission, but it also
     grabs and pygmentizes the current file and displays it to the user.
@@ -841,7 +1069,7 @@ def reviewFile(request, submissionUuid, file_uuid):
     """
 
     uuid = submissionUuid.encode('ascii', 'ignore')
-    file_uuid = file_uuid.encode('ascii', 'ignore')
+    file_uuid = fileUuid.encode('ascii', 'ignore')
     context = {}
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
     print currentUser
@@ -854,6 +1082,7 @@ def reviewFile(request, submissionUuid, file_uuid):
 
         # grab dictionary contatining all the pertinant information
         context = grabFileData(request, uuid, file_uuid)
+
         context['form'] = form
         context['rangeform'] = rangeForm
         return render(request, 'review.html', context)
@@ -894,14 +1123,14 @@ def review(request, submissionUuid, **kwargs):
         # grab the submission and the associated files and folders
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        for f in sub.root_folder.files.all():
-            folders.append(f)
-        for f in sub.root_folder.folders.all():
-            folders.append(f)
-            for s in f.files.all():
-                folders.append(s)
+        # for f in sub.root_folder.files.all():
+        #     folders.append(f)
+        # for f in sub.root_folder.folders.all():
+        #     folders.append(f)
+        #     for s in f.files.all():
+        #         folders.append(s)
         # root_files = sub.root_folder.files
-
+        folders = grabFiles(sub.root_folder)
         # return all the data for the submission to the context
         context['sub'] = submissionUuid
         # files = root_files.all()
@@ -914,6 +1143,26 @@ def review(request, submissionUuid, **kwargs):
     except AssignmentSubmission.DoesNotExist:
         raise Http404
 
+
+def grabFiles(root):
+    # Tree traversal
+    folders = []
+    s = []
+    s.append(root)
+    while len(s) > 0:
+        v = s.pop()
+        if v not in folders:
+            folders.append(v)
+            print v
+            for i in v.folders.all():
+                s.append(i)
+            for i in v.files.all():
+                if i not in folders:
+                    folders.append(i)
+    
+    return folders
+
+        
 def get_list(root_folder, theList):
     """
     Gets all the folders and files underneath root_folder
@@ -942,3 +1191,43 @@ def get_list(root_folder, theList):
         theList.append(get_list(folder, []))
 
     return theList
+
+@login_required
+@user_passes_test(staffTest)
+def assign_reviews(request, course_code, asmt):
+    asmtName = asmt.encode('ascii', 'ignore')
+    assignment = Assignment.objects.get(name=asmtName)
+    courseCode = course_code.encode('ascii', 'ignore')
+    course = Course.objects.get(course_code=courseCode)
+
+    context = {}
+
+    if request.method == 'POST':
+        form = AllocateReviewsForm(request.POST)
+        if form.is_valid():
+            # Check we have enough submissions 
+            numReviews = form.cleaned_data['reviews_per_student']
+            errMsg = get_errors(course, assignment, numReviews)
+            if(errMsg):
+                context['errors'] = errMsg
+                form = AllocateReviewsForm(request.POST)
+                template = "assign_reviews.html"
+            else:
+                distribute_reviews(assignment, numReviews)
+                print "Reviews assigned!"
+
+                numAnnotations = form.cleaned_data['min_annotations']
+                assignment.min_annotations = numAnnotations
+                assignment.reviews_per_student = numReviews
+                template = "confirm_reviews_assigned.html"
+        else:
+            print form.errors
+    else:
+        form = AllocateReviewsForm()
+        template = "assign_reviews.html"
+    
+    context['form'] = form
+    context['asmt'] = assignment
+    context['course'] = course
+
+    return render(request, template,  context)

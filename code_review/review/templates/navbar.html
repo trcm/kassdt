@@ -1,3 +1,4 @@
+<!-- Base navigation template, this will be used on every page -->
 {% extends 'base.djhtml' %}
 
 {% block content %}
@@ -17,7 +18,7 @@
           					{% endfor %}
   						  </ul>
 						</li>
-						
+						<!-- Staff specific navigation options -->
 						{% if user.is_staff %}
         				<li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
           					<ul class="dropdown-menu" role="menu">
@@ -41,7 +42,7 @@
 
 
     <div id="assignmentList" class="col-md-8">
-      {% block assignments %}
+      {% block main %}
       {% endblock %}
     </div>
   </div>
