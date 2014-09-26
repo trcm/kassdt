@@ -1,3 +1,4 @@
+<div id="wrapper">
 <!-- Template for viewing and creation annotations on source code -->
 {% extends 'navbar.html' %}
 
@@ -44,7 +45,7 @@
  });
 </script>
 <div id="reviewFiles">
-  <h5>Files: Root/ </h5>
+  
   <ul>
     {% for file in files %}
     {% if file.folder_uuid %}
@@ -121,3 +122,4 @@
   {% endfor %}
 </div>
 {% endblock %}
+</div>
