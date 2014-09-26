@@ -71,17 +71,11 @@ body {
 	background-color: black;	
 	margin-left: auto;
 	margin-right: auto;
+	width:1280px;
+	
 }
 
-/* The annotations div is the div
- * that contains the annotations and
- * ability to add annotations on the
- * review page */
-#annotations {
-float: right;
-width: 15%;
-padding-left: 20px;
-}
+
 
 .highlightTable {
   background-color: red;
@@ -125,6 +119,21 @@ padding-left: 20px;
 	vertical-align: middle;
 }
 
+
+/*The line numbers on the review page */
+.lineno {
+	background-color: grey;
+	
+	
+}
+
+
+/*The line numbers on the review page */
+.click{
+	
+}
+
+
 /*The Navigation bar on every page */
 #sidebarBody {
   padding-top:0px;
@@ -135,10 +144,10 @@ padding-left: 20px;
 
 /* annotation pane div on review page */
 #reviewAnnotation {
-  width: 50%;
+  width: 40%;
+  height:100%;
   float:right;
-  border: solid;
-  overflow-x: hidden;
+  
   
 }
 
@@ -156,11 +165,11 @@ padding-left: 20px;
 
 /* code pane div on review page */
 #reviewCode {
-  width: 50%;
+  width: 60%;
   height: 100%;
-  float:left;
-  border:solid;
-  overflow-x: hidden;
+  display:inline-block;
+  
+  
 }
 
 /* div on review page that contains the file browser  */
@@ -171,6 +180,7 @@ padding-left: 20px;
 	margin-top: 0px;
 	position: relative;
 	top: 20px;
+	
 	
 }
 
@@ -226,10 +236,10 @@ padding-left: 20px;
 /* pane div on review page contianing both the code pane and the annotation pane */
 #reviewPane {
 	background-color: #f5f5f5;
-	width:100%;
-	height:500px;
-	
-	
+	width:1280px;
+	overflow-y:scroll;
+	height:550px;
+
 }
 
 
