@@ -140,6 +140,4 @@ SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
 
 # Celery imports for database, 
-conf.update(
-    CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
-)
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
