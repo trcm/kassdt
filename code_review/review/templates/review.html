@@ -72,12 +72,13 @@
   </div>
 
   <div id="reviewAnnotation">
+	  
     <div id="accordion">
       <!-- display all the current annotations -->
       {% for annote, range, editForm in annotations %}
       <h3>Line: {{ range.start }}</h3>
       <div>
-	<p id="comment">Comment: {{ annote.text }}</p>
+	<p id="comment">{{ annote.text }}</p>
 	<form method="post" id="editForm{{annote.id}}" action="{% url 'edit_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id%}">
 	  {% csrf_token %}
 	  {{ editForm.as_ul }}
@@ -94,18 +95,21 @@
 	{% endif%}
       </div>
       {% endfor %}
+      
+	
     </div>
 
     {% url 'create_annotation' sub uuid as annotateUrl %}
     <!-- Obfucations doesn't work on get -->
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
     <!-- display forms for annotation creation if a file is selected -->
+    <div id="annotationFormDiv">
     <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
       {{ rangeform.as_ul }}
       {{ form.as_ul }}
       <input type="Submit" name="submit" value="Submit" />
     </form>
-    
+    </div>
   </div>
 </div>
 
