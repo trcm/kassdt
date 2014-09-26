@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'lti',
     'unfriendly',
     'help',
+    'djcelery',
     # 'ims_lti_py',
 )
 
