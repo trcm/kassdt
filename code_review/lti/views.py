@@ -166,12 +166,11 @@ def launch_lti(request):
             createTutor(user.reviewuser, c)
             user.save()
             print "User is Staff Member"
-        """If User is not Instructor"""
         else:
             user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
-            print("User is Student")
+            print "User is Student"
 
     except User.DoesNotExist:
         """ first time entry, create new user """
@@ -192,7 +191,7 @@ def launch_lti(request):
             c = Course.objects.create(course_code=course)
             ru.courses.add(c)
             ru.save()
-            print("New course created in CPRS")
+            print "New course created in CPRS"
         """ Detect if incoming user is a Instructor """
         if roles[0].__eq__("Instructor"):
             user.reviewuser.isStaff = True
@@ -200,13 +199,12 @@ def launch_lti(request):
             c = Course.objects.get(course_code=course)
             createTutor(user.reviewuser, c)
             user.save()
-            print "User is Staff Member"
-        """If User is not Instructor"""
+            print  "User is Staff Member"
         else:
             user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
-            print("User is Student")
+            print "User is Student"
 
     except User.MultipleObjectsReturned:
         """ If the application is not requiring unique emails, multiple users may be returned if there was an existing
