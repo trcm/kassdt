@@ -40,9 +40,7 @@ Tutor Dawg
     
 
    <tr>
-      <td>{{ assignment.0.name}}</td>
-      <td><p>{{ assignment.name}}</p></td>
-      <td><p>{{ assignment.submission_close_date }}</p></td>
+      <td><p>{{ assignment.0.name}}</p></td>
       <td>
         {% if assignment.1 %}
             Submited!
@@ -50,7 +48,7 @@ Tutor Dawg
             Not yet submitted.
         {% endif %}
       </td>
-      <td>{{ assignment.0.submission_close_date }}</td>
+      <td><p>{{ assignment.0.submission_close_date }}</p></td>
       <td>
         <a href="{{assignment.0.name}}/">
           <input class="btn btn-primary" type="submit" value="View Assignment">

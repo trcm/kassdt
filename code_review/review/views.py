@@ -452,6 +452,7 @@ def student_homepage(request):
         U = User.objects.get(id=request.user.id)
         context['user'] = U
         context['open_assignments'] = get_open_assignments(U)
+        print context['open_assignments']
         # For the course template which we inherit from
         context['courses'] = U.reviewuser.courses.all()
         context['form'] = annotationForm()
@@ -504,11 +505,12 @@ def get_open_assignments(user):
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
-        openAsmts[course] = []
-        for assignment in assignments:
-            if(can_submit(assignment)):
-                submitted = AssignmentSubmission.objects.filter(by=user.reviewuser, submission_for=assignment).exists()
-                openAsmts[course].append((assignment, submitted))
+        if(assignments):
+            openAsmts[course] = []
+            for assignment in assignments:
+                if(can_submit(assignment)):
+                    submitted = AssignmentSubmission.objects.filter(by=user.reviewuser, submission_for=assignment).exists()
+                    openAsmts[course].append((assignment, submitted))
 
     return openAsmts
 

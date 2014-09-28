@@ -16,6 +16,9 @@ from git_handler import *
 from git import *
 from time import strftime
 
+'''
+All these guys don't really have any methods that are worth testing...
+'''
 class SourceFolderTest(TestCase):
     pass
 
