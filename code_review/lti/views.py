@@ -7,7 +7,7 @@ user and course details and causes the CPRS to show the home page of the
 appropriate user.
 
 Methods:
-    launch_lit -- launches the CPRS.
+    launch_lti -- launches the CPRS.
 
 """
 

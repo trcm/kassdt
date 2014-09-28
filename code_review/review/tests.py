@@ -13,7 +13,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.db.models.base import ObjectDoesNotExist
 from review.models import *
-
+from review.helpers import *
 
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox import webdriver
@@ -63,33 +63,27 @@ class UserTests(TestCase):
         group = Group.objects.get(name='student')
         self.assertIn(group, user.groups.all())
 
-    # #Ensures that a user with an invalid username is not created
-    def test_user_valid(self):
+    def test_user_is_tutor(self):
         setup_group(self)
-        invalid_user(self)
-        # This is not how this test will run once these checks have been added
-        # to user creation code as then the exception will be thrown upon the
-        # attempt to create the user
-        try:
-            user = User.objects.get(username="invalid    ")
-            self.assertFalse(True, "A User with an invalid username was created")
-        except ObjectDoesNotExist:
-            self.assertFalse(False)
+        setup_user(self)
+        c = Course.objects.create(course_code='test1234')
+        user = User.objects.get(username='test')
+        group = Group.objects.get(name='student')
+        ru = ReviewUser.objects.create(djangoUser=user)
+        ru.courses.add(c)
+        ru.save()
+        user.reviewuser.courses.add(c)
+        createTutor(user.reviewUser, c)
+        self.assertTrue(isTutor(user, c))
 
-    # #This is the way user tests will be set as well once changes are made
-    def test_password_valid(self):
+    def test_user_isnt_tutor(self):
         setup_group(self)
-        username="test"
-        password = " I A M I N V A L I D "
-        # As error handling for invalid user/pass isnt implemented  for now this is
-        # a stub test
-        # try:
-
-        newUser = User.objects.create(username=username, password=password)
-        self.assertFalse(True, "An invalid password was added to database")
-        # except errorName
-        # self.assertFalse(False)
-
+        setup_user(self)
+        c = Course.objects.create(course_code='test1234')
+        user = User.objects.get(username='test')
+        group = Group.objects.get(name='student')
+        user.reviewuser.courses.add(c)
+        self.assertFalse(isTutor(user, c))
 
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
