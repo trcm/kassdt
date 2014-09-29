@@ -19,7 +19,9 @@ def get_errors(course, asmt, numReviews):
     numSubs = len(latest)
     if(numSubs < numReviews + 1):
         return "There are not enough submissions to be able to assign %d reviews; need %d submissions but only have %d" %(numReviews, numReviews+1, numSubs)
-    
+    if(numReviews < 0):
+        return "Must have 0 or more reviews per student!"
+
     return ""
         
 def get_latest(course, asmt, submissions, users):
