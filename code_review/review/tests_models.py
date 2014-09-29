@@ -20,13 +20,43 @@ from time import strftime
 All these guys don't really have any methods that are worth testing...
 '''
 class SourceFolderTest(TestCase):
-    pass
+    def test_cannot_make_itself_parent(self):
+        '''Check that you can't make a folder its own parent.'''
+        pass
 
 class SourceFileTest(TestCase):
+    '''Not sure if it's possible to give the SourceFile a nonexistent file.
+    Presume it is, since it just takes in an upload location. But I don't 
+    think there's anything you can do at the database level about this, because
+    it's just the way django file fields work.'''
     pass
 
 class AssignmentTest(TestCase):
-    pass
+    def test_check_repository_required(self):
+        '''Check that when creating an Assignment, repository is required.'''
+        pass
+    
+    '''Don't know if these are enforced at the database level'''
+    def test_check_submissionCloseDate_after_openDate(self):
+        '''Check that submission_close is after submission_open'''
+        pass
+
+    def test_check_reviewCloseDate_after_openDate(self):
+        '''Check that review_close is after review_open'''
+        pass
+
+    def test_check_submissionOpen_after_firstDisplay(self):
+        '''Check submission_open is after the first display date'''
+        pass
+    
+    def test_check_minAnnotations_nonnegative(self):
+        '''Check that the minimum number of annotations, min_annotations,
+        is greater than or equal to 0'''
+        pass
+
+    def test_check_reviewsPerStudent_nonnegative(self):
+        '''Check that reviews_per_student is nonnegative.'''
+        pass
 
 class AssignmentSubmissionTest(TestCase):
     pass

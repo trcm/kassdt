@@ -293,9 +293,9 @@ class Assignment(models.Model):
         multiple_submissions (BooleanField) -- true if multiple submissions (prior to the due date)
                                                are allowed for this assignment, false otherwise. 
                                                (default True)
-        reviews_per_student (IntegerField) -- the number of submissions each student will be 
+        reviews_per_student (PositiveIntegerField) -- the number of submissions each student will be 
                                               assigned to review.
-        min_annotations (IntegerField) -- the minimum number of annotations a student must make
+        min_annotations (PositiveIntegerField) -- the minimum number of annotations a student must make
                                           on a submission for the review to be complete.
     """
 
@@ -311,8 +311,8 @@ class Assignment(models.Model):
     review_open_date = models.DateTimeField(default=lambda: timezone.now())
     review_close_date = models.DateTimeField()
     multiple_submissions = models.BooleanField(default=True)
-    reviews_per_student = models.IntegerField(default=0)
-    min_annotations = models.IntegerField(default=0)
+    reviews_per_student = models.PositiveIntegerField(default=0)
+    min_annotations = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
         return "(%s)%s" % (self.assignment_uuid, self.name)
@@ -450,7 +450,7 @@ class AssignmentReview(models.Model):
     Attributes:
         review_uuid (UUIDField) -- the uuid of this review. 
         by (ReviewUser) -- the user who is reviewing the code. 
-        submission (ManyToManyField) -- the submissions being reviewed 
+        submissions (ManyToManyField) -- the submissions being reviewed 
         assignment (Assignment) -- the assignment the submissions are for.
     """
     
@@ -508,38 +508,6 @@ class AssignmentReview(models.Model):
             })
 
 # Source Annotation Tag is scheduled to be deleted from the database
-
-class SubmissionReview(models.Model):
-
-    """Represents a review by a user for a particular submission of an assignment.
-
-    Needed to represent the notion of when a reviw is "finished". Some ideas at
-    the moment include number of annotations. 
-
-    Attributes:
-
-    """
-
-    submission_review_uuid = UUIDField()
-    review_by = models.ForeignKey(ReviewUser)
-    submission = models.ForeignKey(AssignmentSubmission)
-
-    def __unicode__(self):
-        return "Review for assignment %s, submission %s by %s" %(self.submission.submission_for, self.submission, self.review_by)
-
-    def __repr__(self):
-        return repr({
-            "submission_review_uuid":self.submission_review_uuid,
-            "review_by":self.review_by,
-            "submission":self.submission,
-            })
-
-    def numAnnotations(self):
-        """Get the number of annotations associated with this submission.
-        """
-        annotations = SourceAnnotation.objects.filter(submission=submission, by=review_by)
-        return len(annotations)
-
 class SourceAnnotationTag(models.Model):
     tag_annotation = models.ForeignKey(SourceAnnotation, related_name="tags")
     tag = models.TextField()
