@@ -113,11 +113,75 @@ class UserTests(TestCase):
 
 
 class Annotationtests(TestCase):
+    
+    """
+    Test SourceAnnotation and SourceAnnotationRange together, they're never created
+   separately
+    """
+
     fixtures = ['fixtures/dump.json']
 
-    def test_pass(self):
+    def createAnnotation(self):
+        U = User.objects.get(username='test')
+        ru = ReviewUser.objects.create(djangoUser=U)
+        course = Course.objects.get(course_code="ABCD1234")
+        sub = AssignmentSubmission.objects.get(id=1)
+        subFile = SourceFile.objects.filter(submission=sub)[0]
+        
+        annotation = SourceAnnotation.objects.create(user=ru,
+                                                     source=subFile,
+                                                     submission=sub,
+                                                     text="Test",
+                                                     quote="Test")
+        annotation.save()
+        rangeA = SourceAnnotationRange.objects.create(range_annotation=annotaion,
+                                                      start=1,
+                                                      end=1)
+        rangeA.save()
+
+    
+    def setUp(self):
+        # setup_group(self)
+        setup_user(self)
+        
+    def test_create_annotation(self):
+        U = User.objects.get(username='test')
+        ru = ReviewUser.objects.create(djangoUser=U)
+        course = Course.objects.get(course_code="ABCD1234")
+        # sub = AssignmentSubmission.objects.get(id=1)
+        subFile = SourceFile.objects.all()[0]
+        sub = subFile.submission
+        
+        annotation = SourceAnnotation.objects.create(user=ru,
+                                                     source=subFile,
+                                                     submission=sub,
+                                                     text="Test",
+                                                     quote="Test")
+        annotation.save()
+        rangeA = SourceAnnotationRange.objects.create(range_annotation=annotation,
+                                                      start=1,
+                                                      end=1)
+        rangeA.save()
+
+        self.assertIn(annotation, SourceAnnotation.objects.all())
+        self.assertIn(rangeA, SourceAnnotationRange.objects.all())
+
+        
+    def test_delete_annotation(self):
+        # self.createAnnotation()
         pass
 
+    def test_delete_invalid_annotation(self):
+        pass
+
+    def test_edit_annotaion(self):
+        pass
+
+    def test_create_annotation_invalid_line_number(self):
+        pass 
+
+    def test_create_annotation_blank_comment(self):
+        pass
         
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
@@ -150,3 +214,16 @@ class MySeleniumTests(LiveServerTestCase):
 
     def test_course_page(self):
         self.selenium.get("%s" % self.server_url)
+
+
+if '__main__' == __name__:
+    try:
+        setup_test_environment()
+        settings.DEBUG = False    
+        verbosity = 0
+        old_database_name = settings.DATABASE_NAME
+        connection.creation.create_test_db(verbosity)
+        unittest.main()
+    finally:
+        connection.creation.destroy_test_db(old_database_name, verbosity)
+        teardown_test_environment()
