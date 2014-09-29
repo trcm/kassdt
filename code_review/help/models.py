@@ -24,8 +24,8 @@ class Post(models.Model):
     # user = models.ForeignKey(ReviewUser, related_name="posts")
     by = models.ForeignKey(ReviewUser, related_name="posts")
     course_code = models.ForeignKey(Course, related_name="posts")
-    title = models.CharField(max_length=100)
-    question = models.TextField()
+    title = models.CharField(max_length=100, blank=False)
+    question = models.TextField(blank=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     root_folder = models.OneToOneField(SourceFolder,
