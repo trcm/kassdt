@@ -138,7 +138,7 @@ def coursePage(request, course_code):
     try:
         U = User.objects.get(id=request.user.id)
         context['user'] = U
-        
+
         # grab course code from http reqest and attempt to find course
         # in database
         code = course_code.encode('ascii', 'ignore')
@@ -156,7 +156,7 @@ def coursePage(request, course_code):
         courses = U.reviewuser.courses.all()
 
         context['tutor'] = isTutor(U, c)
-        
+
         context['assignments'] = getSubmissionStatus(U.reviewuser, assignments)
         context['course'] = c
 
@@ -243,13 +243,13 @@ def userAdmin(request):
     return render(request, 'admin/userList.html', context)
 
 def handle_uploaded_file(f):
-    
+
     """
     Handle file uploads
-    
+
     Parameters:
     parameters
-    
+
     Returns:
     returns
     """
@@ -466,9 +466,9 @@ def student_homepage(request):
 
 def getSubmissionStatus(user, asmtList):
     """Return a list [(asmt, submitted)]
-    
+
     Arguments:
-        user (ReviewUser) 
+        user (ReviewUser)
         asmtList (QuerySet<Assignment>)
     """
     theList = []
@@ -481,7 +481,7 @@ def hasSubmissions(user, asmt):
     """Return true iff user has made a submission for asmt
 
     Arguments:
-        user (ReviewUser) 
+        user (ReviewUser)
         asmt (Assignment)
     """
     return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).exists()
@@ -503,7 +503,7 @@ def get_open_assignments(user):
     timenow = timezone.now()
     openAsmts = {}
     courses = user.reviewuser.courses.all()
-    
+
     for course in courses:
         # Get assignments in the course
         assignments = Assignment.objects.filter(course_code__course_code=course.course_code)
@@ -554,7 +554,7 @@ def assignment_page(request, course_code, asmt):
     context = {}
 
     try:
-        # Assingment submission related stuff 
+        # Assingment submission related stuff
         U = User.objects.get(id=request.user.id)
         reviewUser = U.reviewuser
         courseList = U.reviewuser.courses.all()
@@ -584,7 +584,7 @@ def assignment_page(request, course_code, asmt):
         context['canSubmit'] = can_submit(assignment)
         context['submissions'] = submissions
         context['canReview'] = can_review(assignment)
-        
+
     except User.DoesNotExist:
         print("User doesn't exist!")
         return error_page(request, 'User does not exist!')
@@ -608,7 +608,7 @@ def can_submit(asmt):
 
     Arguments:
         asmt (Assignment) -- the assignment for which we want to check whether
-        whether or not submission are open. 
+        whether or not submission are open.
 
     Returns:
         True if allowed to submit asmt now, False otherwise
@@ -617,11 +617,12 @@ def can_submit(asmt):
     now = timezone.now()
     return now < asmt.submission_close_date and now > asmt.submission_open_date
 
+
 def can_review(asmt):
-    '''Checks whether a student can review other students' submissions. 
+    '''Checks whether a student can review other students' submissions.
 
     Checks whether an assignment is open for review; i.e., determine whether or not
-    reviews have opened and are not yet closed. 
+    reviews have opened and are not yet closed.
 
     Arguments:
         asmt (Assignment) -- the assignment we want to check to see if reviews are open.
@@ -632,6 +633,7 @@ def can_review(asmt):
 
     now = timezone.now()
     return now < asmt.review_close_date and now > asmt.review_open_date
+
 
 def user_can_submit(user, asmt):
     """Return true if this user has not yet made a submission for this asmt or
@@ -790,7 +792,7 @@ def grabFileData(request, submissionUuid, fileUuid):
             annotations = SourceAnnotation.objects.filter(source=file)
         else:
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
-            
+
         annotationRanges = []
         aDict = []
         # get all the ranges for the annotations
@@ -806,7 +808,7 @@ def grabFileData(request, submissionUuid, fileUuid):
 
         code = highlight(file.content, guess_lexer(file.content),
                          HtmlFormatter(linenos="inline", hl_lines=hl_lines))
-        
+
         sortedAnnotations = []
         # grab the annotations again based on the sorted order
         for a in annotationRanges:
@@ -849,7 +851,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         form = annotationForm(request.GET)
         rangeForm = annotationRangeForm(request.GET)
-        
+
         text = form['text'].value()
         start = rangeForm['start'].value()
         end = 0
@@ -873,8 +875,8 @@ def createAnnotation(request, submissionUuid, fileUuid):
                                                             quote=text)
             # Get the submission
             uuid = submissionUuid.encode('ascii', 'ignore')
-            # TODO this could possibly break depending on whether Tom is using this 
-            # for help centre or not. We just need to check whether or not this 
+            # TODO this could possibly break depending on whether Tom is using this
+            # for help centre or not. We just need to check whether or not this
             # submission is associated with an assignment.
 
             # Yes tom does use this, tom is fixing this.
@@ -886,7 +888,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
                 # if this is called then the annotation is actually for the help system
             except AssignmentSubmission.DoesNotExist:
                 # if this is triggered then its a post submission
-                newAnnotation.submission = None     
+                newAnnotation.submission = None
                 newAnnotation.save()
 
             newRange = SourceAnnotationRange.objects.create(range_annotation=newAnnotation,
@@ -904,7 +906,6 @@ def createAnnotation(request, submissionUuid, fileUuid):
             except Post.DoesNotExist:
                 print "This is a assignment submission"
             return HttpResponseRedirect('/review/file/' + submissionUuid + '/' + fileUuid + '/')
-
 
     except User.DoesNotExist:
         print "This user doesn't exist! %r" % currentUser
@@ -945,7 +946,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
         except Exception as e:
             print "caught exception"
             print e.message
-        
+
     context = grabFileData(request, submissionUuid, fileUuid)
     context['form'] = form
     context['rangeform'] = rangeForm
@@ -956,7 +957,7 @@ def createAnnotation(request, submissionUuid, fileUuid):
 def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
     """
     deletes an annotation and its range from the database
-    
+
     Parameters:
     request
     submissions_uuid
@@ -987,7 +988,7 @@ def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
     except SourceAnnotation.DoesNotExist:
         return error_page(request, "Annotation doesn't exist")
 
-    
+
 @login_required(login_url='/review/login_redirect/')
 def grabFile(request):
     """
@@ -1156,10 +1157,10 @@ def grabFiles(root):
             for i in v.files.all():
                 if i not in folders:
                     folders.append(i)
-    
+
     return folders
 
-        
+
 def get_list(root_folder, theList):
     """
     Gets all the folders and files underneath root_folder
@@ -1189,6 +1190,7 @@ def get_list(root_folder, theList):
 
     return theList
 
+
 @login_required
 @user_passes_test(staffTest)
 def assign_reviews(request, course_code, asmt):
@@ -1202,7 +1204,7 @@ def assign_reviews(request, course_code, asmt):
     if request.method == 'POST':
         form = AllocateReviewsForm(request.POST)
         if form.is_valid():
-            # Check we have enough submissions 
+            # Check we have enough submissions
             numReviews = form.cleaned_data['reviews_per_student']
             errMsg = get_errors(course, assignment, numReviews)
             if(errMsg):
@@ -1222,7 +1224,7 @@ def assign_reviews(request, course_code, asmt):
     else:
         form = AllocateReviewsForm()
         template = "assign_reviews.html"
-    
+
     context['form'] = form
     context['asmt'] = assignment
     context['course'] = course
