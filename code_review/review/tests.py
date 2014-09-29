@@ -52,16 +52,15 @@ class UserTests(TestCase):
         setup_group(self)
         setup_user(self)
         user = User.objects.get(username='test')
-        group = Group.objects.get(name='student')
-        self.assertIn(group, user.groups.all())
-        # self.assertIn(Group.objects.get(name='student'), User.objects.get(username='student').groups.all())
+        user.is_Staff = False
+        self.assertFalse(user.is_Staff)
 
     def test_user_is_staff(self):
         setup_group(self)
         setup_user(self)
         user = User.objects.get(username='test')
-        group = Group.objects.get(name='student')
-        self.assertIn(group, user.groups.all())
+        user.is_Staff = True
+        self.assertTrue(user.is_Staff)
 
     def test_user_is_tutor(self):
         setup_group(self)
@@ -69,7 +68,6 @@ class UserTests(TestCase):
         c = Course.objects.create(course_code='test1234')
         user = User.objects.get(username='test')
         user.save()
-        group = Group.objects.get(name='student')
         ru = ReviewUser.objects.create(djangoUser=user)
         ru.courses.add(c)
         ru.save()
@@ -82,7 +80,6 @@ class UserTests(TestCase):
         c = Course.objects.create(course_code='test1234')
         user = User.objects.get(username='test')
         user.save()
-        group = Group.objects.get(name='student')
         ru = ReviewUser.objects.create(djangoUser=user)
         ru.courses.add(c)
         ru.save()
