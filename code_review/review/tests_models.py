@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models.base import ObjectDoesNotExist
 from review.models import *
 from django.conf import settings 
-
+from django.core.management import call_command 
 import os
 import os.path
 import sys 
@@ -40,7 +40,7 @@ class AssignmentReviewTest(TestCase):
          - all methods require an instance of AssignmentReview. 
     '''
     
-    fixtures = ['assignmentreview_assigned']
+    fixtures = ['some_annotations']
 
     def setUp(self):
         # Assign the reviews. 
@@ -50,7 +50,7 @@ class AssignmentReviewTest(TestCase):
         # Get everyone who does course ABCD1234.
         # PRECOND: they have all made at least one submission to ASMT1
         self.users = ReviewUser.objects.filter(courses=self.course)
-    
+
     def tearDown(self):
         # Destroy the submissions 
         # I think Django does this for you maybe? 
@@ -61,31 +61,23 @@ class AssignmentReviewTest(TestCase):
                 - Check the number of submissions assigned matches 
                   what's stored in Assignment (we use a fixture which has all
                   the right data, so we don't need assign_review working)
-                - Check whether each submission has the correct number of 
-                  associated annotations (should be zero at this stage)
         '''
+        
         # Assume fixture working, 5 students submitted and everyone assigned
         # to do 3 reviews.
         allAsmtRevs = AssignmentReview.objects.all()
         self.assertEqual(len(allAsmtRevs), 5)
         self.assertEqual(len(self.users), 9)
+        
         # For each user, check they've been assigned to do 3 
-        # And that they've done no annotations so far PRECOND fixture assures.
-        failures = 0
-
         for user in self.users:
             if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
-                print("%s is staff." %(user))
                 continue 
             
             # Get the {submission: numAnnotations} dictionary
             asmtRev = AssignmentReview.objects.get(assignment=self.asmt, by=user)
             subAnn = AssignmentReview.submissionsAnnotations(asmtRev)
             self.assertEqual(len(subAnn), 3)
-            
-            # Check nobody has done any annotations 
-            for sub in subAnn:
-                self.assertEqual(subAnn[sub], 0)
 
     def test_numAnnotations_normal(self):
         '''Check:
@@ -97,20 +89,48 @@ class AssignmentReviewTest(TestCase):
                 However, this is not the intended use of this method so we will not
                 test that. 
         '''
-        pass
-    
-    def test_numReviewsRemaining_allRemain(self):
-        '''Check that when there are no annotations on any of the submissions,
-           the number of remaining reviews is the total number of reviews assigned.
+        
+        for user in self.users:
+            if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
+                continue 
+
+            asmtRev = AssignmentReview.objects.get(assignment=self.asmt, by=user)
+            subAnn = AssignmentReview.submissionsAnnotations(asmtRev)
+            
+            subs = asmtRev.submissions.all()
+            
+            # naoise has done 2 annotations on the first submission, 
+            # none on the others. 
+            if(user.djangoUser.username == 'deidre'):
+                for sub in subs:
+                    if(sub.by.djangoUser.username == 'oscar'):
+                        self.assertEqual(4, subAnn[sub])
+                    elif(sub.by.djangoUser.username == 'oisin'):
+                        self.assertEqual(3, subAnn[sub])
+                    else:
+                        self.assertEqual(5, subAnn[sub])
+                print("Yo Deidre")
+            
+            # This shouldn't work because I can't rely on the submissions
+            # being returned in order, but if I remove it it breaks :S 
+            elif(user.djangoUser.username == 'naoise'):
+                self.assertEqual(2, subAnn[subs[0]])
+                self.assertEqual(0, subAnn[subs[1]])
+                self.assertEqual(0, subAnn[subs[2]])
+
+            elif(user.djangoUser.username == 'oisin'):
+                self.assertEqual(4, subAnn[subs[0]])
+                self.assertEqual(4, subAnn[subs[1]])
+                self.assertEqual(4, subAnn[subs[2]])
+            
+            else: 
+                # Nobody else should have annotations 
+                for sub in subs:
+                    self.assertEqual(0, subAnn[sub])
+
+    def test_numReviewsRemaining(self):
         '''
-        pass
-
-    def test_numReviewsRemaining_nonRemain(self):
-        '''Once all reviews are complete, return 0'''
-        pass
-
-    def test_numReviewsRemaining_someRemain(self):
-        '''When only some reviews are done, return correct number.'''
-
-        pass
-
+        for user in self.users:
+            print('hello')
+        '''
+        pass 

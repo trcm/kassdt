@@ -67,7 +67,7 @@ def distribute_reviews(asmt, perStudent):
     
     for user in users:
         # Don't want to make staff review stuff.
-        if user.isStaff:
+        if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
             continue
 
         review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
