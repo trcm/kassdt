@@ -216,14 +216,4 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.get("%s" % self.server_url)
 
 
-if '__main__' == __name__:
-    try:
-        setup_test_environment()
-        settings.DEBUG = False    
-        verbosity = 0
-        old_database_name = settings.DATABASE_NAME
-        connection.creation.create_test_db(verbosity)
-        unittest.main()
-    finally:
-        connection.creation.destroy_test_db(old_database_name, verbosity)
-        teardown_test_environment()
+
