@@ -40,7 +40,7 @@ class AssignmentReviewTest(TestCase):
          - all methods require an instance of AssignmentReview. 
     '''
     
-    fixtures = ['fixtures/assignmentreview_unassigned']
+    fixtures = ['assignmentreview_assigned']
 
     def setUp(self):
         # Assign the reviews. 
@@ -66,18 +66,27 @@ class AssignmentReviewTest(TestCase):
         '''
         # Assume fixture working, 5 students submitted and everyone assigned
         # to do 3 reviews.
-        
+        allAsmtRevs = AssignmentReview.objects.all()
+        self.assertEqual(len(allAsmtRevs), 5)
+        self.assertEqual(len(self.users), 9)
         # For each user, check they've been assigned to do 3 
         # And that they've done no annotations so far PRECOND fixture assures.
+        failures = 0
+
         for user in self.users:
+            if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
+                print("%s is staff." %(user))
+                continue 
+            
             # Get the {submission: numAnnotations} dictionary
-            asmtRev = AssignmentReview.objects.get(by=user, assignment=self.asmt)
+            asmtRev = AssignmentReview.objects.get(assignment=self.asmt, by=user)
             subAnn = AssignmentReview.submissionsAnnotations(asmtRev)
             self.assertEqual(len(subAnn), 3)
+            
             # Check nobody has done any annotations 
             for sub in subAnn:
                 self.assertEqual(subAnn[sub], 0)
-       
+
     def test_numAnnotations_normal(self):
         '''Check:
                 - For each submission associated with this AssignmentReview,

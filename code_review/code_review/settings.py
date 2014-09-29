@@ -54,9 +54,9 @@ CONSUMER_KEY = 'TESTING'
 LTI_SECRET = 'TESTING'
 LTI_DEBUG = True
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'unfriendly',
     'help',
     'djcelery',
+    'django_nose',
     # 'ims_lti_py',
 )
 

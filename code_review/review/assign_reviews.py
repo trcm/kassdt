@@ -61,7 +61,7 @@ def distribute_reviews(asmt, perStudent):
     users = ReviewUser.objects.filter(courses=course)
     numUsers = len(users)
     latestSubmissions = get_latest(course, asmt, subs, users)
-    print 'filtered subs are ', latestSubmissions
+    # print 'filtered subs are ', latestSubmissions
     numSubs = len(latestSubmissions)
     print 'number of submissions: ', numSubs
     
