@@ -53,7 +53,7 @@
   <h3>Line: {{ range.start }}</h3>
   <div><p>Comment: {{ annote.text }}</p>
   
-  {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
+  {% if annote.user == user.reviewuser or user.is_staff %}
       <a class="btn btn-info" href="">Edit</a>
       <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
   {% endif%}
@@ -64,11 +64,16 @@
   <!-- Obfucations doesn't work on get -->
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
   <!-- display forms for annotation creation if a file is selected -->
+  
+  {% if form %}
+  
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
-    </form>
+  </form>
+  {% endif%}
+
    
   </div>
 </div>

@@ -160,14 +160,14 @@ def launch_lti(request):
             print("New course created in CPRS")
         """ Detect if incoming user is a Instructor """
         if roles[0].__eq__("Instructor"):
-            user.reviewuser.isStaff = True
+            # user.isStaff = True
             user.is_staff = True
             c = Course.objects.get(course_code=course)
             createTutor(user.reviewuser, c)
             user.save()
             print "User is Staff Member"
         else:
-            user.reviewuser.isStaff = False
+            # user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
             print "User is Student"
@@ -194,14 +194,14 @@ def launch_lti(request):
             print "New course created in CPRS"
         """ Detect if incoming user is a Instructor """
         if roles[0].__eq__("Instructor"):
-            user.reviewuser.isStaff = True
+            # user.reviewuser.isStaff = True
             user.is_staff = True
             c = Course.objects.get(course_code=course)
             createTutor(user.reviewuser, c)
             user.save()
             print  "User is Staff Member"
         else:
-            user.reviewuser.isStaff = False
+            # user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
             print "User is Student"

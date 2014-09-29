@@ -82,9 +82,11 @@ def index(request):
     # generated here
     U = User.objects.get(id=request.user.id)
     context['user'] = U
-    if U.reviewuser.isStaff:
+    if U.reviewuser.isStaff or U.is_staff:
+        print "staff"
         try:
             courses = U.reviewuser.courses.all()
+            print courses
             context['courses'] = courses
             return render(request, 'navbar.html', context)
         except Exception as UserExcept:
@@ -1125,19 +1127,12 @@ def review(request, submissionUuid, **kwargs):
         # grab the submission and the associated files and folders
 
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
-        # for f in sub.root_folder.files.all():
-        #     folders.append(f)
-        # for f in sub.root_folder.folders.all():
-        #     folders.append(f)
-        #     for s in f.files.all():
-        #         folders.append(s)
-        # root_files = sub.root_folder.files
         folders = grabFiles(sub.root_folder)
         # return all the data for the submission to the context
         context['sub'] = submissionUuid
         # files = root_files.all()
         context['files'] = folders
-        context['code'] = code
+        # context['code'] = code
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
         return render(request, 'review.html', context)

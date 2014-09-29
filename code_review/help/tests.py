@@ -13,13 +13,22 @@ from selenium.webdriver.firefox import webdriver
 class PostTest(TestCase):
     fixtures = ['fixtures/dump.json']
 
+    def setUp(self):
+        ru = ReviewUser.objects.get(id=1)
+        c = Course.objects.get(course_code="ABCD1234")
+        p = Post.objects.create(course_code=c,
+                                by=ru,
+                                title="Default",
+                                question="Test question",
+                                submission_repository="https://github.com/avadendas/public_test_repo.git"
+        )
+    
     def test_pass(self):
         self.assertTrue(True)
 
     def test_post_creation(self):
-
-        ru = ReviewUser.objects.get(id=1)
         c = Course.objects.get(course_code="ABCD1234")
+        ru = ReviewUser.objects.get(id=1)
         p = Post.objects.create(course_code=c,
                                 by=ru,
                                 title="Test",
@@ -62,7 +71,7 @@ class PostTest(TestCase):
 
     def test_post_deletion(self):
 
-        p = Post.objects.get(title="123")
+        p = Post.objects.get(title="Default")
         p.delete()
 
         self.assertNotIn(p, Post.objects.all())
@@ -80,11 +89,9 @@ class PostTest(TestCase):
     def test_editing_post(self):
 
         
-        p = Post.objects.get(title="123")
+        p = Post.objects.get(title="Default")
         p.title = "Changed"
         p.save()
 
         self.assertTrue(Post.objects.get(title="changed"))
 
-    def test_editing_invalid_post(self):
-        pass
