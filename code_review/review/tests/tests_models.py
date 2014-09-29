@@ -40,12 +40,12 @@ class AssignmentReviewTest(TestCase):
          - all methods require an instance of AssignmentReview. 
     '''
     
-    fixtures = ['assignmentreview_test']
+    fixtures = ['fixtures/assignmentreview_unassigned']
 
     def setUp(self):
         # Assign the reviews. 
-        self.course = Course.objects.get(course_code='ABCD1234')
-        self.asmt = Assignment.objects.get(course_code=course, name='ASMT1')
+        self.course = Course.objects.get(pk=1)
+        self.asmt = Assignment.objects.get(course_code=self.course, name="ASMT1")
 
         # Get everyone who does course ABCD1234.
         # PRECOND: they have all made at least one submission to ASMT1

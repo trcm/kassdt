@@ -61,13 +61,13 @@ def distribute_reviews(asmt, perStudent):
     users = ReviewUser.objects.filter(courses=course)
     numUsers = len(users)
     latestSubmissions = get_latest(course, asmt, subs, users)
-    print 'filtered subs are ', latestSubmissions
+    # print 'filtered subs are ', latestSubmissions
     numSubs = len(latestSubmissions)
     print 'number of submissions: ', numSubs
     
     for user in users:
         # Don't want to make staff review stuff.
-        if user.isStaff:
+        if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
             continue
 
         review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
