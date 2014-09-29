@@ -64,11 +64,16 @@
   <!-- Obfucations doesn't work on get -->
   <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
   <!-- display forms for annotation creation if a file is selected -->
+  
+  {% if form %}
+  
   <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
     {{ rangeform.as_ul }}
     {{ form.as_ul }}
     <input type="Submit" name="submit" value="Submit" />
-    </form>
+  </form>
+  {% endif%}
+
    
   </div>
 </div>
