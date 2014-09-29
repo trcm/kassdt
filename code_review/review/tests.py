@@ -34,18 +34,6 @@ def setup_user(self):
     newUser.save()
 
 
-def invalid_user(self):
-
-    username = "invalid    "
-    password = "test"
-    # try:
-    newUser = User.objects.create(username=username, password=password)
-    newUser.groups.add(Group.objects.get(name='student'))
-    newUser.save()
-    # Whatever error we throw upon invalid username/password caught here
-    # except errorName
-
-
 class UserTests(TestCase):
 
     def test_user_is_a_student(self):
@@ -61,6 +49,43 @@ class UserTests(TestCase):
         user = User.objects.get(username='test')
         user.is_Staff = True
         self.assertTrue(user.is_Staff)
+
+    def test_user_creating_reviewUser(self):
+        setup_group(self)
+        setup_user(self)
+        user = User.objects.get(username='test')
+        c = Course.objects.create(course_code='test1234')
+        user.save()
+        ru = ReviewUser.objects.create(djangoUser=user)
+        ru.courses.add(c)
+        ru.save()
+        self.assertTrue(ru == user.reviewuser)
+
+    def test_user_in_course(self):
+        setup_group(self)
+        setup_user(self)
+        user = User.objects.get(username='test')
+        c = Course.objects.create(course_code='test1234')
+        user.save()
+        ru = ReviewUser.objects.create(djangoUser=user)
+        ru.courses.add(c)
+        ru.save()
+        courses =  ru.courses.filter()
+        self.assertTrue(c == courses[0])
+
+    def test_user_isnt_in_course(self):
+        setup_group(self)
+        setup_user(self)
+        user = User.objects.get(username='test')
+        c = Course.objects.create(course_code='test1234')
+        d = Course.objects.create(course_code='test1235')
+        user.save()
+        ru = ReviewUser.objects.create(djangoUser=user)
+        ru.courses.add(c)
+        ru.save()
+        courses =  ru.courses.filter()
+        self.assertFalse(d == courses[0])
+
 
     def test_user_is_tutor(self):
         setup_group(self)
