@@ -39,10 +39,17 @@ class AssignmentReviewTest(TestCase):
            page to assign reviews 
          - all methods require an instance of AssignmentReview. 
     '''
+    
+    fixtures = ['assignmentreview_test']
 
     def setUp(self):
         # Assign the reviews. 
-        pass
+        self.course = Course.objects.get(course_code='ABCD1234')
+        self.asmt = Assignment.objects.get(course_code=course, name='ASMT1')
+
+        # Get everyone who does course ABCD1234.
+        # PRECOND: they have all made at least one submission to ASMT1
+        self.users = ReviewUser.objects.filter(courses=self.course)
     
     def tearDown(self):
         # Destroy the submissions 
@@ -52,15 +59,25 @@ class AssignmentReviewTest(TestCase):
     def test_submissionsAnnotations(self):
         '''Check:
                 - Check the number of submissions assigned matches 
-                  what's stored in Assignment (this is then also a test of 
-                  whether assign_reviews worked properly... ew dependencies)
+                  what's stored in Assignment (we use a fixture which has all
+                  the right data, so we don't need assign_review working)
                 - Check whether each submission has the correct number of 
-                  associated annotations (again really a test of whether all
-                  the other methods work rather than whether or not this one 
-                  works...)
+                  associated annotations (should be zero at this stage)
         '''
-        pass
-
+        # Assume fixture working, 5 students submitted and everyone assigned
+        # to do 3 reviews.
+        
+        # For each user, check they've been assigned to do 3 
+        # And that they've done no annotations so far PRECOND fixture assures.
+        for user in self.users:
+            # Get the {submission: numAnnotations} dictionary
+            asmtRev = AssignmentReview.objects.get(by=user, assignment=self.asmt)
+            subAnn = AssignmentReview.submissionsAnnotations(asmtRev)
+            self.assertEqual(len(subAnn), 3)
+            # Check nobody has done any annotations 
+            for sub in subAnn:
+                self.assertEqual(subAnn[sub], 0)
+       
     def test_numAnnotations_normal(self):
         '''Check:
                 - For each submission associated with this AssignmentReview,
