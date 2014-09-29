@@ -82,9 +82,11 @@ def index(request):
     # generated here
     U = User.objects.get(id=request.user.id)
     context['user'] = U
-    if U.reviewuser.isStaff:
+    if U.reviewuser.isStaff or U.is_staff:
+        print "staff"
         try:
             courses = U.reviewuser.courses.all()
+            print courses
             context['courses'] = courses
             return render(request, 'navbar.html', context)
         except Exception as UserExcept:

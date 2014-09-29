@@ -312,7 +312,7 @@ def deletePost(request, course_code, post_uuid):
     try:
         printf("deleted")
         post = Post.objects.get(post_uuid=post_uuid)
-        if post.by == currentUser.reviewuser or currentUser.reviewuser.isStaff:
+        if post.by == currentUser.reviewuser or currentUser.is_staff:
             post.delete()
         else:
             error_page(request, "you're trying to delete something you don't have the persmissions for")
@@ -329,7 +329,7 @@ def resolvePost(request, course_code, post_uuid):
     course_code = course_code.encode('ascii', 'ignore')
     try:
         post = Post.objects.get(post_uuid=post_uuid)
-        if post.resolved == False:
+        if post.resolved is False:
             post.resolved = True
         else:
             post.resolved = False

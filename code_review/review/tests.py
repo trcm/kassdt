@@ -18,10 +18,11 @@ from review.helpers import *
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox import webdriver
 
+
 def setup_group(self):
     Group.objects.create(name='student')
 
-#Initializes the user with a username and password
+# Initializes the user with a username and password
 
 
 def setup_user(self):
@@ -70,7 +71,7 @@ class UserTests(TestCase):
         ru = ReviewUser.objects.create(djangoUser=user)
         ru.courses.add(c)
         ru.save()
-        courses =  ru.courses.filter()
+        courses = ru.courses.filter()
         self.assertTrue(c == courses[0])
 
     def test_user_isnt_in_course(self):
@@ -83,9 +84,8 @@ class UserTests(TestCase):
         ru = ReviewUser.objects.create(djangoUser=user)
         ru.courses.add(c)
         ru.save()
-        courses =  ru.courses.filter()
+        courses = ru.courses.filter()
         self.assertFalse(d == courses[0])
-
 
     def test_user_is_tutor(self):
         setup_group(self)
@@ -111,6 +111,14 @@ class UserTests(TestCase):
         user.reviewuser.courses.add(c)
         self.assertFalse(isTutor(user, c))
 
+
+class Annotationtests(TestCase):
+    fixtures = ['fixtures/dump.json']
+
+    def test_pass(self):
+        pass
+
+        
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
 
