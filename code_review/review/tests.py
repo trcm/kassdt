@@ -139,7 +139,6 @@ class Annotationtests(TestCase):
                                                       end=1)
         rangeA.save()
 
-    
     def setUp(self):
         # setup_group(self)
         setup_user(self)
@@ -214,6 +213,3 @@ class MySeleniumTests(LiveServerTestCase):
 
     def test_course_page(self):
         self.selenium.get("%s" % self.server_url)
-
-
-
