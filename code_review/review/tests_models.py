@@ -129,8 +129,23 @@ class AssignmentReviewTest(TestCase):
                     self.assertEqual(0, subAnn[sub])
 
     def test_numReviewsRemaining(self):
-        '''
         for user in self.users:
-            print('hello')
-        '''
-        pass 
+            if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
+                continue 
+
+            asmtRev = AssignmentReview.objects.get(assignment=self.asmt, by=user)
+            subAnn = AssignmentReview.submissionsAnnotations(asmtRev)
+            numRevs = AssignmentReview.numReviewsRemaining(asmtRev)
+
+            if(user.djangoUser.username == 'naoise'):
+                self.assertEqual(3, numRevs)
+
+            elif(user.djangoUser.username == 'deidre'):
+                self.assertEqual(1, numRevs)
+
+            elif(user.djangoUser.username == 'oisin'):
+                self.assertEqual(0, numRevs)
+
+            else:
+                self.assertEqual(3, numRevs)
+
