@@ -14,18 +14,15 @@
         <!-- Add stuff to allow superuser to edit assignment -->
         <div class="col-md-3">
                 <div class="btn-group">
-                        <a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+                        <a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>           
+                        {% if user.is_superuser or user.isStaff %}
+                          <a class="btn btn-default" href="assign_reviews"><span class="glyphicon glyphicon-user"></span> Assign Reviews</a>
+                        {% endif %}
                 </div>
         </div>
         <div class="col-md-9"></div>  
     {% endif %}
 
-  {% if user.is_superuser or user.isStaff %}
-    <h2>Assign students to review peer submissions:</h2>
-    <a href="assign_reviews">
-        <button>"Assign Reviews"</button>
-    </a>
-  {% endif %}
 </div>
 
 <br />
