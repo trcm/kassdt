@@ -85,6 +85,7 @@ class UserTests(TestCase):
         user.reviewuser.courses.add(c)
         self.assertFalse(isTutor(user, c))
 
+
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
 

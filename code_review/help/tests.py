@@ -1,3 +1,9 @@
 from django.test import TestCase
 
-# Create your tests here.
+from review.models import *
+from help.models import Post
+
+def PostTests(TestCase):
+    fixtures = ['fixtures/dump.json']
+    
+    
