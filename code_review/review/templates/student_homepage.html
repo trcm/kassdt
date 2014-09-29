@@ -8,32 +8,40 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 	<br />
 	{% if open_assignments %}
 	    <table cellpadding="10" class="table table-bordered table-hover">
-	    <thead>
-		<th> Course </th>
-		<th> Assignment Name </th>
-		<th> Submissions Open: </th>
-		<th> Submissions Close: </th>
-                <th> Submission Status: </th>
-	    </thead>
-	    <!-- grab all upcoming assignments and display them in a table -->
-	    {% for course, asmtList in open_assignments.items %}
+		    <thead>
+				<th> Course </th>
+				<th> Assignment Name </th>
+				<th> Submission Open </th>
+				<th> Submission Close </th>
+		        <th> Submission Status </th>
+		    </thead>
+		    <!-- grab all upcoming assignments and display them in a table -->
+	    	{% for course, asmtList in open_assignments.items %}
                 {% for asmt in asmtList %}
-                <tr> 
-		    <td>{{ course.course_code }}</td>
-		    <td>{{ asmt.0.name }}</td>
-		    <td>{{ asmt.0.submission_open_date }}</td>
-		    <td>{{ asmt.0.submission_close_date }}</td>
-                    <td>{% if asmt.1 %}
-                            Submitted!
-                        {% else %}
-                            Not yet submitted
-                        {% endif %}
-                    <td>
-                        <form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
-                            <input type="submit" value="Go to assignment page">
-                        </form>
-                    </td>
-                    <td> <a href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">
+                <tbody>
+          			<tr>
+			          	<td><p>{{ course.course_code }}</p></td>
+					    <td><p>{{ asmt.0.name }}</p></td>
+					    <td><p>{{ asmt.0.submission_open_date }}</p></td>
+					    <td><p>{{ asmt.0.submission_close_date }}</p></td>			
+	          			<td><p>
+	          				{% if asmt.1 %}
+		                        <span class="text-success">Submitted</span>
+	                        {% else %}
+	                            <span class="text-danger">Not yet submitted</span>
+	                        {% endif %}
+	                        </p>
+	                    </td>
+	                    <td>
+	                        <form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
+	                            <input class="btn btn-default btn-block" type="submit" value="Go to assignment page">
+	                        </form>
+                    	</td>
+                    	<td>
+                    		<a class="btn btn-danger btn-block" href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">Submit Assignment</a>
+                    	</td>
+          			</tr>
+                </tbody>
                 {% endfor %}
             {% endfor %}
             </table>
