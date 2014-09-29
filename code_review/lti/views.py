@@ -7,7 +7,7 @@ user and course details and causes the CPRS to show the home page of the
 appropriate user.
 
 Methods:
-    launch_lit -- launches the CPRS.
+    launch_lti -- launches the CPRS.
 
 """
 
@@ -170,6 +170,7 @@ def launch_lti(request):
             user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
+            print "User is Student"
 
     except User.DoesNotExist:
         """ first time entry, create new user """
@@ -190,7 +191,7 @@ def launch_lti(request):
             c = Course.objects.create(course_code=course)
             ru.courses.add(c)
             ru.save()
-            print("New course created in CPRS")
+            print "New course created in CPRS"
         """ Detect if incoming user is a Instructor """
         if roles[0].__eq__("Instructor"):
             user.reviewuser.isStaff = True
@@ -198,11 +199,12 @@ def launch_lti(request):
             c = Course.objects.get(course_code=course)
             createTutor(user.reviewuser, c)
             user.save()
-            print "User is Staff Member"
+            print  "User is Staff Member"
         else:
             user.reviewuser.isStaff = False
             user.is_staff = False
             user.save()
+            print "User is Student"
 
     except User.MultipleObjectsReturned:
         """ If the application is not requiring unique emails, multiple users may be returned if there was an existing
