@@ -185,12 +185,16 @@ def create_assignment(request, course_code):
     """
 
     context = {}
+    
+    U = User.objects.get(id=request.user.id)
+    # Need user's courses for navbar. 
+    context['courses'] = U.reviewuser.courses.all()
 
     # grab course code from the url and convert to a string from unicode
     code = course_code.encode('ascii', 'ignore')
     # grab the course object for the course
     c = Course.objects.get(course_code=code)
-    
+
     # generate form for new assignemnt, thing this will get changed
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
@@ -200,7 +204,7 @@ def create_assignment(request, course_code):
     context['form'] = form
     context['testForm'] = testForm
     context['course'] = c
-    
+
     return render(request, 'admin/new_assignment.html', context)
 
 
@@ -278,6 +282,11 @@ def validateAssignment(request):
     form = None
     testForm = None
     context = {}
+    
+    # Need user's courses for navbar.
+    U = User.objects.get(id=request.user.id)
+    context['courses'] = U.reviewuser.courses.all()
+
     # gets the data from the post request
     if request.method == "POST":
         form = AssignmentForm(request.POST)
@@ -481,9 +490,8 @@ def student_homepage(request):
     context = {}
     try:
         U = User.objects.get(id=request.user.id)
-        context['isSuperuser'] = isSuperuser
+        context['user'] = U
         context['open_assignments'] = get_open_assignments(U)
-        print context['open_assignments']
         # For the course template which we inherit from
         context['courses'] = U.reviewuser.courses.all()
         context['form'] = annotationForm()
