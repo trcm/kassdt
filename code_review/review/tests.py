@@ -112,7 +112,7 @@ class UserTests(TestCase):
         self.assertFalse(isTutor(user, c))
 
 
-class Annotationtests(TestCase):
+class AnnotationTests(TestCase):
     
     """
     Test SourceAnnotation and SourceAnnotationRange together, they're never created

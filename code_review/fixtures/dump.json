@@ -465,7 +465,7 @@
         "is_active": true, 
         "is_superuser": false, 
         "is_staff": false, 
-        "last_login": "2014-09-25T04:27:07Z", 
+        "last_login": "2014-09-29T23:59:00Z", 
         "groups": [
             [
                 "student"
@@ -700,11 +700,35 @@
     }
 },
 {
+    "pk": "6qrca0zlo65te9j4es4ib0ac4rvt2v3x", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2014-10-13T23:56:56Z", 
+        "session_data": "MWQ5ZTM2NmI5MTBmYTQ2NzI1OTAyMmMzMmY2ZWI2ODlmZjAxMTE1MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0="
+    }
+},
+{
     "pk": "7qyo1bvlje81cv94ax7ou3y8f5q5mksj", 
     "model": "sessions.session", 
     "fields": {
         "expire_date": "2014-09-03T11:18:04Z", 
         "session_data": "YWQ4MWU2MDRjZmJhYWQ3NDZjOTZkYmFiM2QyMWIxMjkwOTlmNjA5MTp7fQ=="
+    }
+},
+{
+    "pk": "8dlu3ihbpt1v1u9v30xqumzgc2wx5iq6", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2014-10-13T23:59:00Z", 
+        "session_data": "MWQ5ZTM2NmI5MTBmYTQ2NzI1OTAyMmMzMmY2ZWI2ODlmZjAxMTE1MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0="
+    }
+},
+{
+    "pk": "b3pwstbflm2jkkzrl0501r7z64j4aebu", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2014-10-13T23:51:27Z", 
+        "session_data": "MWQ5ZTM2NmI5MTBmYTQ2NzI1OTAyMmMzMmY2ZWI2ODlmZjAxMTE1MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0="
     }
 },
 {
@@ -744,6 +768,14 @@
     "model": "sessions.session", 
     "fields": {
         "expire_date": "2014-10-06T03:58:44Z", 
+        "session_data": "MWQ5ZTM2NmI5MTBmYTQ2NzI1OTAyMmMzMmY2ZWI2ODlmZjAxMTE1MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0="
+    }
+},
+{
+    "pk": "jla89sk2c2werwkjioj8937ej1v3ejv4", 
+    "model": "sessions.session", 
+    "fields": {
+        "expire_date": "2014-10-13T23:44:44Z", 
         "session_data": "MWQ5ZTM2NmI5MTBmYTQ2NzI1OTAyMmMzMmY2ZWI2ODlmZjAxMTE1MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0="
     }
 },
@@ -1150,6 +1182,24 @@
     }
 },
 {
+    "pk": 47, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2014-09-29T01:14:53Z", 
+        "app_name": "help", 
+        "migration": "0010_auto__chg_field_post_title__chg_field_post_question"
+    }
+},
+{
+    "pk": 48, 
+    "model": "south.migrationhistory", 
+    "fields": {
+        "applied": "2014-09-29T01:17:57Z", 
+        "app_name": "help", 
+        "migration": "0011_auto__chg_field_post_title__chg_field_post_question"
+    }
+},
+{
     "pk": 1, 
     "model": "help.post", 
     "fields": {
@@ -1181,6 +1231,57 @@
         "open": true, 
         "by": 2, 
         "submission_repository": "https://github.com/avadendas/public_test_repo.git"
+    }
+},
+{
+    "pk": 3, 
+    "model": "help.post", 
+    "fields": {
+        "resolved": false, 
+        "updated": "2014-09-29T01:07:20Z", 
+        "root_folder": null, 
+        "post_uuid": "b10550a2-68eb-476e-9a3b-3dcd6b9825c1", 
+        "created": "2014-09-29T01:07:20Z", 
+        "title": "", 
+        "question": "", 
+        "course_code": 1, 
+        "open": true, 
+        "by": 1, 
+        "submission_repository": ""
+    }
+},
+{
+    "pk": 4, 
+    "model": "help.post", 
+    "fields": {
+        "resolved": false, 
+        "updated": "2014-09-29T01:15:42Z", 
+        "root_folder": null, 
+        "post_uuid": "dfe7d2fc-da39-41c7-b6ea-ec78b8265374", 
+        "created": "2014-09-29T01:15:39Z", 
+        "title": "1", 
+        "question": "1", 
+        "course_code": 1, 
+        "open": true, 
+        "by": 1, 
+        "submission_repository": ""
+    }
+},
+{
+    "pk": 5, 
+    "model": "help.post", 
+    "fields": {
+        "resolved": false, 
+        "updated": "2014-09-29T01:18:16Z", 
+        "root_folder": null, 
+        "post_uuid": "dc8f76fb-6266-438c-8163-778d3d45aadc", 
+        "created": "2014-09-29T01:18:14Z", 
+        "title": "", 
+        "question": "", 
+        "course_code": 1, 
+        "open": true, 
+        "by": 1, 
+        "submission_repository": ""
     }
 },
 {
@@ -7297,15 +7398,6 @@
         ], 
         "by": 16, 
         "assignment": 5
-    }
-},
-{
-    "pk": 1, 
-    "model": "review.submissionreview", 
-    "fields": {
-        "review_by": 2, 
-        "submission_review_uuid": "63233370-1fe3-475a-b3d0-03e1a4bf8c89", 
-        "submission": 23
     }
 },
 {

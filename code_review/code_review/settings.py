@@ -142,3 +142,5 @@ SOUTH_TESTS_MIGRATE = False
 
 # Celery imports for database, 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
+
+FIXTURE_DIRS = ('fixtures/', )
