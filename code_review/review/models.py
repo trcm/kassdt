@@ -45,29 +45,6 @@ repo_format_help_text = """
         ; which will produce """ + c("https://www.source-hosting.com/joe_blogs/ass1/") + """ for the user "joe_blogs".
     """
 
-
-class ReviewUser(models.Model):
-    """
-    Represents a user of the CPRS.  This model is used to extend the
-    inbuilt django User model to suit our purposes.
-
-    Attributes:
-        user_uuid (UUIDFIeld) -- unique identifier for the user
-        djangoUser (OneToOneField)  -- shows relationship between the inbuild model
-        and the ReviewUsermodel
-        isStaff (BooleanField) -- boolean to show whether the Reviewuser is staff
-        courses (ManyToManyField) -- represents which courses the User is enrolled in
-        firstLogin (BooleanFIeld) -- boolean flag used to prompt user to change password
-    """
-    user_uuid = UUIDField()
-    djangoUser = models.OneToOneField(Django_User, unique=True)
-    isStaff = models.BooleanField(default=False)
-    courses = models.ManyToManyField('Course')
-    firstLogin = models.BooleanField(default=True)
-
-    def __unicode__(self):
-        return "%s" % (self.djangoUser.username)
-
 # creating a course code model to which will have a many to many relationship
 # with the user model.  This should allow use to allocate users to courses
 
@@ -92,6 +69,29 @@ class Course(models.Model):
 
     def __unicode__(self):
         return "%s" % (self.course_code)
+
+
+class ReviewUser(models.Model):
+    """
+    Represents a user of the CPRS.  This model is used to extend the
+    inbuilt django User model to suit our purposes.
+
+    Attributes:
+        user_uuid (UUIDFIeld) -- unique identifier for the user
+        djangoUser (OneToOneField)  -- shows relationship between the inbuild model
+        and the ReviewUsermodel
+        isStaff (BooleanField) -- boolean to show whether the Reviewuser is staff
+        courses (ManyToManyField) -- represents which courses the User is enrolled in
+        firstLogin (BooleanFIeld) -- boolean flag used to prompt user to change password
+    """
+    user_uuid = UUIDField()
+    djangoUser = models.OneToOneField(Django_User, unique=True)
+    isStaff = models.BooleanField(default=False)
+    courses = models.ManyToManyField('Course')
+    firstLogin = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return "%s" % (self.djangoUser.username)
 
 
 class Enrol(models.Model):
@@ -300,7 +300,7 @@ class Assignment(models.Model):
     """
 
     course_code = models.ForeignKey('Course',
-                                    default=Course.objects.get(id=1),
+                                    # default=Course.objects.get(id=1),
                                     related_name="assignments")
     assignment_uuid = UUIDField()
     name = models.TextField()

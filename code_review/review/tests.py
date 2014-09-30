@@ -195,13 +195,13 @@ class MySeleniumTests(LiveServerTestCase):
         cls.selenium.quit()
         super(MySeleniumTests, cls).tearDownClass()
 
-    def login(self):
-        self.selenium.get("%s" % self.server_url)
-        username_input = self.selenium.find_element_by_id("id_username")
-        password_input = self.selenium.find_element_by_id("id_password")
-        username_input.send_keys('tom')
-        password_input.send_keys('tom')
-        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+    # def login(self):
+    #     self.selenium.get("%s" % self.server_url)
+    #     username_input = self.selenium.find_element_by_id("id_username")
+    #     password_input = self.selenium.find_element_by_id("id_password")
+    #     username_input.send_keys('tom')
+    #     password_input.send_keys('tom')
+    #     self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_login(self):
         self.selenium.get("%s" % self.server_url)
