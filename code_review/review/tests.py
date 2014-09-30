@@ -159,30 +159,33 @@ class AnnotationTests(TestCase):
         annotation.save()
         rangeA = SourceAnnotationRange.objects.create(range_annotation=annotation,
                                                       start=1,
-                                                      end=1)
+                                                      end=1,
+                                                      startOffset=0,
+                                                      endOffset=0)
         rangeA.save()
 
         self.assertIn(annotation, SourceAnnotation.objects.all())
         self.assertIn(rangeA, SourceAnnotationRange.objects.all())
 
         
-    def test_delete_annotation(self):
-        # self.createAnnotation()
-        pass
+    # def test_delete_annotation(self):
+    #     # self.createAnnotation()
+    #     pass
 
-    def test_delete_invalid_annotation(self):
-        pass
+    # def test_delete_invalid_annotation(self):
+    #     pass
 
-    def test_edit_annotaion(self):
-        pass
+    # def test_edit_annotaion(self):
+    #     pass
 
-    def test_create_annotation_invalid_line_number(self):
-        pass 
+    # def test_create_annotation_invalid_line_number(self):
+    #     pass 
 
-    def test_create_annotation_blank_comment(self):
-        pass
+    # def test_create_annotation_blank_comment(self):
+    #     pass
         
 class MySeleniumTests(LiveServerTestCase):
+    fixtures = ['fixtures/dump.json']
     server_url = 'http://localhost:8000'
 
     @classmethod
@@ -195,13 +198,13 @@ class MySeleniumTests(LiveServerTestCase):
         cls.selenium.quit()
         super(MySeleniumTests, cls).tearDownClass()
 
-    # def login(self):
-    #     self.selenium.get("%s" % self.server_url)
-    #     username_input = self.selenium.find_element_by_id("id_username")
-    #     password_input = self.selenium.find_element_by_id("id_password")
-    #     username_input.send_keys('tom')
-    #     password_input.send_keys('tom')
-    #     self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+    def login(self):
+        self.selenium.get("%s" % self.server_url)
+        username_input = self.selenium.find_element_by_id("id_username")
+        password_input = self.selenium.find_element_by_id("id_password")
+        username_input.send_keys('tom')
+        password_input.send_keys('tom')
+        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_login(self):
         self.selenium.get("%s" % self.server_url)
@@ -212,4 +215,4 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_course_page(self):
-        self.selenium.get("%s" % self.server_url)
+        login()
