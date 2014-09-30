@@ -201,9 +201,6 @@ class MySeleniumTests(LiveServerTestCase):
         password_input = self.selenium.find_element_by_id("id_password")
         username_input.send_keys('tom')
         password_input.send_keys('tom')
-        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
-        self.selenium.find_element_by_xpath("//input[@value='Logout']").click()
-
 
     def test_course_page(self):
         self.selenium.get("%s" % self.server_url)
