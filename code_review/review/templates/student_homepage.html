@@ -13,7 +13,9 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 		<th> Assignment Name </th>
 		<th> Submissions Open: </th>
 		<th> Submissions Close: </th>
+                {% if not user.is_staff and not user.is_superuser %}
                 <th> Submission Status: </th>
+                {% endif %}
 	    </thead>
 	    <!-- grab all upcoming assignments and display them in a table -->
 	    {% for course, asmtList in open_assignments.items %}
@@ -23,11 +25,13 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 		    <td>{{ asmt.0.name }}</td>
 		    <td>{{ asmt.0.submission_open_date }}</td>
 		    <td>{{ asmt.0.submission_close_date }}</td>
+                    {% if not user.is_staff and not user.is_superuser %}
                     <td>{% if asmt.1 %}
                             Submitted!
                         {% else %}
                             Not yet submitted
                         {% endif %}
+                    {% endif %}
                     <td>
                         <form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
                             <input type="submit" value="Go to assignment page">

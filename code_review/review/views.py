@@ -88,7 +88,7 @@ def index(request):
             courses = U.reviewuser.courses.all()
             print courses
             context['courses'] = courses
-            return render(request, 'navbar.html', context)
+            return student_homepage(request)
         except Exception as UserExcept:
             print UserExcept.args
     else:  # user is student
@@ -481,7 +481,7 @@ def student_homepage(request):
     context = {}
     try:
         U = User.objects.get(id=request.user.id)
-        context['user'] = U
+        context['isSuperuser'] = isSuperuser
         context['open_assignments'] = get_open_assignments(U)
         print context['open_assignments']
         # For the course template which we inherit from
