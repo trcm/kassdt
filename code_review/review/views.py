@@ -316,7 +316,9 @@ def validateAssignment(request):
                     errors["reviewOpenDate"] = "Reviews must open after the assignment is first displayed."
                 
                 # Check there are no assignments with this name in the course.
-               
+                if(Assignment.objects.filter(course_code=course, name=name)):
+                    errors["duplicateName"] = "There is already an assignment with the name \"%s\"; please choose another name" %(name)
+
                 # If anything went wrong throw the form back at the user.
                 if(errors):
                     raise Exception 
