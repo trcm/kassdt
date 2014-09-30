@@ -9,6 +9,16 @@
 <form method="post" action="{% url 'generate_assignment' %}" enctype="multipart/form-data">
   <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
+  
+  <ul>
+  {% if errors %}
+    <h4>ERROR! There was something wrong with the data you've entered:</h4>
+    {%for errType, message in errors.items %}
+        <li>Error: {{ message }} </li>
+    {% endfor %}
+  {% endif %}
+  </ul>
+
   {% for field in form %}
   <ul> 
     <li> {{ field.errors }} {{ field.label_tag }} {{ field }}</li> 

@@ -190,16 +190,17 @@ def create_assignment(request, course_code):
     code = course_code.encode('ascii', 'ignore')
     # grab the course object for the course
     c = Course.objects.get(course_code=code)
-
+    
     # generate form for new assignemnt, thing this will get changed
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
     testForm = AssignmentTestForm()
+
     # add all the data to the context dict
     context['form'] = form
     context['testForm'] = testForm
     context['course'] = c
-
+    
     return render(request, 'admin/new_assignment.html', context)
 
 
@@ -282,6 +283,9 @@ def validateAssignment(request):
         form = AssignmentForm(request.POST)
         testForm = AssignmentTestForm(request.POST, request.FILES)
         print request.POST['course_code']
+        
+        # For storing error messages. 
+        errors = {}
         if form.is_valid() and testForm.is_valid():
             try:
                 # gets the cleaned data from the post request
@@ -295,6 +299,28 @@ def validateAssignment(request):
                 review_open_date = form.cleaned_data['review_open_date']
                 review_close_date = form.cleaned_data['review_close_date']
                 print request.FILES
+                
+                # Check submission close date is after open date. 
+                if(submission_close_date <= submission_open_date):
+                    errors["submissionDate"] = "Submissions must close after they open!"
+                # Check review close date is after review open. 
+                if(review_close_date <= review_open_date):
+                    errors["reviewCloseDate"] = "Reviews must close after they open."
+
+                # Check first display date is before the submission open date. 
+                if(submission_open_date < first_display_date):
+                    errors["firstDisplayDate"] = "Submissions must open after assignment is first displayed."
+            
+                # Check review opens after first display date. 
+                if(review_open_date < first_display_date):
+                    errors["reviewOpenDate"] = "Reviews must open after the assignment is first displayed."
+                
+                # Check there are no assignments with this name in the course.
+               
+                # If anything went wrong throw the form back at the user.
+                if(errors):
+                    raise Exception 
+
                 # Create the new assignment object and try saving it
                 ass = Assignment.objects.create(course_code=course, name=name,
                                                 repository_format=repository_format,
@@ -328,6 +354,7 @@ def validateAssignment(request):
     context['form'] = form
     context['testForm'] = testForm
     context['course'] = Course.objects.get(id=request.POST['course_code'])
+    context['errors'] = errors
 
     return render(request, 'admin/new_assignment.html', context)
 
