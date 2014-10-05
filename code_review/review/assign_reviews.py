@@ -13,7 +13,7 @@ def get_errors(course, asmt, numReviews):
     # Check that there are enough submissions for each user to get
     # numReviews each; this means there should be at least numReviews+1
     # submissions. 
-    allSubs = AssignmentSubmission.objects.all()
+    allSubs = AssignmentSubmission.objects.filter(submission_for=asmt)
     users = ReviewUser.objects.filter(courses=course)
     latest = get_latest(course, asmt, allSubs, users)
     numSubs = len(latest)
@@ -75,7 +75,6 @@ def distribute_reviews(asmt, perStudent):
         review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
         reviewsAssigned = len(review.submissions.all())
         # In case lecturer assigns reviews multiple times, or number of reviews changes. 
-        # TODO also need to cater for situation where reviewsAssigned > perStudent.
         if(reviewsAssigned < perStudent):
             for i in range(perStudent-reviewsAssigned):
                 index = random.randint(0, numSubs-1)

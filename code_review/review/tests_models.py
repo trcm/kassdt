@@ -43,7 +43,6 @@ class AssignmentReviewTest(TestCase):
     fixtures = ['some_annotations']
 
     def setUp(self):
-        # Assign the reviews. 
         self.course = Course.objects.get(pk=1)
         self.asmt = Assignment.objects.get(course_code=self.course, name="ASMT1")
 
