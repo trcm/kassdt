@@ -18,7 +18,6 @@ from review.helpers import *
 from django.test import LiveServerTestCase
 from selenium.webdriver.chrome import webdriver
 
-
 def setup_group(self):
     Group.objects.create(name='student')
 
@@ -208,17 +207,27 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_course_page(self):
-        self.selenium.get("%s" % self.server_url)
-        username_input = self.selenium.find_element_by_id("id_username")
-        password_input = self.selenium.find_element_by_id("id_password")
-        username_input.send_keys('tom')
-        password_input.send_keys('tom')
-        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+        self.login()
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         page_title = self.selenium.find_element_by_tag_name('h1')
-        self.assertEqual(page_title.text, "Assignments for ABCD1234")
 
+    def test_assignment_submission(self):
+        self.login()
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        self.selenium.find_element_by_xpath("//a[@href='Test 1/']").click()
+        self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
+        self.selenium.find_elements_by_xpath("//div[@class='input-group']/form/input")[1].send_keys('https://github.com/xagefu/test.git')
+        self.selenium.find_elements_by_xpath("//span[@class='input-group-btn']/input")[0].submit()
+        self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
+
+    def test_previous_submission(self):
+        self.login()
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        self.selenium.find_element_by_xpath("//a[@href='Test 1/']").click()
+        self.selenium.find_elements_by_xpath("//div[@class='well well-sm']/a")[0].submit()
 
 class SeleniumAnnotations(LiveServerTestCase):
     server_url =  'http://localhost:8000'
