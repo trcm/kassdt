@@ -241,7 +241,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         password_input.send_keys('tom')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
-    def test_create_annotation(self):
+    def test_00_create_annotation(self):
         
         """
         test_create_annotation(self)
@@ -261,7 +261,10 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
         self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
-    def test_delete_annotation(self):
+    def test_01_edit_annotation(self):
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Edit']").click()
+        
+    def test_02_delete_annotation(self):
         
         """
         test_delete_annotation 
