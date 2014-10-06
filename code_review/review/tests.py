@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.firefox import webdriver
+from selenium.webdriver.chrome import webdriver
 
 
 def setup_group(self):
@@ -134,9 +134,11 @@ class AnnotationTests(TestCase):
                                                      text="Test",
                                                      quote="Test")
         annotation.save()
-        rangeA = SourceAnnotationRange.objects.create(range_annotation=annotaion,
+        rangeA = SourceAnnotationRange.objects.create(range_annotation=annotation,
                                                       start=1,
-                                                      end=1)
+                                                      end=1,
+                                                      startOffset=1,
+                                                      endOffset=1)
         rangeA.save()
 
     def setUp(self):
@@ -159,28 +161,30 @@ class AnnotationTests(TestCase):
         annotation.save()
         rangeA = SourceAnnotationRange.objects.create(range_annotation=annotation,
                                                       start=1,
-                                                      end=1)
+                                                      end=1,
+                                                      startOffset=1,
+                                                      endOffset=1)
         rangeA.save()
 
         self.assertIn(annotation, SourceAnnotation.objects.all())
         self.assertIn(rangeA, SourceAnnotationRange.objects.all())
 
         
-    def test_delete_annotation(self):
-        # self.createAnnotation()
-        pass
+    # def test_delete_annotation(self):
+    #     # self.createAnnotation()
+    #     pass
 
-    def test_delete_invalid_annotation(self):
-        pass
+    # def test_delete_invalid_annotation(self):
+    #     pass
 
-    def test_edit_annotaion(self):
-        pass
+    # def test_edit_annotaion(self):
+    #     pass
 
-    def test_create_annotation_invalid_line_number(self):
-        pass 
+    # def test_create_annotation_invalid_line_number(self):
+    #     pass 
 
-    def test_create_annotation_blank_comment(self):
-        pass
+    # def test_create_annotation_blank_comment(self):
+    #     pass
         
 class MySeleniumTests(LiveServerTestCase):
     server_url = 'http://localhost:8000'
@@ -201,6 +205,7 @@ class MySeleniumTests(LiveServerTestCase):
         password_input = self.selenium.find_element_by_id("id_password")
         username_input.send_keys('tom')
         password_input.send_keys('tom')
+        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_course_page(self):
         self.selenium.get("%s" % self.server_url)
@@ -209,5 +214,64 @@ class MySeleniumTests(LiveServerTestCase):
         username_input.send_keys('tom')
         password_input.send_keys('tom')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
-        self.selenium.get("%s/review" % self.server_url)
-        self.selenium.get("%s/review/course/ABCD1234" % self.server_url)
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        page_title = self.selenium.find_element_by_tag_name('h1')
+        self.assertEqual(page_title.text, "Assignments for ABCD1234")
+
+
+class SeleniumAnnotations(LiveServerTestCase):
+    server_url =  'http://localhost:8000'
+    
+    @classmethod
+    def setUpClass(cls):
+        cls.selenium = webdriver.WebDriver()
+        super(SeleniumAnnotations, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super(SeleniumAnnotations, cls).tearDownClass()
+
+    def login(self):
+        self.selenium.get("%s" % self.server_url)
+        username_input = self.selenium.find_element_by_id("id_username")
+        password_input = self.selenium.find_element_by_id("id_password")
+        username_input.send_keys('tom')
+        password_input.send_keys('tom')
+        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+
+    def test_create_annotation(self):
+        
+        """
+        test_create_annotation(self)
+       
+        Tests that annotations can be created on a submission.  
+        Asserts that the annotation exits.
+        """
+
+        self.login()
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
+        self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
+        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
+        text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']").send_keys('selenium test')
+        self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
+        self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
+
+    def test_delete_annotation(self):
+        
+        """
+        test_delete_annotation 
+        Tests that the annotation created in the previous test can be deleted
+        """
+
+        self.selenium.get("%s" % self.server_url)
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
+        self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
+        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Delete']").click()
