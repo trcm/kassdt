@@ -310,7 +310,7 @@ def deletePost(request, course_code, post_uuid):
     currentUser = User.objects.get(id=request.session['_auth_user_id'])
     course_code = course_code.encode('ascii', 'ignore')
     try:
-        printf("deleted")
+        print "deleted"
         post = Post.objects.get(post_uuid=post_uuid)
         if post.by == currentUser.reviewuser or currentUser.is_staff:
             post.delete()

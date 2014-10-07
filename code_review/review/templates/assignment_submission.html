@@ -8,58 +8,48 @@
   {% if user.is_superuser %}
   <!-- Add stuff to allow superuser to edit assignment -->
   <div class="row">
-	<div class="col-md-3">
-		<div class="btn-group">
-			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
-		</div>
-	</div>
-	<div class="col-md-9"></div>
+  	<div class="col-md-3">
+  		<div class="btn-group">
+  			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+  		</div>
+  	</div>
+  	<div class="col-md-9"></div>
   </div>
   {% endif %}
- 
-<div class="row">
-<div class="col-md-2"></div>
-<div class="col-md-8">
-  <h2>Repository URL</h2>
-  <div class="form-group">
-    <div class="input-group">
-    <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
-      {% csrf_token %}
-      {{ form.submission_repository }}
-      <span class="input-group-btn">
-      	<input class="btn btn-danger" type="submit" value="Submit Assignment">
-      </span>
-    </form>
+  
+  <div class="col-md-10">
+    <h2>Repository URL</h2>
+    <div class="form-group">
+      <div class="input-group">
+        <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+          {% csrf_token %}      
+          <span class="input-group-btn">
+          {{ form.submission_repository }}
+          <input class="btn btn-danger" type="submit" value="Submit Assignment">
+          </span>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-
-<div class="col-md-2"></div>
-</div>
 
 <div class="row">
-<div class="col-md-2"></div>
-<div class="col-md-8">
-  <!-- Show form for new submission including previous submission information -->
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <!-- Show form for new submission including previous submission information -->
     <form method="POST" action="{% url 'submit_assignment' course.course_code asmt %}" >
     {% csrf_token %}
     <h1>{{ course.code_code }}</h1>
-    
     {% if submissions %}
-    <div class="well well-sm">
-    	<p>Your last submission was at: {{submissions.last.submission_date }}</p>
-        <a class="btn btn-primary" href="{% url 'submission' submissions.last.submission_uuid %}" >
-            View your last submission
-        </a>
-    </div>
-    <div>
-    </div>
+      <div class="well well-sm">
+    	  <p>Your last submission was at: {{submissions.last.submission_date }}</p>
+        <a class="btn btn-primary" href="{% url 'submission' submissions.last.submission_uuid %}">View your last submission</a>
+      </div>
     {% endif %}
-   
-
     {% if errMsg %}
-        <h3> ERROR! </h3>
-        {{ errMsg }}
+      <h3> ERROR! </h3>
+      {{ errMsg }}
     {% endif %}
   </form>
+  </div>
+</div>
 {% endblock %}

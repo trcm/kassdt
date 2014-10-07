@@ -43,7 +43,7 @@ from helpers import staffTest, LineException
 from helpers import staffTest, isTutor, enrolledTest
 
 # imports the form for assignment creation
-from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm, AssignmentTestForm
+from forms import AssignmentForm, UserCreationForm, AssignmentSubmissionForm, uploadFile, annotationForm, annotationRangeForm, AllocateReviewsForm, AssignmentTestForm, editAnnotationForm
 
 from django.utils import timezone
 
@@ -851,7 +851,11 @@ def grabFileData(request, submissionUuid, fileUuid):
         for a in annotationRanges:
             sortedAnnotations.append(a.range_annotation)
 
-        context['annotations'] = zip(sortedAnnotations, annotationRanges)
+        editForms = []
+        for a in sortedAnnotations:
+            editForms.append(editAnnotationForm(instance=a))
+
+        context['annotations'] = zip(sortedAnnotations, annotationRanges, editForms)
         context['sub'] = submissionUuid
         context['uuid'] = fileUuid
         context['files'] = folders
@@ -895,6 +899,11 @@ def createAnnotation(request, submissionUuid, fileUuid):
         # end = rangeForm['end'].value()
 
         if form.is_valid() and rangeForm.is_valid():
+            # text = form['text'].value()
+            # start = rangeForm['start'].value()
+            end = 0
+            text = form.cleaned_data['text']
+            start = rangeForm.cleaned_data['start']
 
             file = SourceFile.objects.get(file_uuid=fileUuid)
             lineCount = 0
@@ -972,9 +981,9 @@ def createAnnotation(request, submissionUuid, fileUuid):
     if not form.is_valid() or not rangeForm.is_valid():
         print "not valid"
         try:
-            p = Post.objects.get(post_uuid=submission_uuid)
+            p = Post.objects.get(post_uuid=submissionUuid)
             currentUser = User.objects.get(id=request.session['_auth_user_id'])
-            context = grabPostFileData(request, p.post_uuid, file_uuid)
+            context = grabPostFileData(request, p.post_uuid, fileUuid)
             # context['post'] = uuid
             context['form'] = form
             context['rangeform'] = rangeForm
@@ -1026,6 +1035,61 @@ def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
         return error_page(request, "Annotation doesn't exist")
 
 
+@login_required(login_url='/review/login_redirect/')
+def editAnnotation(request, submissionUuid, fileUuid, annoteId):
+
+    """
+    name - description
+    
+    Parameters:
+    parameters
+    
+    Returns:
+    type
+    """
+    # I KNOW THIS IS UGLY
+    if request.method == 'POST':
+        editForm = editAnnotationForm(request.POST)
+        if editForm.is_valid():
+            try:
+                annotation = SourceAnnotation.objects.get(id=annoteId.encode('ascii', 'ignore'))
+                new_text = editForm.cleaned_data['text']
+                annotation.text = new_text
+                annotation.save()
+
+                try:
+                    Post.objects.get(post_uuid=submissionUuid)
+                    print "This is a post "
+                    return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+                except Post.DoesNotExist:
+                    print "This is a assignment submission"
+                    return HttpResponseRedirect('/review/file/' +
+                                                submissionUuid +
+                                                '/' + fileUuid + '/')
+
+            except SourceAnnotation.DoesNotExist:
+                try:
+                    Post.objects.get(post_uuid=submissionUuid)
+                    print "This is a post "
+                    return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+                except Post.DoesNotExist:
+                    print "This is a assignment submission"
+                    return HttpResponseRedirect('/review/file/' +
+                                                submissionUuid +
+                                                '/' + fileUuid + '/')
+        # something is really wrong redirect to the file again
+    else:
+        try:
+            Post.objects.get(post_uuid=submissionUuid)
+            print "This is a post "
+            return HttpResponseRedirect('/help/file/' + submissionUuid + '/' + fileUuid + '/')
+        except Post.DoesNotExist:
+            print "This is a assignment submission"
+            return HttpResponseRedirect('/review/file/' +
+                                        submissionUuid +
+                                        '/' + fileUuid + '/')
+                
+        
 @login_required(login_url='/review/login_redirect/')
 def grabFile(request):
     """
