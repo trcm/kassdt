@@ -17,6 +17,7 @@ from review.helpers import *
 
 from django.test import LiveServerTestCase
 from selenium.webdriver.chrome import webdriver
+from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
     Group.objects.create(name='student')
@@ -206,28 +207,27 @@ class MySeleniumTests(LiveServerTestCase):
         password_input.send_keys('tom')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
-    def test_course_page(self):
+    def test_01_course_page(self):
         self.login()
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         page_title = self.selenium.find_element_by_tag_name('h1')
 
-    def test_assignment_submission(self):
-        self.login()
+    def test_02_assignment_submission(self):
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
-        self.selenium.find_element_by_xpath("//a[@href='Test 1/']").click()
+        self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_elements_by_xpath("//div[@class='input-group']/form/input")[1].send_keys('https://github.com/xagefu/test.git')
         self.selenium.find_elements_by_xpath("//span[@class='input-group-btn']/input")[0].submit()
         self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
 
-    def test_previous_submission(self):
-        self.login()
+    def test_03_previous_submission(self):
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
-        self.selenium.find_element_by_xpath("//a[@href='Test 1/']").click()
+        self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_elements_by_xpath("//div[@class='well well-sm']/a")[0].submit()
+
 
 class SeleniumAnnotations(LiveServerTestCase):
     server_url =  'http://localhost:8000'
@@ -271,6 +271,8 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
     def test_01_edit_annotation(self):
+        """ Can't really be tested until sheldon or debbie fix styling as the code for this is in styling 
+        and needs to be merged"""
         self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Edit']").click()
         
     def test_02_delete_annotation(self):
@@ -279,7 +281,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         test_delete_annotation 
         Tests that the annotation created in the previous test can be deleted
         """
-
+        error = False
         self.selenium.get("%s" % self.server_url)
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
@@ -287,3 +289,9 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Delete']").click()
+        try:
+            self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
+        except NoSuchElementException:
+            error = True
+
+        self.assertTrue(error)
