@@ -69,7 +69,7 @@ INSTALLED_APPS = (
     'lti',
     'unfriendly',
     'help',
-    'djcelery',
+    # 'djcelery',
     'django_nose',
     # 'ims_lti_py',
 )

@@ -1,7 +1,7 @@
 // This will hold all the ajax calls we'll need to make
 
 $(document).ready(function() {
-    console.log("Goliath standing by");
+    // console.log("Goliath standing by");
 
     // $(".reviewFile").click(function() {
     // 	console.log("Red File standing by");
