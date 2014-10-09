@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 # import models from review
 from review.models import *
-from review.forms import annotationForm, annotationRangeForm
+from review.forms import annotationForm, annotationRangeForm, editAnnotationForm
 # import needed code from help
 from help.models import Post
 
@@ -241,9 +241,8 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         print currentUser
         file = SourceFile.objects.get(file_uuid=file_uuid)
         print 'get file'
-        code = highlight(file.content, guess_lexer(file.content),
-                         HtmlFormatter(linenos="table"))
-        print code
+        # code = highlight(file.content, guess_lexer(file.content),
+        #                  HtmlFormatter(linenos="table"))
         folders = []
 
         # grab submission and all the associated files and folders
@@ -289,8 +288,21 @@ def grabPostFileData(request, submissionUuid, file_uuid):
         # grab the annotations again based on the sorted order
         for a in annotationRanges:
             sortedAnnotations.append(a.range_annotation)
+        editForms = []
+        for a in sortedAnnotations:
+            editForms.append(editAnnotationForm(instance=a))
+        annotationRanges.sort(key=lambda x: x.start)
 
-        context['annotations'] = zip(sortedAnnotations, annotationRanges)
+        # grab lines that need to be highlighted
+        hl_lines = []
+        for i in annotationRanges:
+            hl_lines.append(i.start)
+
+        # render the code from the file as html, highlighting the annotated lines
+        code = highlight(file.content, guess_lexer(file.content),
+                         HtmlFormatter(linenos="inline", hl_lines=hl_lines))
+
+        context['annotations'] = zip(sortedAnnotations, annotationRanges, editForms)
         context['post_uuid'] = submissionUuid
         context['post'] = post
         context['course_code'] = post.course_code.course_code

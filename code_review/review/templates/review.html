@@ -37,9 +37,9 @@
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
-     $(this).hide()
+     $(this).hide();
      $(this).next('div[id^=showEditBtns]').show();
-     console.log("sho")
+     console.log("show");
    });
 
  });
@@ -85,7 +85,6 @@
 	  {% csrf_token %}
 	  {{ editForm.as_ul }}
 	  <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
-	  <!-- <input class="btn btn-info" method="POST" id="saveBtn{{annote.id}}" href="{% url 'edit_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Save</a> -->
 	</form>
 
 	{% if annote.user == user.reviewuser or user.reviewuser.isStaff %}

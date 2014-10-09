@@ -272,12 +272,13 @@ class SeleniumAnnotations(LiveServerTestCase):
         # self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
     def test_01_edit_annotation(self):
-        """ Can't really be tested until sheldon or debbie fix styling as the code for this is in styling 
-        and needs to be merged"""
+        """ test_01_edit_annotation
+        Tests to check that the user can edit annotations they have made
+        """
         self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Edit']").click()
-        editBox = self.selenium.find_element_by_xpath("//input[@id='id_text']")
+        editBox = self.selenium.find_element_by_xpath("//textarea[@id='id_text']")
         editBox.send_keys("Editedit")
-        self.selenium.find_element_by_xpath("//input[@id=saveBtn107]").click()
+        self.selenium.find_element_by_xpath("//input[starts-with(@id, 'saveBtn')]").click()
         
     def test_02_delete_annotation(self):
         
