@@ -77,7 +77,7 @@
 <button id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">
   Edit 
 </button>
-<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}">Resolve</a>
+<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve</a>
 {% endif%}
 
 <div id="reviewFileName">
