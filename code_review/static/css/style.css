@@ -69,7 +69,7 @@
 /* global background */
 body {
 	background-color: black;
-	overflow-y:hidden;	
+  /* overflow-y:hidden; */
 	
 	
 }

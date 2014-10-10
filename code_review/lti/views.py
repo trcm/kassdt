@@ -178,11 +178,15 @@ def launch_lti(request):
         """ first time entry, create new user """
         print lti_username, email
         user = User.objects.create_user(username, email)
-        user.set_unusable_password()
+        p = first_name + last_name
+        print p
+        user.set_password(p)
+        # user.set_unusable_password()
         if first_name: user.first_name = first_name
         if last_name: user.last_name = last_name
         user.save()
         ru = ReviewUser.objects.create(djangoUser=user)
+
         try:
             print "adding course"
             c = Course.objects.get(course_code=course)

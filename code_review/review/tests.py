@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.chrome import webdriver
+from selenium.webdriver.firefox import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
@@ -162,13 +162,8 @@ class AnnotationTests(TestCase):
         rangeA = SourceAnnotationRange.objects.create(range_annotation=annotation,
                                                       start=1,
                                                       end=1,
-<<<<<<< HEAD
-                                                      startOffset=0,
-                                                      endOffset=0)
-=======
                                                       startOffset=1,
                                                       endOffset=1)
->>>>>>> 1b8ded9adf7023b04c14c832db91124f336f10a6
         rangeA.save()
 
         self.assertIn(annotation, SourceAnnotation.objects.all())
@@ -256,10 +251,6 @@ class SeleniumAnnotations(LiveServerTestCase):
         password_input.send_keys('tom')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
-<<<<<<< HEAD
-    def test_course_page(self):
-        login()
-=======
     def test_00_create_annotation(self):
         
         """
@@ -310,4 +301,3 @@ class SeleniumAnnotations(LiveServerTestCase):
             error = True
 
         self.assertTrue(error)
->>>>>>> 1b8ded9adf7023b04c14c832db91124f336f10a6
