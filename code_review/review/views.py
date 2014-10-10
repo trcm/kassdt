@@ -862,6 +862,7 @@ def grabFileData(request, submissionUuid, fileUuid):
         context['code'] = code
         context['file'] = file
         context['user'] = currentUser
+        context['courses'] = currentUser.reviewuser.courses.all()
         return context
     except AssignmentSubmission.DoesNotExist:
         error_page(request, "Submission does not exit")
@@ -1212,6 +1213,7 @@ def review(request, submissionUuid, **kwargs):
     """
     uuid = submissionUuid.encode('ascii', 'ignore')
     context = {}
+    currentUser = User.objects.get(id=request.session['_auth_user_id'])
 
     print "normal review"
     try:
@@ -1237,6 +1239,7 @@ def review(request, submissionUuid, **kwargs):
         # context['code'] = code
         # context['files'] = files
         # context['files'] = get_list(sub.root_folder, [])
+        context['courses'] = currentUser.reviewuser.courses.all()
         return render(request, 'review.html', context)
 
     except AssignmentSubmission.DoesNotExist:
