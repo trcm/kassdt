@@ -46,33 +46,32 @@ $(document).ready( function() {
 
 function annotationHighlight() {
     console.log("Even In Death I Still Serve");
-    // var arr = $('#startLine ul').map(function(){
-    //     return $(this).text();
-    // }).get();
+     var arr = $('#startLine ul').map(function(){
+         return $(this).text();
+     }).get();
 
-    // console.log(arr);
-    // //So say we have some list or array of start points
-    // var array = [1,3,5,7,9];
-    // //We could run this function over that array and it 
-    // //would find and highlight all start points as per the
-    // //.highlight css class
-    // var text = '2';
-    // var s = $('.linenos');
-    // // s.contents().wrapInner("<i id=\"click\" ></i>");
+     console.log(arr);
+     //So say we have some list or array of start points
+     //We could run this function over that array and it 
+     //would find and highlight all start points as per the
+     //.highlight css class
+     var text = '2';
+     var s = $('.linenos');
+      s.contents().wrapInner("<i id=\"click\" ></i>");
     
-    // for(z = 0; z < arr.length; z++) {
-    // 	$( '.linenos' ).html( function ( i, html ) {
-    //         var regexp, replacement;
-    //         x = parseInt(arr[z]);
-    //         console.log(x);
-    //         regexp = RegExp( '(' + x + ')' );
-    //         replacement = '<span class="highlight">$1</span>';
-    //         return html.replace( regexp, replacement );
-    // 	});
-    // }
+    for(z = 0; z < arr.length; z++) {
+      $( '.lineno' ).html( function ( i, html ) {
+        var regexp, replacement;
+        x = parseInt(arr[z]);
+        //console.log(x);
+        regexp = RegExp( '(' + x + ')' );
+        replacement = '<span class="highlight">$1</span>';
+        return html.replace( regexp, replacement );
+      });
+    }
     $(".lineno").each(function() {
-	// console.log($(this).text());
-	$(this).addClass("click");
+	    console.log($(this).text());
+	    $(this).addClass("click");
     });
     $("#annotationForm").hide();
 
