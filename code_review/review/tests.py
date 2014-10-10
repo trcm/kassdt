@@ -193,6 +193,8 @@ class MySeleniumTests(LiveServerTestCase):
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
         super(MySeleniumTests, cls).setUpClass()
+        '''
+        '''
 
     @classmethod
     def tearDownClass(cls):
@@ -236,6 +238,12 @@ class SeleniumAnnotations(LiveServerTestCase):
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
         super(SeleniumAnnotations, cls).setUpClass()
+        '''
+        options = webdriver.ChromeOptions()
+        options.add_argument("--start-maximised");
+        cls.selenium = webdriver.Chrome(chrome_options=options)
+        '''
+        cls.selenium.maximize_window()
 
     @classmethod
     def tearDownClass(cls):
@@ -267,6 +275,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
+        #self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']").send_keys('selenium test')
         self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
         # self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
