@@ -13,16 +13,22 @@
   	<div class="panel panel-primary">
   	  	<div class="panel-heading">
   	  		<div class="panel-title">
-  	  			<span class="glyphicon glyphicon-qrcode"></span> Course Code - 
-  	  			<span class="glyphicon glyphicon-sort-by-alphabet"></span> Name - 
-  	  			<span class="glyphicon glyphicon-book"></span> No. of Assignments
+  	  			<span id="course_code"><span class="glyphicon glyphicon-qrcode"></span> Course Code</span>
+  	  			<span id="course_name"><span class="glyphicon glyphicon-sort-by-alphabet"></span> Name</span>
+				<span id="course_assignments"><span class="glyphicon glyphicon-book"></span> No. of Assignments</span>
   	  		</div>
   	  	</div>
 	  	<div class="panel-body">
-		  {% for course in courses  %}
-		  	{{ course.course_code }} - {{ course.course_name }} - {{ course.assignments.count }}
-		  	<br />
-		  {% endfor %}
+	  	<table class="table">
+	  		{% for course in courses  %}
+		  	<tr>
+		  		<td>{{ course.course_code }}</td>
+		  		<td>{{ course.course_name }}</td>
+		  		<td>{{ course.assignments.count }}</td>
+		  	</tr>
+		  {% endfor %}	
+	  	</table>
+		  
 	  	</div>
   	</div>
 
