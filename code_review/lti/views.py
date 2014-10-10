@@ -90,6 +90,8 @@ def launch_lti(request):
 
     """ RETRIEVE username, names, email and roles.  These may be specific to the consumer,
     in order to change them from the default values:  see README.txt """
+    username = get_lti_value('username', tool_provider, encoding=encoding)
+    username = username().lower()
     first_name = get_lti_value(settings.LTI_FIRST_NAME, tool_provider, encoding=encoding)
     last_name = get_lti_value(settings.LTI_LAST_NAME, tool_provider, encoding=encoding)
     email = get_lti_value(settings.LTI_EMAIL, tool_provider, encoding=encoding)
@@ -175,7 +177,7 @@ def launch_lti(request):
     except User.DoesNotExist:
         """ first time entry, create new user """
         print lti_username, email
-        user = User.objects.create_user(lti_username, email)
+        user = User.objects.create_user(username, email)
         user.set_unusable_password()
         if first_name: user.first_name = first_name
         if last_name: user.last_name = last_name
