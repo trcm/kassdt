@@ -9,17 +9,14 @@
 
   <!-- for loop grabs the courses from the context dictionary and
   displays them in the format course_code - course_name - number of assignments -->
-
-  	<div class="panel panel-primary">
-  	  	<div class="panel-heading">
-  	  		<div class="panel-title">
-  	  			<span id="course_code"><span class="glyphicon glyphicon-qrcode"></span> Course Code</span>
-  	  			<span id="course_name"><span class="glyphicon glyphicon-sort-by-alphabet"></span> Name</span>
-				<span id="course_assignments"><span class="glyphicon glyphicon-book"></span> No. of Assignments</span>
-  	  		</div>
-  	  	</div>
-	  	<div class="panel-body">
+	<div class="panel panel-default">
+	  <div class="panel-body">
 	  	<table class="table">
+	  		<tr id="blue_title">
+	  			<th><span class="glyphicon glyphicon-qrcode"></span> Code</th>
+	  			<th><span class="glyphicon glyphicon-sort-by-alphabet"></span> Name</th>
+	  			<th><span class="glyphicon glyphicon-book"></span> Assignments</th>
+	  		</tr>
 	  		{% for course in courses  %}
 		  	<tr>
 		  		<td>{{ course.course_code }}</td>
@@ -27,9 +24,12 @@
 		  		<td>{{ course.assignments.count }}</td>
 		  	</tr>
 		  {% endfor %}	
-	  	</table>
-		  
-	  	</div>
+	</table>
+	  </div>
   	</div>
 
+	
+
+	<br />
+		 
 {% endblock %}

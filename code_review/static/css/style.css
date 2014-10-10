@@ -71,8 +71,6 @@ body {
 	background-color: black;
 }
 
-
-
 .highlightTable {
   background-color: red;
   width:512px;
@@ -282,13 +280,25 @@ body {
 /*********/
 /* COURSE LIST PAGE */
 /********/
+
+#course_code{
+}
+
 #course_name{
-	margin-left: 40px;
+	margin-right: 10px;
 }
 
 #course_assignments{
-	float: right;
-	display: inherit;
+	margin-left: 20px;
+}
+
+#blue_title{
+	background-color: #428BCA;
+	color: white
+}
+
+#course_list_table{
+	border-radius: 25px;
 }
 
 
