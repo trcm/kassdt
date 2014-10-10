@@ -255,9 +255,9 @@ body {
 #reviewPane {
 	background-color: #e5e5e5;
 	width:1280px;
-	overflow-y:scroll;
+  /* overflow-y:scroll; */
 	height:570px;
-	position:relative;
+  /* position:relative; */
 	bottom: 16px;
 
 }
