@@ -257,7 +257,6 @@ body {
 	height:570px;
   /* position:relative; */
 	bottom: 16px;
-
 }
 
 
@@ -281,24 +280,8 @@ body {
 /* COURSE LIST PAGE */
 /********/
 
-#course_code{
-}
-
-#course_name{
-	margin-right: 10px;
-}
-
-#course_assignments{
-	margin-left: 20px;
-}
-
 #blue_title{
 	background-color: #428BCA;
 	color: white
 }
-
-#course_list_table{
-	border-radius: 25px;
-}
-
 
