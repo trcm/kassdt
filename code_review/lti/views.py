@@ -139,11 +139,11 @@ def launch_lti(request):
     try:
         """ Check if user already exists using email, if not create new """
         user = User.objects.get(email=email)
-        if user.username != lti_username:
-            """ If the username is not in the format user_id, change it and save.  This could happen
-            if there was a previously populated User table. """
-            user.username = lti_username
-            user.save()
+        # if user.username != lti_username:
+        #     """ If the username is not in the format user_id, change it and save.  This could happen
+        #     if there was a previously populated User table. """
+        #     user.username = lti_username
+        #     user.save()
         try:
             print "adding course"
             print('course is ' + course)
