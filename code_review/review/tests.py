@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.chrome import webdriver
+from selenium.webdriver.firefox import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
@@ -187,6 +187,7 @@ class AnnotationTests(TestCase):
     #     pass
         
 class MySeleniumTests(LiveServerTestCase):
+    fixtures = ['fixtures/dump.json']
     server_url = 'http://localhost:8000'
 
     @classmethod
@@ -302,7 +303,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
-        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Delete']").click()
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[2]").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
         except NoSuchElementException:
