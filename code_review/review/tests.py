@@ -294,7 +294,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
-        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[text() = 'Delete']").click()
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[2]").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
         except NoSuchElementException:

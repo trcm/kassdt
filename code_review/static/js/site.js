@@ -71,43 +71,45 @@ function annotationHighlight() {
     // 	});
     // }
     $(".lineno").each(function() {
-	console.log($(this).text());
+	// console.log($(this).text());
 	$(this).addClass("click");
     });
-  $("#annotationForm").hide();
+    $("#annotationForm").hide();
 
-   $(".click").click(function() {
-     p = parseInt( $(this).text());
-     console.log(p);
-     $("input[name*='start']").val(p); 
+    $(".click").click(function() {
+	p = parseInt( $(this).text());
+	// console.log(p);
+	$("input[name*='start']").val(p); 
 
-     $("#annotationForm").show();
-     $("#annotationForm #id_text").focus();
-   });
+	$("#annotationForm").show();
+	$("#annotationForm #id_text").focus();
+    });
 
-   $("form[id^='editForm']").each(function() {
-     console.log("form hide");
-     $(this).hide();
-   });
+    $("form[id^='editForm']").each(function() {
+	console.log("form hide");
+	$(this).hide();
+    });
 
-   $("a[id^='saveBtn']").each(function() {
-     $(this).hide();
-   });
+    $("a[id^='saveBtn']").each(function() {
+	$(this).hide();
+    });
 
-   $("a[id^='cancelBtn']").each(function() {
-     $(this).hide();
-   });  /*  */
-   
-   $("a[id^='editBtn']").click(function() {
-     $(this).prev("form").show();
-     $(this).next("a[id^='saveBtn']").show();
-     $(this).next("a[id^='cancelBtn']").show();
-     $(this).hide();
-     $(this).next('div[id^=showEditBtns]').show();
-     console.log("show");
-   });
-
+    $("a[id^='cancelBtn']").each(function() {
+	$(this).hide();
+    });  /*  */
+    
+    $("a[id^='editBtn']").click(function() {
+	$(this).prev("form").show();
+	$(this).next("a[id^='saveBtn']").show();
+	$(this).next("a[id^='cancelBtn']").show();
+	$(this).hide();
+	$(this).next('div[id^=showEditBtns]').show();
+	console.log("show");
+    });
+    $("a[id^='cancelBtn']").click(function() {
+	$(this).prev("a[id^='saveBtn']").hide();
+	$(this).prev("form").hide();
+	$(this).hide();
+    });
 }
-
-
 
