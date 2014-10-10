@@ -37,9 +37,8 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 	                            <input class="btn btn-default btn-block" type="submit" value="View assignment page">
 	                        </form>
                     	</td>
-                    	<td>
-                    		<a class="btn btn-danger btn-block" href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">Submit Assignment</a>
-                    	</td>
+                    	<!-- REMOVED due to feedback
+                    	<a class="btn btn-danger btn-block" href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">Submit Assignment</a> -->
           			</tr>
                 </tbody>
                 {% endfor %}

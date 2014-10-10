@@ -14,9 +14,12 @@ $(document).ready( function() {
     $("#id_password").addClass("form-control");
     $("#id_password").attr("placeholder","Password");
     
+    //styling assignment of reviews
+    $("#id_reviews_per_student").addClass("form-control");
+    $("#id_min_annotations").addClass("form-control");
+
     //styling assignment submission
     $("#id_submission_repository").addClass("form-control");
-    
     
     //make drop down draggable
     $("#draggable").draggable({ axis: "y" });    
