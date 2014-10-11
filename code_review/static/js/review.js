@@ -8,3 +8,5 @@ $(function(){
 
   $( "#accordion" ).accordion();
 });
+
+$(".reviewCode.").tooltip({ predelay: 0 });
