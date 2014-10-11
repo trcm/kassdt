@@ -25,7 +25,7 @@
 #assignmentList {
 	padding-top: 40px;
 	width: 100%;
-	background-color: #6A2885;
+	background-color: #4B5882;
 	background-repeat: repeat-x;
 }
 
@@ -69,7 +69,7 @@
 /* global background */
 body {
 	background-color: black;
-  /* overflow-y:hidden; */
+  
 	
 	
 }
@@ -147,8 +147,6 @@ body {
   height:100%;
   float:right;
   padding-bottom:10px;
-  
-  
   
 }
 
@@ -258,10 +256,11 @@ body {
 #reviewPane {
 	background-color: #e5e5e5;
 	width:1280px;
-  /* overflow-y:scroll; */
-	height:570px;
+	overflow-y:scroll;
+	height:100%;
+	display: inline;
   /* position:relative; */
-	bottom: 16px;
+	
 
 }
 
