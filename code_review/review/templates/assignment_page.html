@@ -12,8 +12,8 @@
 <div class="row">  
     {% if user.is_superuser %}
         <!-- Add stuff to allow superuser to edit assignment -->
-        <div class="col-md-3">
-                <div class="btn-group">
+        <div class="col-md-3" id="adminTools">
+                <div class="btn-group" id="adminToolsButtons">
                         <a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>           
                         {% if user.is_superuser or user.isStaff %}
                           <a class="btn btn-default" href="assign_reviews"><span class="glyphicon glyphicon-user"></span> Assign Reviews</a>

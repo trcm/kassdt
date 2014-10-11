@@ -110,32 +110,73 @@ class AssignReviewsTest(TestCase):
                 self.assertNotEqual(sub.by, user)
     
     def test_distribute_reviews_reduce_reviews(self):
-        pass
         '''Test that when reviews have already been assigned, and the 
         admin wants to reduce the number of reviews per student, that
         they are able to correctly.
-        # First assign some reviews ...
-        numRevs = 3 
+        '''
+
+        # Test on COMP3301 course 
+        numSubs = len(self.latest)
+        numRevs = max(3, numSubs-3)
         distribute_reviews(self.operatingSys, numRevs)
-        
         # Now reduce. 
         numRevs = numRevs - 2
         distribute_reviews(self.operatingSys, numRevs)
-        asmtRevs = AssignmentReview.objects.filter(assignment=self.operatingSys)
-        self.assertEquals(numRevs, len(self.compUsers))
         
         # Check each user got the right number of reviews to do
         for user in self.compUsers:
+            reviewErr = 0
+            # Check that staff haven't been assigned reviews 
+            if (user.djangoUser.is_staff or user.djangoUser.is_superuser):
+                try:
+                    asmtRev = AssignmentReview.objects.get(by=user, assignment=self.operatingSys)
+                except AssignmentReview.DoesNotExist:
+                    reviewErr = 1
+
+                self.assertTrue(reviewErr)
+                continue 
+            
+            asmtRev = AssignmentReview.objects.get(by=user, assignment=self.operatingSys)
             # Get the assignment review this user has 
-            asmtRev = AssignmentReview.objects.get(by=user)
             self.assertEqual(numRevs, AssignmentReview.numReviewsRemaining(asmtRev))
-            subs = asmtRev.subs
-            self.assertEqual(numRevs, subs)
+            subs = asmtRev.submissions.all()
+            self.assertEqual(numRevs, len(subs))
 
             # Check they didn't get their own submisson to review
             for sub in subs:
                 self.assertNotEqual(sub.by, user)
-        '''
+        
+    def test_distribute_reviews_increase_reviews(self):
+        # Test on COMP3301 course 
+        numSubs = len(self.latest)
+        numRevs = max(3, numSubs-3)
+        distribute_reviews(self.operatingSys, numRevs)
+        # Now increase number of reviews. 
+        numRevs = numRevs + 1
+        distribute_reviews(self.operatingSys, numRevs)
+        
+        # Check each user got the right number of reviews to do
+        for user in self.compUsers:
+            reviewErr = 0
+            # Check that staff haven't been assigned reviews 
+            if (user.djangoUser.is_staff or user.djangoUser.is_superuser):
+                try:
+                    asmtRev = AssignmentReview.objects.get(by=user, assignment=self.operatingSys)
+                except AssignmentReview.DoesNotExist:
+                    reviewErr = 1
+
+                self.assertTrue(reviewErr)
+                continue 
+            
+            asmtRev = AssignmentReview.objects.get(by=user, assignment=self.operatingSys)
+            # Get the assignment review this user has 
+            self.assertEqual(numRevs, AssignmentReview.numReviewsRemaining(asmtRev))
+            subs = asmtRev.submissions.all()
+            self.assertEqual(numRevs, len(subs))
+
+            # Check they didn't get their own submisson to review
+            for sub in subs:
+                self.assertNotEqual(sub.by, user)
 
     def test_distribute_reviews_reduce_reviews_annotations(self):
         '''Test reducing the number of reviews when students have already
@@ -144,31 +185,3 @@ class AssignReviewsTest(TestCase):
         '''
         pass
 
-    def test_distribute_reviews_increase_reviews(self):
-        pass
-        '''Test that when reviews have already been assigned, and the
-        admin wants to increase the number of reviews per student, that
-        they are able to do so.
-        # First assign some reviews ...
-        numSubs = len(self.opSubs)
-        numRevs = 1
-        distribute_reviews(self.operatingSys, numRevs)
-        
-        # Now increase. 
-        numRevs = numSubs - 2
-        distribute_reviews(self.operatingSys, numRevs)
-        asmtRevs = AssignmentReview.objects.filter(assignment=self.operatingSys)
-        self.assertEquals(numRevs, len(self.compUsers))
-        
-        # Check each user got the right number of reviews to do
-        for user in self.compUsers:
-            # Get the assignment review this user has 
-            asmtRev = AssignmentReview.objects.get(by=user)
-            self.assertEqual(numRevs, AssignmentReview.numReviewsRemaining(asmtRev))
-            subs = asmtRev.subs
-            self.assertEqual(numRevs, subs)
-
-            # Check they didn't get their own submisson to review
-            for sub in subs:
-                self.assertNotEqual(sub.by, user)
-         '''       
