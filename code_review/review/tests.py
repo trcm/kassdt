@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.firefox import webdriver
+from selenium.webdriver.chrome import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
@@ -239,11 +239,6 @@ class SeleniumAnnotations(LiveServerTestCase):
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
         super(SeleniumAnnotations, cls).setUpClass()
-        '''
-        options = webdriver.ChromeOptions()
-        options.add_argument("--start-maximised");
-        cls.selenium = webdriver.Chrome(chrome_options=options)
-        '''
         cls.selenium.maximize_window()
 
     @classmethod
@@ -303,7 +298,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
-        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[2]").click()
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[@text='Delete']").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
         except NoSuchElementException:

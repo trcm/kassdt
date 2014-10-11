@@ -58,7 +58,7 @@ def distribute_reviews(asmt, perStudent):
 
     # Get all submissions for this assignment.
     subs = AssignmentSubmission.objects.filter(submission_for=asmt)
-    print subs
+    #print subs
     course = asmt.course_code
     users = ReviewUser.objects.filter(courses=course)
     numUsers = len(users)
@@ -68,6 +68,7 @@ def distribute_reviews(asmt, perStudent):
     print 'number of submissions: ', numSubs
     
     for user in users:
+        print user
         # Don't want to make staff review stuff.
         if(user.djangoUser.is_staff or user.djangoUser.is_superuser):
             continue
@@ -75,6 +76,7 @@ def distribute_reviews(asmt, perStudent):
         review = AssignmentReview.objects.get_or_create(by=user, assignment=asmt)[0]
         reviewsAssigned = len(review.submissions.all())
         # In case lecturer assigns reviews multiple times, or number of reviews changes. 
+        print ("reviewsAssigned", reviewsAssigned)
         if(reviewsAssigned < perStudent):
             for i in range(perStudent-reviewsAssigned):
                 index = random.randint(0, numSubs-1)
@@ -84,8 +86,12 @@ def distribute_reviews(asmt, perStudent):
                 # NB in the amazing edge case where this user is the only person who 
                 # submitted the assignment, we get an infinite loopevi
                 # Also don't want student to be assigned same submission twice.
-                while(submission.by == user or submission in review.submissions.all()):
+                while((submission.by == user) or (submission in review.submissions.all())):
+                    print submission.by == user
+                    #print review.submissions.all()
+                    #print "in the while loop"
                     index = random.randint(0, numSubs-1)
+                    print index
                     submission = latestSubmissions[index]
                  
                 review.submissions.add(submission)
