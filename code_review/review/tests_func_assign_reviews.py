@@ -14,6 +14,7 @@ from selenium.webdriver.chrome import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 from review.tests import *
+from time import sleep
 
 class AssignReviewsTest(LiveServerTestCase):
     server_url = 'http://localhost:8000'
@@ -43,4 +44,11 @@ class AssignReviewsTest(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("COMP3301").click()
         self.selenium.find_element_by_xpath("//a[@href='OperatingSystems/']").click()
         self.selenium.find_element_by_xpath("//div[@id='adminTools']/div[@id='adminToolsButtons']/a[@href='assign_reviews']").click()
+
+        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_reviews_per_student']").clear()
+        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_reviews_per_student']").send_keys('3')
+        sleep(10)
+        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_min_annotations']").clear()
+        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_min_annotations']").send_keys('5')
+        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@type='submit']").click()
 
