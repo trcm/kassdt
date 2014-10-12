@@ -1,4 +1,3 @@
-<div id="wrapper">
 <!-- Template for viewing and creation annotations on source code -->
 {% extends 'navbar.html' %}
 
@@ -9,38 +8,38 @@
 <script>
  $(document).ready(function() {
    annotationHighlight();
-   $("annotationForm").hide();
+   /* $("#annotationForm").hide();
 
    $(".click").click(function() {
-     p = parseInt( $(this).text());
-     console.log(p);
-     $("input[name*='start']").val(p); 
+   p = parseInt( $(this).text());
+   console.log(p);
+   $("input[name*='start']").val(p); 
 
-     $("#annotationForm").show();
-     $("#annotationForm #id_text").focus();
+   $("#annotationForm").show();
+   $("#annotationForm #id_text").focus();
    });
 
    $("form[id^='editForm']").each(function() {
-     console.log("form hide");
-     $(this).hide();
+   console.log("form hide");
+   $(this).hide();
    });
 
    $("a[id^='saveBtn']").each(function() {
-     $(this).hide();
+   $(this).hide();
    });
 
    $("a[id^='cancelBtn']").each(function() {
-     $(this).hide();
+   $(this).hide();
    });  /*  */
    
-   $("a[id^='editBtn']").click(function() {
+  /* $("a[id^='editBtn']").click(function() {
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
-     $(this).hide()
+     $(this).hide();
      $(this).next('div[id^=showEditBtns]').show();
-     console.log("sho")
-   });
+     console.log("show");
+   }); *//*  */
 
  });
 </script>
@@ -66,7 +65,7 @@
 </div>
 
 <div id="reviewPane">
-  <div id="reviewCode">
+  <div id="reviewCode" title="Click the line number you would like to annotate">
     <!-- render the source file in the html -->
     {% if code %}
     {{ code | safe}} 
@@ -85,15 +84,14 @@
 	  {% csrf_token %}
 	  {{ editForm.as_ul }}
 	  <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
-	  <!-- <input class="btn btn-info" method="POST" id="saveBtn{{annote.id}}" href="{% url 'edit_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Save</a> -->
 	</form>
 
 	{% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
 	<a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
+	<a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
 	<a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
 
 	<!-- button to save changes -->
-	<a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
 	{% endif%}
       </div>
       {% endfor %}
@@ -122,4 +120,3 @@
   {% endfor %}
 </div>
 {% endblock %}
-</div>

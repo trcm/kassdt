@@ -25,7 +25,7 @@
 #assignmentList {
 	padding-top: 40px;
 	width: 100%;
-	background-color: #6A2885;
+	background-color: #4B5882;
 	background-repeat: repeat-x;
 }
 
@@ -143,8 +143,6 @@ body {
   float:right;
   padding-bottom:10px;
   
-  
-  
 }
 
 /* annotation text box on review page */
@@ -223,18 +221,14 @@ body {
 
 #reviewFiles li {
 	position: relative;
-	top:10px;
-	
-	display:inline-block;
+	top: 10px;
+	display: inline-block;
 	
 }
 
 #reviewFiles ul {
-	
     list-style-type:none;
     display:inline-block;
-    
-   
 }
 
 #reviewFiles a.current {
@@ -243,23 +237,18 @@ body {
 
 #reviewFileName h5{
 	visibility:hidden;
-	
-	
-	
-	
 }
 
 /* pane div on review page contianing both the code pane and the annotation pane */
 #reviewPane {
 	background-color: #e5e5e5;
 	width:1280px;
-  /* overflow-y:scroll; */
-	height:570px;
-  /* position:relative; */
-	bottom: 16px;
+	overflow-y:auto;
+	height:100%;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
 }
-
-
 
 /*********/
 /* POSTS */
@@ -269,16 +258,8 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	width:1280px;
+	
 	overflow-y:hidden;
-}
-
-/*********/
-/* COURSE LIST PAGE */
-/********/
-
-#blue_title{
-	background-color: #428BCA;
-	color: white
 }
 
 /*******/
