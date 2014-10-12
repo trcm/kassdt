@@ -25,7 +25,7 @@
 #assignmentList {
 	padding-top: 40px;
 	width: 100%;
-	background-color: #6A2885;
+	background-color: #4B5882;
 	background-repeat: repeat-x;
 }
 
@@ -143,8 +143,6 @@ body {
   float:right;
   padding-bottom:10px;
   
-  
-  
 }
 
 /* annotation text box on review page */
@@ -223,18 +221,14 @@ body {
 
 #reviewFiles li {
 	position: relative;
-	top:10px;
-	
-	display:inline-block;
+	top: 10px;
+	display: inline-block;
 	
 }
 
 #reviewFiles ul {
-	
     list-style-type:none;
     display:inline-block;
-    
-   
 }
 
 #reviewFiles a.current {
@@ -243,62 +237,105 @@ body {
 
 #reviewFileName h5{
 	visibility:hidden;
-	
-	
-	
-	
 }
 
 /* pane div on review page contianing both the code pane and the annotation pane */
 #reviewPane {
 	background-color: #e5e5e5;
 	width:1280px;
-  /* overflow-y:scroll; */
-	height:570px;
-  /* position:relative; */
-	bottom: 16px;
-
+	overflow-y:auto;
+	height:100%;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
 }
-
-
 
 /*********/
 /* POSTS */
 /*********/
 
-#help {
-  padding-top: 40px;
-}
-
 #wrapper {
 	margin-left: auto;
 	margin-right: auto;
 	width:1280px;
+	
 	overflow-y:hidden;
 }
 
-/*********/
-/* COURSE LIST PAGE */
-/********/
+/*******/
+/* BOOTSTRAP CALLOUT STYLES */
+/*******/
 
-#course_code{
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+    background-color: white;
 }
 
-#course_name{
-	margin-right: 10px;
+.bs-callout h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
 }
 
-#course_assignments{
-	margin-left: 20px;
+.bs-callout p:last-child {
+    margin-bottom: 0;
 }
 
-#blue_title{
-	background-color: #428BCA;
-	color: white
+.bs-callout code {
+    border-radius: 3px;
 }
 
-#course_list_table{
-	border-radius: 25px;
+.bs-callout+.bs-callout {
+    margin-top: -5px;
 }
 
+.bs-callout-default {
+    border-left-color: #777;
+}
 
+.bs-callout-default h4 {
+    color: #777;
+}
+
+.bs-callout-primary {
+    border-left-color: #428bca;
+}
+
+.bs-callout-primary h4 {
+    color: #428bca;
+}
+
+.bs-callout-success {
+    border-left-color: #5cb85c;
+}
+
+.bs-callout-success h4 {
+    color: #5cb85c;
+}
+
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+
+.bs-callout-danger h4 {
+    color: #d9534f;
+}
+
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+
+.bs-callout-warning h4 {
+    color: #f0ad4e;
+}
+
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+
+.bs-callout-info h4 {
+    color: #5bc0de;
+}

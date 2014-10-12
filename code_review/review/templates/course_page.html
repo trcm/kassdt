@@ -7,16 +7,17 @@
 
 {% if user.is_superuser %}
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="btn-group">
 			<a class="btn btn-success" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
-			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+      <a class="btn btn-primary" href="{% url 'help' course.course_code %}"><span class="glyphicon glyphicon-question-sign"></span> Get help</a>
+      <a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
+
 		</div>
 	</div>
-	<div class="col-md-9"></div>
+	<div class="col-md-8"></div>
 </div>
 {% endif %}
-<a class="btn btn-primary" href="{% url 'help' course.course_code %}">Get help</a>
 
 {% if tutor %}
 Tutor Dawg
