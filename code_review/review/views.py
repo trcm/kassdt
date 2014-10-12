@@ -1040,17 +1040,27 @@ def deleteAnnotation(request, submissionUuid, fileUuid, annoteId):
 def editAnnotation(request, submissionUuid, fileUuid, annoteId):
 
     """
-    name - description
+    editAnnotation - edit a specific annotation.
     
     Parameters:
-    parameters
-    
+    request(HttpRequest) - http request from the user to edit annotation
+    submissionUUID(UUID) - identifier for the files submission
+    fileUuid(UUID) - identifier for the specific file
+    annoteID(int) - ID for the annotation
+
     Returns:
-    type
+    HTTPRequest
     """
     # I KNOW THIS IS UGLY
     if request.method == 'POST':
+        print 'post'
         editForm = editAnnotationForm(request.POST)
+        i = str(editForm['text'].value())
+        # if the text box is empty, delete the annotation
+        if len(i) == 0:
+            return deleteAnnotation(request, submissionUuid, fileUuid,
+                                    annoteId)
+            
         if editForm.is_valid():
             try:
                 annotation = SourceAnnotation.objects.get(id=annoteId.encode('ascii', 'ignore'))
@@ -1079,6 +1089,8 @@ def editAnnotation(request, submissionUuid, fileUuid, annoteId):
                                                 submissionUuid +
                                                 '/' + fileUuid + '/')
         # something is really wrong redirect to the file again
+    elif editForm['text'] == '':
+        print "blurgh"
     else:
         try:
             Post.objects.get(post_uuid=submissionUuid)
