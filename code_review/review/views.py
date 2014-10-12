@@ -1208,23 +1208,17 @@ def review(request, submissionUuid, **kwargs):
         raise Http404
 
 
-def grabFiles(root):
-    # Tree traversal
-    folders = []
-    s = []
-    s.append(root)
-    while len(s) > 0:
-        v = s.pop()
-        if v not in folders:
-            folders.append(v)
-            print v
-            for i in v.folders.all():
-                s.append(i)
-            for i in v.files.all():
-                if i not in folders:
-                    folders.append(i)
+def grabFiles(dir, prefix=""):
+    files = []
+    
+    for folder in dir.folders.all():
+        files = files + grabFiles(folder, prefix + "/" + folder.name)
 
-    return folders
+    for file in dir.files.all():
+        file.path = prefix + "/" + file.name
+        files.append(file)
+
+    return files
 
 
 def get_list(root_folder, theList):
