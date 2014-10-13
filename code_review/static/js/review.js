@@ -7,6 +7,7 @@ $(function(){
   });
 
     $( "#accordion" ).accordion({
+	collapsible: true,
 	autoHeight: false,
 	activate: function( event, ui ) {
 	    var h = accordHeight();
