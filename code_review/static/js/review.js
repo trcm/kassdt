@@ -6,7 +6,19 @@ $(function(){
     }
   });
 
-  $( "#accordion" ).accordion();
+    $( "#accordion" ).accordion({
+	autoHeight: false,
+	activate: function( event, ui ) {
+	    var h = accordHeight();
+	    console.log(h);
+	    $(".ui-accordion-content-active").css('height', h);
+	}
+    });
+
+   var accordHeight = function() {
+     var h = $("p#comment").height() + 100;
+     return h;
+   };
 });
 
 

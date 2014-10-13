@@ -21,8 +21,8 @@
    });
 
    $("form[id^='editForm']").each(function() {
-   console.log("form hide");
-   $(this).hide();
+     console.log("form hide");
+     $(this).hide();
    });
 
    $("a[id^='saveBtn']").each(function() {
@@ -34,6 +34,10 @@
    });  
    
    $("a[id^='editBtn']").click(function() {
+     var h = accordHeight() + 250;
+     console.log($("#id_text").height());
+     $(".ui-accordion-content-active").css('height', h);
+     console.log(h);
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
@@ -42,6 +46,29 @@
      console.log("show");
    }); 
 
+   /*
+   $(".ui-accordion-header").click(function() {
+     var h = accordHeight();
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+   });
+   */
+
+   var accordHeight = function() {
+     var h = $("p#comment").height() + 120;
+     return h;
+   };  
+
+   $("a[id^='cancelBtn']").click(function() {
+     var f = $(this).prev().prev().hide();
+     console.log(f);
+     $(this).prev("a[id^='editBtn']").show();
+     $(this).hide();
+     var h = accordHeight() + 250;
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+
+   });
  });
 
 </script>
