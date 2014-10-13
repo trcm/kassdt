@@ -194,6 +194,7 @@ class MySeleniumTests(LiveServerTestCase):
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
         super(MySeleniumTests, cls).setUpClass()
+        cls.selenium.maximize_window()
         '''
         '''
 
@@ -215,13 +216,14 @@ class MySeleniumTests(LiveServerTestCase):
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         page_title = self.selenium.find_element_by_tag_name('h1')
+        self.assertTrue(page_title.text == "Assignments for ABCD1234")
 
     def test_02_assignment_submission(self):
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
-        self.selenium.find_elements_by_xpath("//div[@class='input-group']/form/input")[1].send_keys('https://github.com/xagefu/test.git')
+        self.selenium.find_elements_by_id("id_submission_repository")[0].send_keys('https://github.com/xagefu/test.git')
         self.selenium.find_elements_by_xpath("//span[@class='input-group-btn']/input")[0].submit()
         self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
 
@@ -229,7 +231,7 @@ class MySeleniumTests(LiveServerTestCase):
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
-        self.selenium.find_elements_by_xpath("//div[@class='well well-sm']/a")[0].submit()
+        self.selenium.find_elements_by_xpath("id('assignmentList')/div[3]/table/tbody/tr/td[3]/form/input")[0].submit()
 
 
 class SeleniumAnnotations(LiveServerTestCase):
