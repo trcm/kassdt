@@ -7,28 +7,29 @@
   <h1>Help Forum</h1>
   <br />
   <a class="btn btn-success" href="{% url 'new_post' course_code %}"><span class="glyphicon glyphicon-pencil"></span> New Post</a>
+  <br /><br />
   <!-- <a class="btn btn-info" href="">View Posts</a> -->
   <table class="table table-hover" id="posts">
     
     {% if Posts %}
-    <th>Title</th>
-    <th>User</th>
-    <th>Created</th>
-    <th>Resolved</th>
-    <th></th>
+    <thead>
+      <th>Title</th>
+      <th>User</th>
+      <th>Created</th>
+      <th>Resolved</th>
+    </thead>
 
     {% for post in Posts %}
     <tr>
-      <td><a href="{% url 'view_post' post.post_uuid %}">{{ post.title }}</a></td>
-      <td>{{ post.by.djangoUser.first_name }} {{ post.by.djangoUser.last_name }}</td>
-      <td>{{ post.created }}</td>
-      <td>{{ post.resolved }}</td>
+      <td><a href="{% url 'view_post' post.post_uuid %}"><p>{{ post.title }}</p></a></td>
+      <td><p>{{ post.by.djangoUser.first_name }} {{ post.by.djangoUser.last_name }}</p></td>
+      <td><p>{{ post.created }}</p></td>
+      <td><p>{{ post.resolved }}</p></td>
       <td>
-	{% if post.by == user.reviewuser %}
-        <a class="btn btn-s btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
-
-	{% endif%}
-	<a class="btn btn-s btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
+        <a class="btn btn-s btn-default" href="{% url 'view_post' post.post_uuid %}">View</a> 
+	      {% if post.by == user.reviewuser %}
+          <a class="btn btn-s btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
+	      {% endif%}
       </td>
     </tr>
     {% endfor %}
