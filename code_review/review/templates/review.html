@@ -64,7 +64,7 @@
      console.log(f);
      $(this).prev("a[id^='editBtn']").show();
      $(this).hide();
-     var h = accordHeight() + 250;
+     var h = $("p#comment").height() + 120;
      console.log(h);
      $(".ui-accordion-content-active").css('height', h);
 
