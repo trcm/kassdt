@@ -309,3 +309,13 @@ class SeleniumAnnotations(LiveServerTestCase):
             error = True
 
         self.assertTrue(error)
+
+    def test_03_create_invalid_annotation(self):
+        """
+        Test that if an annotation is created with no text then an error is displayed
+        """
+        self.selenium.find_elements_by_class_name('lineno')[0].click()
+        self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
+        self.selenium.find_elements_by_class_name('lineno')[0].click()
+        # Check that the errors are now present by checking that error list exists
+        self.selenium.find_elements_by_class_name('errorlist')
