@@ -763,7 +763,7 @@ def submit_assignment(request, course_code, asmt):
                 else:
                     clone(repo, absolutePath)
                 
-                populate_from_local(absolutePath, rootFolderName, sub)
+                populate_from_local(absolutePath, rootFolderName, sub, relDir)
                 sub.save()
                 # User will be shown confirmation.
                 template = 'submission_confirmation.html'
@@ -775,17 +775,17 @@ def submit_assignment(request, course_code, asmt):
                 if(msg == 'authentication required but no callback set'):
                     context['pswd_auth'] = True
                     form.submission_repository = repo
-                    form.old_repo = repo
+                    form.fields['submission_repository'].widget.attrs['readonly'] = True
                     sub.delete()
 
                 elif(msg == 'Unsupported URL protocol'):
                     # Means they entered rubbish in the url field
-                    context['errMsg'] = 'What you entered is not a valid url.'
+                    context['errMsg'] = 'What you entered is not a valid url; remember to include https://'
                     sub.delete()
 
                 elif('Connection timed out' in msg):
                     # They entered what looks like a URL but isn't an existing repo
-                    context['errMsg'] = 'This repo does not exist; please check your url.'
+                    context['errMsg'] = 'Please check your url.' 
                     sub.delete()
 
                 elif(msg == u"This transport isn\'t implemented. Sorry"):
@@ -804,8 +804,12 @@ def submit_assignment(request, course_code, asmt):
                 elif(msg == 'Unexpected HTTP status code: 401'):
                     # Incorrect username or password 
                     context['errMsg'] = "Username and/or password incorrect."
-                    form.old_repo = repo
                     context['pswd_auth'] = True
+                    # Disable editing url field 
+                    form.fields['submission_repository'].widget.attrs['readonly'] = True
+                    sub.delete()
+                elif('404' in msg or 'Failed to resolve address' in msg):
+                    context['errMsg'] = 'The URL appears incorrect... is this really your repo?' 
                     sub.delete()
                 else:
                     print msg
