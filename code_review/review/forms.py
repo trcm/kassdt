@@ -21,7 +21,10 @@ class AllocateReviewsForm(ModelForm):
         fields = ['reviews_per_student', 'min_annotations']
 
 class AssignmentSubmissionForm(ModelForm):
-    submission_repository = forms.CharField(label='repo_address')
+    submission_repository = forms.CharField(label='repo_address', required=False)
+    repoUsername = forms.CharField(label='repo_username', required=False)
+    repoPassword = forms.CharField(widget=forms.PasswordInput(), label='repo_password',
+                               required=False)
     def clean_url(self):
         cleaned_data = self.cleaned_data
     class Meta:

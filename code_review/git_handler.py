@@ -1,5 +1,5 @@
 """
-git_python.py -- Helper functions to clone git repos.
+git_handler.py -- Helper functions to clone git repos.
 
 Methods:
     clone(url, directory) -- clones the repo at url into directory.
@@ -22,6 +22,11 @@ Methods:
 Dependencies:
     Install gitpython with pip install gitpython.
     Make sure gitpython is version 0.3.2RC1
+
+    Also install pygit2. Please see the pygit2 website for instructions.
+    We are using version 0.21.3. 
+    On the instruction page, you can ignore what it says about pip install cffi;
+    version 0.21.3 will do this for you when you do pip install pygit2.
 """
 
 from git import *
@@ -34,9 +39,11 @@ from time import strftime
 from pygments import *
 from pygments.lexers import *
 from pygments.formatters import *
+from pygit2 import clone_repository
+import pygit2
+from pygit2 import UserPass
 
-
-def clone(url, directory):
+def clone(url, directory, username=None, password=None):
     """Clone a repo from url to directory and return the Repo object.
     
     Arugments:
@@ -48,9 +55,20 @@ def clone(url, directory):
         directory (String) -- absolute path to the directory to which
         to clone this repo; directory must be an empty folder, otherwise
         git will cause the method to raise an exception.
-    """
-    return Repo.clone_from(url, directory)
+    
+    Returns:
+        the absolute path of the cloned repo.
 
+    """
+    if(username and password):
+        credentials = UserPass(username, password)
+        # clone the repo 
+        repo = clone_repository(url, directory, credentials=credentials)
+    else:
+        repo = clone_repository(url, directory)
+
+    return directory
+        
 def root_folder_name(asmtSubmission):
     """Generate the name of the root folder relative to MEDIA_ROOT.
 
@@ -179,6 +197,40 @@ def traverse_tree(tree, thisFolder, path, submission):
 
     return
 
+def abs_repo_path(asmtSubmission, directory):
+    rootFolderName = root_folder_name(asmtSubmission)
+
+    #  rootFolderPath is absolute path, necessary for cloning;
+    # to get this correct, we need to join to MEDIA_ROOT.
+    rootFolderPath = os.path.join(directory, rootFolderName)
+    rootFolderPath = os.path.join(settings.MEDIA_ROOT, rootFolderPath)
+    print(rootFolderPath)
+
+    return (rootFolderPath, rootFolderName)
+
+def populate_from_local(absolutePath, rootFolderName, asmtSubmission, directory):
+    '''Populate database from a local git repo at absolutePath
+
+    absolutePath (String) -- absolute path of the repository 
+    rootFolderName (String)
+    asmtSub (AssignmentSubmission)
+
+    '''
+
+    repo = Repo(absolutePath)
+    # Get the root tree, which has all the folders.
+    root = repo.tree()
+    # Name the source folder something like assignment-student-submission#
+    rootFolder = add_source_folder(rootFolderName, None)[0]
+    # Update the repo folder in the AssignmentSubmission object.
+    asmtSubmission.root_folder = rootFolder
+    asmtSubmission.save()
+    # Get repo root directory relative to MEDIA_ROOT
+    relativeRoot = os.path.join(directory, rootFolderName)
+    # Now make the rest of the SourceFolder and SourceFile objects.
+    traverse_tree(root, rootFolder, relativeRoot, asmtSubmission)
+
+    return 
 
 def populate_db(asmtSubmission, directory):
     """Store the folders and files associated with asmtSubmission to the database.
@@ -220,7 +272,7 @@ def populate_db(asmtSubmission, directory):
     rootFolderPath = os.path.join(settings.MEDIA_ROOT, rootFolderPath)
     print(rootFolderPath)
 
-    repo = clone(asmtSubmission.submission_repository, rootFolderPath)
+    repo = Repo.clone_from(asmtSubmission.submission_repository, rootFolderPath)
 
     # Get the root tree, which has all the folders.
     root = repo.tree()
