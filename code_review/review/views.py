@@ -815,6 +815,14 @@ def submit_assignment(request, course_code, asmt):
                     print msg
                     context['errMsg'] = 'Something is REALLY wrong. Please contact alex.hs.lee@gmail.com'
                     sub.delete()
+
+            except ValueError as verr:
+                if('invalid url' in verr.message):
+                    context['errMsg'] = "The URL is not correct."
+                    sub.delete()
+                else:
+                    print verr.message
+                    context['errMsg'] = "We are sorry but we don't know what's wrong. Please contact the                                            sysadmin. Maybe you'll get an extension on your assignment?"
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
