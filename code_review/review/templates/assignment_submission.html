@@ -22,12 +22,22 @@
     <div class="form-group">
       <div class="input-group">
         <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
-          {% csrf_token %}      
-          <span class="input-group-btn">
-          {{ form.submission_repository }}
-          <input class="btn btn-danger" type="submit" value="Submit Assignment">
-          </span>
+          {% csrf_token %}
+          <!-- When user first hits page, just display url field. -->
+            {% if not pswd_auth %}
+              <span class="input-group-btn">
+              {{ form.submission_repository }}
+              <input class="btn btn-danger" type="submit" value="Submit Assignment">
+              </span>
+            <!-- If requires password authentication, display it -->
+            {% else %}
+                <h3>Please enter your remote's username and password below:</h3>
+                Username: {{ form.repoUsername }}
+                Password: {{ form.repoPassword }}
+                <input class="btn btn-danger" type="submit" value="Submit">
+            {% endif %}
         </form>
+
       </div>
     </div>
   </div>

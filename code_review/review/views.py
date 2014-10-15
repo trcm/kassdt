@@ -49,6 +49,7 @@ from django.utils import timezone
 
 # For handling assignments submitted via git repo
 from git_handler import *
+from pygit2 import GitError
 
 # For randomly assigning students to review particular submissions.
 from assign_reviews import *
@@ -733,29 +734,83 @@ def submit_assignment(request, course_code, asmt):
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
     submissions = AssignmentSubmission.objects.filter(by=U.reviewuser, submission_for=assignment)
+    
+    # Whether or not to display username and pswd fields.
+    context['pswd_auth'] = False
+    template = "assignment_submission.html"
 
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST)
         if form.is_valid():
             # form.save(commit=True)
-            repo = request.POST['submission_repository']
+            repo = form.cleaned_data['submission_repository']
+            print repo
+            print "YAYAYAYAYA"
+
             # Create AssignmentSubmission object
             try:
                 sub = AssignmentSubmission.objects.create(by=U.reviewuser, submission_repository=repo,
                                                     submission_for=assignment)
-                sub.save()
                 # Populate databse.
                 relDir = os.path.join(courseCode, asmtName)
-                populate_db(sub, relDir)
+                (absolutePath, rootFolderName) = abs_repo_path(sub, relDir)
+                username = request.POST.get('repoUsername', False)
+                password = request.POST.get('repoPassword', False)
+                print username
+                print password
+                if(username and password):
+                    clone(repo, absolutePath, username=username, password=password)
+                else:
+                    clone(repo, absolutePath)
+                
+                populate_from_local(absolutePath, rootFolderName, sub)
+                sub.save()
                 # User will be shown confirmation.
                 template = 'submission_confirmation.html'
+            
+            except GitError as ge:
+                msg = ge.message
+                print msg
+                
+                if(msg == 'authentication required but no callback set'):
+                    context['pswd_auth'] = True
+                    form.submission_repository = repo
+                    form.old_repo = repo
+                    sub.delete()
 
-            except GitCommandError as giterr:
-                print giterr.args
-                sub.delete()
-                context['errMsg'] = "Something wrong with the repository URL."
-                template = 'assignment_submission.html'
+                elif(msg == 'Unsupported URL protocol'):
+                    # Means they entered rubbish in the url field
+                    context['errMsg'] = 'What you entered is not a valid url.'
+                    sub.delete()
 
+                elif('Connection timed out' in msg):
+                    # They entered what looks like a URL but isn't an existing repo
+                    context['errMsg'] = 'This repo does not exist; please check your url.'
+                    sub.delete()
+
+                elif(msg == u"This transport isn\'t implemented. Sorry"):
+                    # Private repo with ssh set up. Call old populate_db. 
+                    print "Private repo with ssh set up."
+                    try:
+                        populate_db(sub, relDir)
+                        sub.save()
+                        template = "submission_confirmation.html"
+                        print "All good."
+                    except GitCommandError as ohNo:
+                        print ohNo.args
+                        context['errMsg'] = "Something went wrong! Please contact sysadmin."
+                        sub.delete()
+                
+                elif(msg == 'Unexpected HTTP status code: 401'):
+                    # Incorrect username or password 
+                    context['errMsg'] = "Username and/or password incorrect."
+                    form.old_repo = repo
+                    context['pswd_auth'] = True
+                    sub.delete()
+                else:
+                    print msg
+                    context['errMsg'] = 'Something is REALLY wrong. Please contact alex.hs.lee@gmail.com'
+                    sub.delete()
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
