@@ -244,7 +244,7 @@ body {
 }
 
 #reviewFileName h5{
-	visibility:hidden;
+	font-size: 30px;
 }
 
 /* pane div on review page contianing both the code pane and the annotation pane */
