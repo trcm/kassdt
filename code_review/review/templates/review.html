@@ -46,13 +46,13 @@
      console.log("show");
    }); 
 
-   /*
+   
    $(".ui-accordion-header").click(function() {
      var h = accordHeight();
      console.log(h);
      $(".ui-accordion-content-active").css('height', h);
    });
-   */
+   
 
    var accordHeight = function() {
      var h = $("p#comment").height() + 120;
@@ -74,6 +74,7 @@
 </script>
 
 <div id="reviewFiles">
+<a href="/review">Submit</a>
 <p>Submission Directory:</p>
   <select onChange="window.location.href=this.value">
     <option selected disabled>Select File</option>
@@ -88,11 +89,12 @@
       {% endif%}
     {% endfor %}
   </select>
-</div>
-
-<div id="reviewFileName">
+  <div id="reviewFileName">
   <h5> Currently displaying: {{ file.name }}</h5>
 </div>
+</div>
+
+
 
 <div id="reviewPane">
   <div id="reviewCode" title="Click the line number you would like to annotate">

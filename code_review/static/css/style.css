@@ -198,7 +198,7 @@ body {
 
 /* div on review page that contains the file browser  */
 #reviewFiles {
-	float:right;
+	
 	background-color:white;
 	
 	
@@ -208,10 +208,10 @@ body {
 	
 }
 
-#reviewFiles h5 {
+#reviewFiles a {
 	
 	
-	float: left;
+	float: right;
 	
 }
 
@@ -222,30 +222,14 @@ body {
 	
 }
 
-#reviewFiles a {
-	padding-right:5px;
+#reviewFileName {
+	
+	
+	float:left;
 	
 }
 
-#reviewFiles li {
-	position: relative;
-	top: 10px;
-	display: inline-block;
-	
-}
 
-#reviewFiles ul {
-    list-style-type:none;
-    display:inline-block;
-}
-
-#reviewFiles a.current {
-	
-}
-
-#reviewFileName h5{
-	visibility:hidden;
-}
 
 /* pane div on review page contianing both the code pane and the annotation pane */
 #reviewPane {
