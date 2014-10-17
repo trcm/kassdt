@@ -5,16 +5,29 @@
 
 <form action="{% url 'create_post' course_code %}" method="POST">
   {% csrf_token %}
-  <ul>
-    {% for field in form %}
-    <li>
-      {{ field.errors }}
-      {{ field.label_tag }}
-      {{ field }}
-    </li>
-    {% endfor %}
-  </ul>
+  <!-- <ul> -->
+  <!-- {% for field in form %} -->
+  <!-- <li> -->
+  <!-- {{ field.errors }}
+  {{ field.label_tag }} -->
+  <!-- {{ field }} -->
+  <!-- </li> -->
+  <!-- {% endfor %} -->
+  <!-- </ul> -->
+  {{ form.title.label_tag }}{{ form.title }}
+  {{ form.question.label_tag }}{{ form.question }}
+  {{ form.submission_repository.label_tag }}{{ form.submission_repository }}
+  <!-- If requires password authentication, display it -->
+  {% if pswd_auth %}
+  <h3>Please enter your remote's username and password below:</h3>
+
+  Username: {{ form.repoUsername }}
+  Password: {{ form.repoPassword }}
+  {% endif %}
   <input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
 </form>
-
+    {% if errMsg %}
+      <h3> ERROR! </h3>
+      {{ errMsg }}
+    {% endif %}
 {% endblock %}

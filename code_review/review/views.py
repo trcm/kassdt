@@ -1,9 +1,6 @@
 """
 views.py handles all the controllers for the application.
 
-This file will eventually be separated into various files for each
-of the main sections of the application.  Currently it contains views,
-for all the features to date.
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
