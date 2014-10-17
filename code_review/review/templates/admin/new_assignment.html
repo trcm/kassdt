@@ -2,9 +2,10 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
+<div id="assubmitDiv">
 <div id="assignmentCreation">
 
-<h1>Create new {{ course.course_code }} Assignment</h1>
+<h1>Create a new {{ course.course_code }} Assignment</h1>
 
 <form method="post" action="{% url 'generate_assignment' %}" enctype="multipart/form-data">
   <!-- generate csrf token and display form from context dictionary -->
@@ -23,5 +24,6 @@
   <input type="submit" name="Submit" value="Submit" />
 </form>
 
+</div>
 </div>
 {% endblock %}

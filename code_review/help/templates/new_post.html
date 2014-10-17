@@ -2,16 +2,21 @@
 
 
 {% block main %}
+<br />
+<h1>New Post</h1>
 
 <form action="{% url 'create_post' course_code %}" method="POST">
   {% csrf_token %}
   <ul>
     {% for field in form %}
-    <li>
-      {{ field.errors }}
-      {{ field.label_tag }}
+
+    {{ field.label_tag }}
       {{ field }}
-    </li>
+
+    <div class="alert alert-danger" role="alert">
+      {{ field.errors }}
+    </div>
+
     {% endfor %}
   </ul>
   <input class="btn btn-primary" type="submit" name="submit" value="Submit"/>

@@ -20,8 +20,8 @@
    });
 
    $("form[id^='editForm']").each(function() {
-   console.log("form hide");
-   $(this).hide();
+     console.log("form hide");
+     $(this).hide();
    });
 
    $("a[id^='saveBtn']").each(function() {
@@ -30,9 +30,13 @@
 
    $("a[id^='cancelBtn']").each(function() {
    $(this).hide();
-   }); 
+   });  
    
    $("a[id^='editBtn']").click(function() {
+     var h = accordHeight() + 250;
+     console.log($("#id_text").height());
+     $(".ui-accordion-content-active").css('height', h);
+     console.log(h);
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
@@ -41,13 +45,26 @@
      console.log("show");
    });
 
+   var accordHeight = function() {
+     var h = $("p#comment").height() + 120;
+     return h;
+   };  
+
+   $("a[id^='cancelBtn']").click(function() {
+     var f = $(this).prev().prev().hide();
+     console.log(f);
+     $(this).prev("a[id^='editBtn']").show();
+     $(this).hide();
+     var h = $("p#comment").height() + 120;
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+
+   });
  });
 </script>
 
 <div id="reviewFiles">
-
-  <h3>Assignment Name</h3>
-
+<p>Submission Directory:</p>
   <select onChange="window.location.href=this.value">
     <option selected disabled>Select File</option>
     {% for file in files %}
@@ -110,7 +127,6 @@
       </form>
     </div>
   </div>
-
   <div id='startLine'>
     {% for annote, range in annotations %}
       <ul>{{ range.start }}</ul>
