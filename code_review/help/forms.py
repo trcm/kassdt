@@ -13,6 +13,10 @@ class postForm(ModelForm):
     """
     Form for creating a new help system post.
     """
+    repoUsername = CharField(label='repo_username', required=False)
+    repoPassword = CharField(widget=PasswordInput(), label='repo_password',
+                                   required=False)
+
     class Meta:
         model = Post
         fields = ['title', 'question', 'submission_repository']
