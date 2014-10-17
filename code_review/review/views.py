@@ -889,12 +889,18 @@ def grabFileData(request, submissionUuid, fileUuid):
             iter = iter.parent
         # get owner id
         owner = AssignmentSubmission.objects.get(root_folder=iter).by
-
+        print owner, owner.id
         # get all annotations for the current file
         # if user is the owner of the files or super user get all annotations
-        if currentUser.is_staff or currentUser == owner:
+        print currentUser.reviewuser.id, currentUser.id
+        if currentUser.id == owner.id:
+            print "owner check"
+
+        if currentUser.is_staff or currentUser.reviewuser == owner:
             annotations = SourceAnnotation.objects.filter(source=file)
+            print "owner"
         else:
+            print "not owner"
             annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
 
         annotationRanges = []
