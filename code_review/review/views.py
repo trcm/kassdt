@@ -795,7 +795,7 @@ def submit_assignment(request, course_code, asmt):
                         print "All good."
                     except GitCommandError as ohNo:
                         print ohNo.args
-                        context['errMsg'] = "Something went wrong! Please contact sysadmin."
+                        context['errMsg'] = "Something went wrong! Please check your URL (for instance, did you put a non-existent protocol like httppp instead of https?). If that doesn't work, please contact sysadmin."
                         sub.delete()
                 
                 elif(msg == 'Unexpected HTTP status code: 401'):
