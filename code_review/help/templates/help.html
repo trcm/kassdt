@@ -21,7 +21,7 @@
       <td>{{ post.created }}</td>
       <td>{{ post.resolved }}</td>
       <td>
-	{% if post.by == user.reviewuser %}
+	{% if post.by == user.reviewuser  or user.is_superuser or user.is_staff %}
         <a class="btn btn-s btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a> 
 
 	{% endif%}
