@@ -8,20 +8,28 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'Post', fields ['course_code']
-        db.delete_unique(u'help_post', ['course_code_id'])
 
+        # Changing field 'Post.title'
+        db.alter_column(u'help_post', 'title', self.gf('django.db.models.fields.CharField')(max_length=100, null=True))
 
-        # Changing field 'Post.course_code'
-        db.alter_column(u'help_post', 'course_code_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['review.Course']))
+        # Changing field 'Post.question'
+        db.alter_column(u'help_post', 'question', self.gf('django.db.models.fields.TextField')(null=True))
 
     def backwards(self, orm):
 
-        # Changing field 'Post.course_code'
-        db.alter_column(u'help_post', 'course_code_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, to=orm['review.Course']))
-        # Adding unique constraint on 'Post', fields ['course_code']
-        db.create_unique(u'help_post', ['course_code_id'])
+        # User chose to not deal with backwards NULL issues for 'Post.title'
+        raise RuntimeError("Cannot reverse this migration. 'Post.title' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration
+        # Changing field 'Post.title'
+        db.alter_column(u'help_post', 'title', self.gf('django.db.models.fields.CharField')(max_length=100))
 
+        # User chose to not deal with backwards NULL issues for 'Post.question'
+        raise RuntimeError("Cannot reverse this migration. 'Post.question' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration
+        # Changing field 'Post.question'
+        db.alter_column(u'help_post', 'question', self.gf('django.db.models.fields.TextField')())
 
     models = {
         u'auth.group': {
@@ -68,10 +76,11 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'open': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'post_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
-            'question': ('django.db.models.fields.TextField', [], {}),
+            'question': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'resolved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'root_folder': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'code'", 'unique': 'True', 'null': 'True', 'to': u"orm['review.SourceFolder']"}),
             'submission_repository': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         u'review.course': {

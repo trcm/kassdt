@@ -481,23 +481,17 @@ def updatePost(request, post_uuid):
         return HttpResponseRedirect('/help')
 
 
-def grabPostFiles(root):
-    # dfs first search
-    folders = []
-    s = []
-    s.append(root)
-    while len(s) > 0:
-        v = s.pop()
-        if v not in folders:
-            folders.append(v)
-            # print v
-            for i in v.folders.all():
-                s.append(i)
-            for i in v.files.all():
-                if i not in folders:
-                    folders.append(i)
+def grabPostFiles(dir, prefix=""):
+    files = []
     
-    return folders
+    for folder in dir.folders.all():
+        files = files + grabPostFiles(folder, prefix + "/" + folder.name)
+
+    for file in dir.files.all():
+        file.path = prefix + "/" + file.name
+        files.append(file)
+
+    return files
 
     
 def error_page(request, message):

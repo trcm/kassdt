@@ -8,7 +8,7 @@
 <script>
  $(document).ready(function() {
    annotationHighlight();
-   /* $("#annotationForm").hide();
+   $("#annotationForm").hide();
 
    $(".click").click(function() {
    p = parseInt( $(this).text());
@@ -20,8 +20,8 @@
    });
 
    $("form[id^='editForm']").each(function() {
-   console.log("form hide");
-   $(this).hide();
+     console.log("form hide");
+     $(this).hide();
    });
 
    $("a[id^='saveBtn']").each(function() {
@@ -30,73 +30,100 @@
 
    $("a[id^='cancelBtn']").each(function() {
    $(this).hide();
-   });  /*  */
+   });  
    
-  /* $("a[id^='editBtn']").click(function() {
+   $("a[id^='editBtn']").click(function() {
+     var h = accordHeight() + 250;
+     console.log($("#id_text").height());
+     $(".ui-accordion-content-active").css('height', h);
+     console.log(h);
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
      $(this).hide();
      $(this).next('div[id^=showEditBtns]').show();
      console.log("show");
-   }); *//*  */
+   }); 
 
+   
+   $(".ui-accordion-header").click(function() {
+     var h = accordHeight();
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+   });
+   
+
+
+   var accordHeight = function() {
+     var h = $("p#comment").height() + 120;
+     return h;
+   };  
+
+   $("a[id^='cancelBtn']").click(function() {
+     var f = $(this).prev().prev().hide();
+     console.log(f);
+     $(this).prev("a[id^='editBtn']").show();
+     $(this).hide();
+     var h = $("p#comment").height() + 120;
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+
+   });
  });
 </script>
+
 <div id="reviewFiles">
+<a href="/review">Submit</a>
   
-  <ul>
+  <p>
+  <select onChange="window.location.href=this.value">
+    <option selected disabled>Select File</option>
     {% for file in files %}
-    {% if file.folder_uuid %}
-    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</li>
+      {% if file.folder_uuid %}
+        <option value=""><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</option>
       {% endif%}
 
       {% if file.file_uuid %}
-      {% url 'review_file' sub file.file_uuid as fileurl %}
-      <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li>
+        {% url 'review_file' sub file.file_uuid as fileurl %}
+        <option value="{{ fileurl | obfuscate}}"><a href="{{ fileurl | obfuscate}}">{{ file.path }}</a></option>
       {% endif%}
-      {% endfor %}
-  </ul>
+    {% endfor %}
+  </select>
+</p>
+<h5><b>Current File:</b> {{ file.name }}</h5>
+</div>
 
-</div>
-<div id="reviewFileName">
-  <h5> Currently displaying: {{ file.name }}</h5>
-</div>
-</div>
+
 
 <div id="reviewPane">
   <div id="reviewCode" title="Click the line number you would like to annotate">
     <!-- render the source file in the html -->
     {% if code %}
-    {{ code | safe}} 
+      {{ code | safe}} 
     {% endif%}
   </div>
 
   <div id="reviewAnnotation">
-	  
     <div id="accordion">
       <!-- display all the current annotations -->
       {% for annote, range, editForm in annotations %}
-      <h3>Line: {{ range.start }}</h3>
-      <div>
-	<p id="comment">{{ annote.text }}</p>
-	<form method="post" id="editForm{{annote.id}}" action="{% url 'edit_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id%}">
-	  {% csrf_token %}
-	  {{ editForm.as_ul }}
-	  <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
-	</form>
+        <h3>Line {{ range.start }}</h3>
+        <div>
+          <p id="comment">{{ annote.text }}</p>
+          <form method="post" id="editForm{{annote.id}}" action="{% url 'edit_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id%}">
+            {% csrf_token %}
+            {{ editForm.as_ul }}
+            <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
+          </form>
 
-	{% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
-	<a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
-	<a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
-	<a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
-
-	<!-- button to save changes -->
-	{% endif%}
-      </div>
+          {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
+            <a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
+            <a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
+            <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=sub fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
+            <!-- button to save changes -->
+          {% endif%}
+        </div>
       {% endfor %}
-      
-	
     </div>
 
     {% url 'create_annotation' sub uuid as annotateUrl %}
@@ -104,19 +131,17 @@
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
     <!-- display forms for annotation creation if a file is selected -->
     <div id="annotationFormDiv">
-    <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
-      {{ rangeform.as_ul }}
-      {{ form.as_ul }}
-      <input type="Submit" name="submit" value="Submit" />
-    </form>
+      <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+        {{ rangeform.as_ul }}
+        {{ form.as_ul }}
+        <input type="Submit" name="submit" value="Submit" />
+      </form>
     </div>
   </div>
+  <div id='startLine'>
+    {% for annote, range in annotations %}
+      <ul>{{ range.start }}</ul>
+    {% endfor %}
+  </div>
+  {% endblock %}
 </div>
-
-
-<div id='startLine'>
-  {% for annote, range in annotations %}
-  <ul>{{ range.start }}</ul>
-  {% endfor %}
-</div>
-{% endblock %}

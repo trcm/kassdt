@@ -9,20 +9,25 @@
   <form id="assign_reviews" method="post" action="">
     {% csrf_token %}
     {{ course.code_code }}
-    {{ asmt.name }}
 
     {% if errors %}
-    <h3>Something Wrong:</h3>
-    <h4>{{ errors }}</h4>
+      <h3>Something Wrong:</h3>
+      <h4>{{ errors }}</h4>
     {% endif %}
     
-    <h3>Enter the number of submissions you want each student to review</h3>
-    {{ form.reviews_per_student }}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h4>No. of submissions you want each student to review</h4>
+        {{ form.reviews_per_student }}
+        <h4>Min. number of annotations a student must make per submission.</h4>
+        {{ form.min_annotations }}
+        <br />
+        <input class="btn btn-default" type="submit" value="Assign Reviews">
+      </div>
+    </div>
+
+    <br />
     
-    <h3>Enter the minimum number of annotations a student must make per submission.</h3>
-    {{ form.min_annotations }}
-    <br>
-    <input type="submit" value="Assign Reviews">
 
     {% if errMsg %}
       <h3> ERROR! </h3>

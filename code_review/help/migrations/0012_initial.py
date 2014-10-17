@@ -8,19 +8,27 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'Post', fields ['course_code']
-        db.delete_unique(u'help_post', ['course_code_id'])
+        # Adding model 'Post'
+        db.create_table(u'help_post', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('post_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
+            ('by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['review.ReviewUser'])),
+            ('course_code', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['review.Course'])),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('question', self.gf('django.db.models.fields.TextField')()),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('root_folder', self.gf('django.db.models.fields.related.OneToOneField')(related_name='code', unique=True, null=True, to=orm['review.SourceFolder'])),
+            ('open', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('resolved', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('submission_repository', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal(u'help', ['Post'])
 
-
-        # Changing field 'Post.course_code'
-        db.alter_column(u'help_post', 'course_code_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['review.Course']))
 
     def backwards(self, orm):
-
-        # Changing field 'Post.course_code'
-        db.alter_column(u'help_post', 'course_code_id', self.gf('django.db.models.fields.related.OneToOneField')(unique=True, to=orm['review.Course']))
-        # Adding unique constraint on 'Post', fields ['course_code']
-        db.create_unique(u'help_post', ['course_code_id'])
+        # Deleting model 'Post'
+        db.delete_table(u'help_post')
 
 
     models = {
@@ -69,6 +77,7 @@ class Migration(SchemaMigration):
             'open': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'post_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             'question': ('django.db.models.fields.TextField', [], {}),
+            'resolved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'root_folder': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'code'", 'unique': 'True', 'null': 'True', 'to': u"orm['review.SourceFolder']"}),
             'submission_repository': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

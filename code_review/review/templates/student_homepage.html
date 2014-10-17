@@ -3,46 +3,51 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 {% extends 'navbar.html' %}
 
 {% block main %}
-	<br />
-	<h1>Upcoming assignments</h1>
-	<br />
-	{% if open_assignments %}
-	    <table cellpadding="10" class="table table-bordered table-hover">
-	    <thead>
-		<th> Course </th>
-		<th> Assignment Name </th>
-		<th> Submissions Open: </th>
-		<th> Submissions Close: </th>
-                {% if not user.is_staff and not user.is_superuser %}
-                <th> Submission Status: </th>
-                {% endif %}
-	    </thead>
-	    <!-- grab all upcoming assignments and display them in a table -->
-	    {% for course, asmtList in open_assignments.items %}
-                {% for asmt in asmtList %}
-                <tr> 
-		    <td>{{ course.course_code }}</td>
-		    <td>{{ asmt.0.name }}</td>
-		    <td>{{ asmt.0.submission_open_date }}</td>
-		    <td>{{ asmt.0.submission_close_date }}</td>
-                    {% if not user.is_staff and not user.is_superuser %}
-                    <td>{% if asmt.1 %}
-                            Submitted!
-                        {% else %}
-                            Not yet submitted
-                        {% endif %}
-                    {% endif %}
-                    <td>
-                        <form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
-                            <input type="submit" value="Go to assignment page">
-                        </form>
-                    </td>
-                    <td> <a href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">
-                {% endfor %}
-            {% endfor %}
-            </table>
+<br />
+<h1>Upcoming assignments</h1>
+<br />
+{% if open_assignments %}
+<table cellpadding="10" class="table table-bordered table-hover">
+  <thead>
+    <th> Course </th>
+    <th> Assignment Name </th>
+    <th> Submissions Open: </th>
+    <th> Submissions Close: </th>
+    {% if not user.is_staff and not user.is_superuser %}
+    <th> Submission Status: </th>
+    {% endif %}
+  </thead>
+  <!-- grab all upcoming assignments and display them in a table -->
+  {% for course, asmtList in open_assignments.items %}
+  {% for asmt in asmtList %}
+  <tbody>
+    <tr>
+      <td><p><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></p></td>
+      <td><p>{{ asmt.0.name }}</p></td>
+      <td><p>{{ asmt.0.submission_open_date }}</p></td>
+      <td><p>{{ asmt.0.submission_close_date }}</p></td>			
+      <td><p>
+	{% if asmt.1 %}
+	<span class="text-success"><b>Submitted</b></span>
 	{% else %}
-	    <h2>No upcoming assignments</h2>
+	<span class="text-danger"><b>Not Submitted</b></span>
 	{% endif %}
+      </p>
+      </td>
+      <td>
+	<form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
+	  <input class="btn btn-default btn-block" type="submit" value="View assignment page">
+	</form>
+      </td>
+      <!-- REMOVED due to feedback
+      <a class="btn btn-danger btn-block" href="/review/course/{{course.course_code}}/{{asmt.0.name}}/submit/">Submit Assignment</a> -->
+    </tr>
+  </tbody>
+  {% endfor %}
+  {% endfor %}
+</table>
+{% else %}
+<h2>No upcoming assignments</h2>
+{% endif %}
 
 {% endblock %}
