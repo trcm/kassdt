@@ -9,7 +9,7 @@
 #assignmentAdmin {
 	display: block;
 	float: right;
-	background-color:red;
+	
 }
 
 /*Assignment creation forms on assignment creation Page*/
@@ -29,7 +29,10 @@
 }
 
 #assignmentList h1, #assignmentList h2{
-	color: white;
+	color: #323232;
+	
+	display:inline;
+	top: -20px;
 }
 
 /* the entire table of assignments details */
@@ -75,10 +78,18 @@ body {
   width:512px;
 }
 
+#courseButtons {
+	float:right;
+	display:inline;
+	bottom: 35px;
+
+}
+
 /* The title on course Assignments page */
 #courseAssignments h1 {
-	display:inline;
+	background-color: yellow;
 	float:left;
+	display: inline;
 }
 
 
@@ -166,15 +177,15 @@ body {
 }
 
 #annotationForm textarea {
-	width:87%;
+	width:100%;
 	float:left;
 }
 
 #annotationForm input[type=submit] {
 	width:13%;
-	float:right;
+	float:left;
 	position: relative;
-	top: 60px;	
+	
 }
 
 /*main div on admin create assignment page */
@@ -224,8 +235,15 @@ body {
 	float:left;
 }
 
+#comment{
+	background-color:red;
+
+}
+
+#id_text {
 
 
+}
 
 
 /* pane div on review page contianing both the code pane and the annotation pane */
