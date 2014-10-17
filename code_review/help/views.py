@@ -175,7 +175,7 @@ def createPost(request, course_code):
                         print "All good."
                     except GitCommandError as ohNo:
                         print ohNo.args
-                        context['errMsg'] = "Something went wrong! Please contact sysadmin."
+                        context['errMsg'] = "Something went wrong! Please check your URL (did you type in a non-existent protocol like httomps instead of http? If that doesn't work, please contact sysadmin."
                         post.delete()
                 
                 elif(msg == 'Unexpected HTTP status code: 401'):
