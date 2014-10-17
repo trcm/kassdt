@@ -43,7 +43,17 @@
      $(this).hide();
      $(this).next('div[id^=showEditBtns]').show();
      console.log("show");
+
+   }); 
+
+   
+   $(".ui-accordion-header").click(function() {
+     var h = accordHeight();
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
    });
+   
+
 
    var accordHeight = function() {
      var h = $("p#comment").height() + 120;
@@ -63,9 +73,10 @@
  });
 </script>
 
-<h1>lala {{ asmt.name }}</h1>
 <div id="reviewFiles">
-<p>Submission Directory:</p>
+<a href="/review">Submit</a>
+  
+  <p>
   <select onChange="window.location.href=this.value">
     <option selected disabled>Select File</option>
     {% for file in files %}
@@ -79,13 +90,12 @@
       {% endif%}
     {% endfor %}
   </select>
+</p>
+<h5>Current File:{{ file.name }}</h5>
+</div>
 </div>
 
-<div id="reviewFileName">
 
-  <h1>{{ asmt.name }}</h1>
-  <h5>{{ file.name }}</h5>
-</div>
 
 <div id="reviewPane">
   <div id="reviewCode" title="Click the line number you would like to annotate">
