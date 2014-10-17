@@ -1299,28 +1299,24 @@ def review(request, submissionUuid, **kwargs):
 
     print "normal review"
     try:
-        file= None
+        file = None
         code = None
-        # if 'uuid' in kwargs.keys():
-        #     print "get file"
+        default = os.path.join(settings.MEDIA_ROOT, 'default_landing.html')
 
-        #     file = SourceFile.objects.get(file_uuid=uuid)
-        #     code = highlight(file.content, guess_lexer(file.content),
-        #                      HtmlFormatter(linoes="table"))
+        f = open(default, 'r')
+        code = f.read()
+        f.close()
 
         folders = []
 
         # grab the submission and the associated files and folders
-
         sub = AssignmentSubmission.objects.get(submission_uuid=uuid)
         folders = grabFiles(sub.root_folder)
+
         # return all the data for the submission to the context
         context['sub'] = submissionUuid
-        # files = root_files.all()
         context['files'] = folders
-        # context['code'] = code
-        # context['files'] = files
-        # context['files'] = get_list(sub.root_folder, [])
+        context['code'] = code
         context['courses'] = currentUser.reviewuser.courses.all()
         return render(request, 'review.html', context)
 
