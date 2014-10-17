@@ -25,8 +25,7 @@
 #assignmentList {
 	padding-top: 40px;
 	width: 100%;
-	background-color: #4B5882;
-	background-repeat: repeat-x;
+    background-color:#f5f5f5;
 }
 
 #assignmentList h1, #assignmentList h2{
@@ -36,7 +35,7 @@
 /* the entire table of assignments details */
 #assignmentList table {
 	width:100%;
-	background-color: #EEEEEE;
+	background-color: #E5E5E5;
 }
 
 /* cells within the table of assignment details */
@@ -68,7 +67,7 @@
 
 /* global background */
 body {
-	background-color: black;
+	background-color: #828282;
 }
 
 .highlightTable {
@@ -199,35 +198,33 @@ body {
 /* div on review page that contains the file browser  */
 #reviewFiles {
 	
-	background-color:white;
-	
-	
+	background-color:#E5E5E5;
 	margin-top: 12px;
-	
-	
 	
 }
 
 #reviewFiles a {
 	
-	
+	border: 2px solid;
+	padding: 2px;
 	float: right;
+	margin-top: 4px;
+	
 	
 }
 
 #reviewFiles p{
-	
-	
-	display:inline;
-	
+		
+	float:left;
 }
 
-#reviewFileName {
-	
-	
+#reviewFiles h5{
+	padding-left: 10px;
+	display:inline;
 	float:left;
-	
 }
+
+
 
 
 
