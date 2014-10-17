@@ -21,21 +21,24 @@
 
 
 <div id="reviewFiles">
-  <ul>
-    <h4>Files:</h4>
+<a href="/review">Submit</a>
+  
+  <p>
+  <select onChange="window.location.href=this.value">
+    <option selected disabled>Select File</option>
     {% for file in files %}
-    {% if file.folder_uuid %}
-    <li><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}</li>
+      {% if file.folder_uuid %}
+        <option value=""><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</option>
       {% endif%}
 
-      <!-- {% if file.file_uuid %} -->
-      <!-- {% url 'view_post_file' post file.file_uuid as fileurl %} -->
-      <!-- <li><a href="{{ fileurl | obfuscate}}">{{ file.name }}</a></li> -->
-      <li><a href="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}">{{ file.name }}</a></li>
+      {% if file.file_uuid %}
+        {% url 'review_file' sub file.file_uuid as fileurl %}
+        <option value="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}"><a href="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}">{{ file.path }}</a></option>
       {% endif%}
-      {% endfor %}
-  </ul>
-
+    {% endfor %}
+  </select>
+</p>
+<h5>Current File:{{ file.name }}</h5>
 </div>
 <div id="title">Post Title: {{ title }}</div>
 <div id="question">Post Question: {{ question }}</div>
