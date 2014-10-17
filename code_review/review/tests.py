@@ -274,7 +274,9 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
         #self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']").send_keys('selenium test')
+        text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']")
+        text_input.location_once_scrolled_into_view
+        text_input.send_keys('selenium test')
         self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
         # self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
@@ -300,10 +302,20 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
-        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[@text='Delete']").click()
+        self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[3]").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
         except NoSuchElementException:
             error = True
 
         self.assertTrue(error)
+
+    def test_03_create_invalid_annotation(self):
+        """
+        Test that if an annotation is created with no text then an error is displayed
+        """
+        self.selenium.find_elements_by_class_name('lineno')[0].click()
+        self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
+        self.selenium.find_elements_by_class_name('lineno')[0].click()
+        # Check that the errors are now present by checking that error list exists
+        self.selenium.find_elements_by_class_name('errorlist')
