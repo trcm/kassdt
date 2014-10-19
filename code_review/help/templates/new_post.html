@@ -7,17 +7,26 @@
 
 <form action="{% url 'create_post' course_code %}" method="POST">
   {% csrf_token %}
-  {{ form.title.label_tag }}{{ form.title }}
-  {{ form.question.label_tag }}{{ form.question }}
-  {{ form.submission_repository.label_tag }}{{ form.submission_repository }}
+  {{ form.title.label_tag }}
+  <br />
+  {{ form.title }}
+  <br />
+  {{ form.question.label_tag }}
+  <br />
+  {{ form.question }}
+  <br />
+  {{ form.submission_repository.label_tag }}
+  <br />
+  {{ form.submission_repository }}
+  <br />
   <!-- If requires password authentication, display it -->
   {% if pswd_auth %}
-  <h3>Please enter your remote's username and password below:</h3>
-
-  Username: {{ form.repoUsername }}
-  Password: {{ form.repoPassword }}
+    <h3>Please enter your remote's username and password below:</h3>
+    Username: {{ form.repoUsername }}
+    Password: {{ form.repoPassword }}
   {% endif %}
   <input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
+  <br /><br />
 </form>
 {% if errMsg %}
 <h3> ERROR! </h3>

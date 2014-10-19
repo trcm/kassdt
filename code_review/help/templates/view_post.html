@@ -51,10 +51,23 @@
 </script>
 {% endif%}
 
+<br />
+
+{% if user.reviewuser == post.by %} 
+<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a>
+<button id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit</button>
+<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve</a>
+{% endif%}
+
+<br />
 
 <div id="reviewFiles">
-<a href="/review">Submit</a>
   
+<div id="title">Post Title: {{ title }}</div>
+<div id="question">Post Question: {{ question }}</div>
+Current File: {{ file.name }} <br />
+Currently displaying: {{ file.name }}<br />
+
   <p>
   <select onChange="window.location.href=this.value">
     <option selected disabled>Select File</option>
@@ -62,6 +75,7 @@
       {% if file.folder_uuid %}
         <option value=""><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</option>
       {% endif%}
+      
 
       {% if file.file_uuid %}
         {% url 'review_file' sub file.file_uuid as fileurl %}
@@ -70,22 +84,13 @@
     {% endfor %}
   </select>
 </p>
-<h5>Current File:{{ file.name }}</h5>
-</div>
-<div id="title">Post Title: {{ title }}</div>
-<div id="question">Post Question: {{ question }}</div>
 
-{% if user.reviewuser == post.by%}
-<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a>
-<button id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">
-  Edit 
-</button>
-<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve</a>
-{% endif%}
+<a class="btn btn-default" href="/review">Submit</a>
+
+</div>
+
 
 <div id="reviewFileName">
-  <h4> Currently displaying: {{ file.name }}</h4>
-</div>
 </div>
 
 <div id="reviewPane">
