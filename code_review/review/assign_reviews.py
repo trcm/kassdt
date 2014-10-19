@@ -66,6 +66,7 @@ def distribute_reviews(asmt, perStudent):
     # print 'filtered subs are ', latestSubmissions
     numSubs = len(latestSubmissions)
     print 'number of submissions: ', numSubs
+    asmt.reviews_per_student = perStudent
     
     for user in users:
         print user
