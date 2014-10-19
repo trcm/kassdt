@@ -196,11 +196,11 @@ def create_assignment(request, course_code):
     # generate form for new assignemnt, thing this will get changed
     # to a pre specified form rather than a generated form
     form = AssignmentForm()
-    testForm = AssignmentTestForm()
+    # testForm = AssignmentTestForm()
 
     # add all the data to the context dict
     context['form'] = form
-    context['testForm'] = testForm
+    # context['testForm'] = testForm
     context['course'] = c
 
     return render(request, 'admin/new_assignment.html', context)
@@ -288,12 +288,12 @@ def validateAssignment(request):
     # gets the data from the post request
     if request.method == "POST":
         form = AssignmentForm(request.POST)
-        testForm = AssignmentTestForm(request.POST, request.FILES)
+        # testForm = AssignmentTestForm(request.POST, request.FILES)
         print request.POST['course_code']
         
         # For storing error messages. 
         errors = {}
-        if form.is_valid() and testForm.is_valid():
+        if form.is_valid():  # and testForm.is_valid():
             try:
                 # gets the cleaned data from the post request
                 print "Creating assignment"
@@ -342,17 +342,17 @@ def validateAssignment(request):
 
                 # check if test form is valid and create the new tests object
                 # if  it is
-                print "creating sub test"
-                test = SubmissionTest.objects.create(for_assignment=ass,
-                                                     test_name=ass.name + "Tests",
-                                                     test_count=testForm.cleaned_data['test_count'],
-                                                     test_pass_count=0,
-                                                     test_file=request.FILES['test_file'],
-                                                     test_command=testForm.cleaned_data['test_command'])
+                # print "creating sub test"
+                # test = SubmissionTest.objects.create(for_assignment=ass,
+                #                                      test_name=ass.name + "Tests",
+                #                                      test_count=testForm.cleaned_data['test_count'],
+                #                                      test_pass_count=0,
+                #                                      test_file=request.FILES['test_file'],
+                #                                      test_command=testForm.cleaned_data['test_command'])
                 print "saving"
                 ass.save()
-                test.save()
-                print "test save"
+                # test.save()
+                # print "test save"
                 return HttpResponseRedirect('/review/course_admin/')
 
             except Exception as AssError:
@@ -361,7 +361,7 @@ def validateAssignment(request):
 
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
-    context['testForm'] = testForm
+    # context['testForm'] = testForm
     context['course'] = Course.objects.get(id=request.POST['course_code'])
     context['errors'] = errors
 
