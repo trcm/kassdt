@@ -1394,6 +1394,7 @@ def assign_reviews(request, course_code, asmt):
                 numAnnotations = form.cleaned_data['min_annotations']
                 assignment.min_annotations = numAnnotations
                 assignment.reviews_per_student = numReviews
+                assignment.save()
                 template = "confirm_reviews_assigned.html"
         else:
             print form.errors
