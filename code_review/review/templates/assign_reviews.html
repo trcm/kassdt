@@ -15,14 +15,14 @@
       <h4>{{ errors }}</h4>
     {% endif %}
     
-    <div class="panel panel-default">
-      <div class="panel-body">
+    <div class="panel panel-default" id="formFields">
+      <div class="panel-body" id="formFieldsPanelBody">
         <h4>No. of submissions you want each student to review</h4>
         {{ form.reviews_per_student }}
         <h4>Min. number of annotations a student must make per submission.</h4>
         {{ form.min_annotations }}
         <br />
-        <input class="btn btn-default" type="submit" value="Assign Reviews">
+        <input class="btn btn-default" type="submit" value="Assign Reviews" id="submit">
       </div>
     </div>
 

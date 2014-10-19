@@ -18,7 +18,8 @@ from time import sleep
 
 class AssignReviewsTest(LiveServerTestCase):
     server_url = 'http://localhost:8000'
-    
+    fixtures = ['assign_reviews']
+
     @classmethod
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
@@ -40,15 +41,22 @@ class AssignReviewsTest(LiveServerTestCase):
     
     def test_00_assign_reviews(self):
         self.login()
+        reviewsPerStudent = 3
+        minAnnotations = 5
         next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("COMP3301").click()
         self.selenium.find_element_by_xpath("//a[@href='OperatingSystems/']").click()
         self.selenium.find_element_by_xpath("//div[@id='adminTools']/div[@id='adminToolsButtons']/a[@href='assign_reviews']").click()
 
-        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_reviews_per_student']").clear()
-        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_reviews_per_student']").send_keys('3')
-        sleep(10)
-        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_min_annotations']").clear()
-        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@id='id_min_annotations']").send_keys('5')
-        self.selenium.find_element_by_xpath("//div[@id='assignmentList']/form[@id='assign_reviews']/input[@type='submit']").click()
+        self.selenium.find_element_by_name('reviews_per_student').clear()
+        self.selenium.find_element_by_name('reviews_per_student').send_keys(str(reviewsPerStudent))
 
+        self.selenium.find_element_by_name('min_annotations').clear()
+        self.selenium.find_element_by_name('min_annotations').send_keys(str(minAnnotations))
+        self.selenium.find_element_by_id("submit").click()
+
+        # Check assignment has been updated correctly.
+        asmt = Assignment.objects.get(name="OperatingSystems")
+
+        self.assertEqual(asmt.reviews_per_student, reviewsPerStudent)
+        self.assertEqual(asmt.min_annotations, minAnnotations)
