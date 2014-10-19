@@ -322,3 +322,33 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # Check that the errors are now present by checking that error list exists
         self.selenium.find_elements_by_class_name('errorlist')
+
+    
+
+class SeleniumReviews(LiveServerTestCase):
+    server_url = 'http://localhost:8000'
+    fixtures = ['assign_reviews']
+    
+    @classmethod
+    def setUpClass(cls):
+        cls.selenium = webdriver.WebDriver()
+        super(SeleniumReviews, cls).setUpClass()
+        cls.selenium.maximize_window()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super(SeleniumReviews, cls).tearDownClass()
+
+    def login(self):
+        self.selenium.get("%s" % self.server_url)
+        username_input = self.selenium.find_element_by_id("id_username")
+        password_input = self.selenium.find_element_by_id("id_password")
+        username_input.send_keys('tom')
+        password_input.send_keys('tom')
+        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+
+    def test_01_check_annotation_count(self):
+        self.login()
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
