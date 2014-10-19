@@ -270,15 +270,16 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
-        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        self.selenium.find_element_by_tag_name("select").click()
+        self.selenium.find_elements_by_tag_name("option")[1].click()
+        # self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
-        #self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']")
         text_input.location_once_scrolled_into_view
         text_input.send_keys('selenium test')
         self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
-        # self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
     def test_01_edit_annotation(self):
         """ test_01_edit_annotation
@@ -301,7 +302,9 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
-        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        self.selenium.find_element_by_tag_name("select").click()
+        self.selenium.find_elements_by_tag_name("option")[1].click()
+        # self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[3]").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
