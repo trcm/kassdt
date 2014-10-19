@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.chrome import webdriver
+from selenium.webdriver.firefox import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
@@ -272,10 +272,7 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
         self.selenium.find_element_by_tag_name("select").click()
         self.selenium.find_elements_by_tag_name("option")[1].click()
-        # self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_elements_by_class_name('lineno')[0].click()
-        # line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
-        # self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']")
         text_input.location_once_scrolled_into_view
         text_input.send_keys('selenium test')
@@ -322,7 +319,6 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # Check that the errors are now present by checking that error list exists
         self.selenium.find_elements_by_class_name('errorlist')
-
     
 
 class SeleniumReviews(LiveServerTestCase):
@@ -349,6 +345,20 @@ class SeleniumReviews(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_01_check_annotation_count(self):
+        sel = self.selenium
         self.login()
-        next = self.selenium.find_element_by_partial_link_text("Courses").click()
-        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
+        next = sel.find_element_by_partial_link_text("Courses").click()
+        sel.find_element_by_partial_link_text("CSSE2310").click()
+        sel.find_element_by_xpath("//a[@href='Assignment 4/']").click()
+        # eviews = sel.find_element_by_id("reviewTable")
+        sel.find_element_by_xpath("//table[@id='reviewTable']/tbody/tr[2]/td[2]/a/button").click()
+        sel.find_element_by_tag_name("select").click()
+        sel.find_elements_by_tag_name("option")[1].click()
+        sel.find_elements_by_class_name('lineno')[0].click()
+        text_input = sel.find_element_by_xpath("id('id_text')")
+        text_input.location_once_scrolled_into_view
+        text_input.send_keys('selenium test')
+        sel.find_element_by_xpath("//input[@value='Submit']").click()
+        sel.find_element_by_partial_link_text("Submit").click()
+        completed = sel.find_element_by_xpath("id('reviewTable')/tbody/tr[2]/td[3]").text
+        self.assertEqual(completed, "Completed 1 annotations of 3")
