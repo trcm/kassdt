@@ -4,8 +4,13 @@
   {% block main %}
 
   <!-- This page can only be called if an assignment exists, obviously -->
+
   <div id="assSubmitDiv">
+
+  <br />
+
   <h1>Submit {{ asmt.name }}</h1>
+  <br /><br />
 
   {% if user.is_superuser %}
   <!-- Add stuff to allow superuser to edit assignment -->
@@ -19,32 +24,31 @@
   </div>
   {% endif %}
   
-  <div class="col-md-10">
-    <h2>Repository URL</h2>
-    <div class="form-group">
-      <div class="input-group">
-        <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
-          {% csrf_token %}
-          <!-- When user first hits page, just display url field. -->
-              <span>
-              {{ form.submission_repository }}
-                <!-- If requires password authentication, display it -->
-                {% if pswd_auth %}
-                    <h3>Please enter your remote's username and password below:</h3>
-
-                    Username: {{ form.repoUsername }}
-                    Password: {{ form.repoPassword }}
-                {% endif %}
-              <input class="btn btn-danger" type="submit" value="Submit">
-              </span>
-        </form>
-
+    <div class="row">
+      <div class="col-md-8">
+        <h3>Repository URL</h3>
+        <div class="form-group">
+            <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+              {% csrf_token %}
+              <!-- When user first hits page, just display url field. -->
+                  <span>
+                  {{ form.submission_repository }}
+                    <!-- If requires password authentication, display it -->
+                    {% if pswd_auth %}
+                        <h3>Please enter your remote's username and password below:</h3>
+                        Username: {{ form.repoUsername }}
+                        Password: {{ form.repoPassword }}
+                    {% endif %}
+                  </span>
+                  <br />
+                  <input class="btn btn-danger" type="submit" value="Submit Repository">
+                  <br />
+            </form>
+        </div>
       </div>
     </div>
-  </div>
 
 <div class="row">
-  <div class="col-md-2"></div>
   <div class="col-md-8">
     <!-- Show form for new submission including previous submission information -->
     <form method="POST" action="{% url 'submit_assignment' course.course_code asmt %}" >

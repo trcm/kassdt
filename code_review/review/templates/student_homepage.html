@@ -7,7 +7,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 <h1>Upcoming assignments</h1>
 <br /> <br />
 {% if open_assignments %}
-<table cellpadding="10" class="table table-bordered table-hover">
+<table cellpadding="10" class="table table-bordered">
   <thead>
     <th> Course </th>
     <th> Assignment Name </th>
@@ -20,7 +20,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
   <!-- grab all upcoming assignments and display them in a table -->
   {% for course, asmtList in open_assignments.items %}
   {% for asmt in asmtList %}
-  <tbody>
+  <tbody id="student_homepage_tbody">
     <tr>
       <td><p><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></p></td>
       <td><p>{{ asmt.0.name }}</p></td>
