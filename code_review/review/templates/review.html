@@ -131,7 +131,7 @@
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
     <!-- display forms for annotation creation if a file is selected -->
     <div id="annotationFormDiv">
-      <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
+      <form id="annotationForm" title="Write your annotation here, it will correspond to the line in the box" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
         {{ rangeform.as_ul }}
         {{ form.as_ul }}
         <input type="Submit" name="submit" class="btn btn-info" value="Submit" />
