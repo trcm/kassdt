@@ -224,7 +224,7 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_elements_by_id("id_submission_repository")[0].send_keys('https://github.com/xagefu/test.git')
-        self.selenium.find_elements_by_xpath("//span[@class='input-group-btn']/input")[0].submit()
+        self.selenium.find_elements_by_xpath("id('assignmentList')/div[2]/div/div/form/span/input[2]")[0].submit()
         self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
 
     def test_03_previous_submission(self):
