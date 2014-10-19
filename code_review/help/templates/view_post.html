@@ -92,11 +92,9 @@
       </div>
       {% endif%}
   
-  <div id="title">{{ title }}</div>
-  <div id="question">{{ question }}</div>
-  
-  Current File: {{ file.name }} <br />
-
+<div id="title">Post Title: {{ title }}</div>
+<div id="question">Post Question: {{ question }}</div>
+Current File: {{ file.name }} <br />
   <p>
     <select onChange="window.location.href=this.value">
       <option selected disabled>Select File</option>
