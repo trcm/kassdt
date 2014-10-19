@@ -21,27 +21,27 @@
   {% endif %}
   
     <div class="row">
-      <div class="col-md-8">
-        <h3>Repository URL</h3>
-        <div class="form-group">
-            <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
-              {% csrf_token %}
-              <!-- When user first hits page, just display url field. -->
-                  <span>
-                  {{ form.submission_repository }}
-                    <!-- If requires password authentication, display it -->
-                    {% if pswd_auth %}
-                        <h3>Please enter your remote's username and password below:</h3>
-                        Username: {{ form.repoUsername }}
-                        Password: {{ form.repoPassword }}
-                    {% endif %}
-                  </span>
-                  <br />
-                  <input class="btn btn-danger" type="submit" value="Submit Repository">
-                  <br />
-            </form>
+        <div class="col-md-8">
+          <h3>Repository URL</h3>
+          <div class="form-group">
+              <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+                {% csrf_token %}
+                <!-- When user first hits page, just display url field. -->
+                    <span>
+                    {{ form.submission_repository }}
+                      <!-- If requires password authentication, display it -->
+                      {% if pswd_auth %}
+                          <h3>Please enter your remote's username and password below:</h3>
+                          Username: {{ form.repoUsername }}
+                          Password: {{ form.repoPassword }}
+                      {% endif %}
+                    </span>
+                    <br />
+                    <input class="btn btn-danger" type="submit" value="Submit Repository">
+                    <br />
+              </form>
+          </div>
         </div>
-      </div>
     </div>
 
 <div class="row">
