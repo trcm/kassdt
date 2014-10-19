@@ -73,7 +73,7 @@
 </script>
 
 <div id="reviewFiles">
-<a href="/review">Submit</a>
+<a href="/review" class="btn btn-info" title="Save and return to homepage">Submit</a>
   
   <p>
   <select onChange="window.location.href=this.value">
@@ -134,7 +134,7 @@
       <form id="annotationForm" action="/review/annotation/create/{{ sub }}/{{ uuid }}">
         {{ rangeform.as_ul }}
         {{ form.as_ul }}
-        <input type="Submit" name="submit" value="Submit" />
+        <input type="Submit" name="submit" class="btn btn-info" value="Submit" />
       </form>
     </div>
   </div>

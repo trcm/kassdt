@@ -185,6 +185,10 @@ body {
 	
 }
 
+.annotationForm li label{
+	display:none;
+}
+
 /*main div on admin create assignment page */
 #assubmitDiv {
 
@@ -213,10 +217,9 @@ body {
 
 #reviewFiles a {
 	
-	border: 2px solid;
-	padding: 2px;
+	
 	float: right;
-	margin-top: 4px;
+	margin-top: 2px;
 	
 	
 }
