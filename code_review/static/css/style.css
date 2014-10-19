@@ -7,12 +7,12 @@
 
 #accordion .btn{
 	float:right;
+	margin:1px;
 }
 
 /* settings div on an assignment page */
 #assignmentAdmin {
-	display: block;
-	float: right;
+	
 	
 }
 
@@ -86,9 +86,7 @@ body {
 }
 
 #courseButtons {
-	float:right;
-	display:inline;
-	bottom: 35px;
+	
 
 }
 
@@ -99,6 +97,10 @@ body {
 	display: inline;
 }
 
+#defaultLandingDiv {
+	padding-left:2px;
+	height:100%;
+}
 
 #files > ul li {
   list-style: none;
@@ -222,7 +224,7 @@ body {
 #reviewCode {
   width: 60%;
   height:550px;
-  overflow-y:scroll;
+  overflow-y:auto;
   height: 100%;
   display:inline-block;
   
