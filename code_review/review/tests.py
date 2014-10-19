@@ -224,7 +224,7 @@ class MySeleniumTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_elements_by_id("id_submission_repository")[0].send_keys('https://github.com/xagefu/test.git')
-        self.selenium.find_elements_by_xpath("//span[@class='input-group-btn']/input")[0].submit()
+        self.selenium.find_elements_by_xpath("id('assignmentList')/div[2]/div/div/form/span/input[2]")[0].submit()
         self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
 
     def test_03_previous_submission(self):
@@ -270,15 +270,16 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
-        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        self.selenium.find_element_by_tag_name("select").click()
+        self.selenium.find_elements_by_tag_name("option")[1].click()
+        # self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # line_input = self.selenium.find_element_by_xpath("//input[@id='id_start']").send_keys('1')
-        #self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         text_input = self.selenium.find_element_by_xpath("//textarea[@id='id_text']")
         text_input.location_once_scrolled_into_view
         text_input.send_keys('selenium test')
         self.selenium.find_element_by_xpath("//input[@value='Submit']").click()
-        # self.assertTrue(self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']"))
 
     def test_01_edit_annotation(self):
         """ test_01_edit_annotation
@@ -301,7 +302,9 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
         self.selenium.find_element_by_xpath("//table/tbody/tr/td[3]/form/input").click()
-        self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
+        self.selenium.find_element_by_tag_name("select").click()
+        self.selenium.find_elements_by_tag_name("option")[1].click()
+        # self.selenium.find_element_by_xpath("//div[@id='reviewFiles']/ul/li[2]/a").click()
         self.selenium.find_element_by_xpath("//div[@id='ui-id-2']/a[3]").click()
         try:
             self.selenium.find_element_by_xpath("//p[text() ='Comment: selenium test']")
@@ -319,3 +322,33 @@ class SeleniumAnnotations(LiveServerTestCase):
         self.selenium.find_elements_by_class_name('lineno')[0].click()
         # Check that the errors are now present by checking that error list exists
         self.selenium.find_elements_by_class_name('errorlist')
+
+    
+
+class SeleniumReviews(LiveServerTestCase):
+    server_url = 'http://localhost:8000'
+    fixtures = ['assign_reviews']
+    
+    @classmethod
+    def setUpClass(cls):
+        cls.selenium = webdriver.WebDriver()
+        super(SeleniumReviews, cls).setUpClass()
+        cls.selenium.maximize_window()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super(SeleniumReviews, cls).tearDownClass()
+
+    def login(self):
+        self.selenium.get("%s" % self.server_url)
+        username_input = self.selenium.find_element_by_id("id_username")
+        password_input = self.selenium.find_element_by_id("id_password")
+        username_input.send_keys('tom')
+        password_input.send_keys('tom')
+        self.selenium.find_element_by_xpath("//input[@value='Login']").click()
+
+    def test_01_check_annotation_count(self):
+        self.login()
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("ABCD1234").click()
