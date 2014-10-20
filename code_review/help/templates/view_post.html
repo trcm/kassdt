@@ -18,12 +18,12 @@
    $("#annotationForm").hide();
 
    $(".click").click(function() {
-     p = parseInt( $(this).text());
-     console.log(p);
-     $("input[name*='start']").val(p); 
+   p = parseInt( $(this).text());
+   console.log(p);
+   $("input[name*='start']").val(p); 
 
-     $("#annotationForm").show();
-     $("#annotationForm #id_text").focus();
+   $("#annotationForm").show();
+   $("#annotationForm #id_text").focus();
    });
 
    $("form[id^='editForm']").each(function() {
@@ -32,20 +32,47 @@
    });
 
    $("a[id^='saveBtn']").each(function() {
-     $(this).hide();
+   $(this).hide();
    });
 
    $("a[id^='cancelBtn']").each(function() {
-     $(this).hide();
-   });  /*  */
+   $(this).hide();
+   });  
    
    $("a[id^='editBtn']").click(function() {
+     /* var h = accordHeight() + 250;
+     console.log($("#id_text").height()); */
+     /* $(".ui-accordion-content-active").css('height', h);
+     console.log(h); */
      $(this).prev("form").show();
      $(this).next("a[id^='saveBtn']").show();
      $(this).next("a[id^='cancelBtn']").show();
      $(this).hide();
      $(this).next('div[id^=showEditBtns]').show();
      console.log("show");
+   }); 
+
+  /* 
+   $(".ui-accordion-header").click(function() {
+     var h = accordHeight();
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);
+   });
+   
+   var accordHeight = function() {
+     var h = $("p#comment").height() + 120;
+     return h;
+   };   */
+
+   $("a[id^='cancelBtn']").click(function() {
+     var f = $(this).prev().prev().hide();
+     console.log(f);
+     $(this).prev("a[id^='editBtn']").show();
+     $(this).hide();
+/*     var h = $("p#comment").height() + 120;
+     console.log(h);
+     $(".ui-accordion-content-active").css('height', h);/*  */ 
+
    });
  });
 </script>
@@ -53,42 +80,39 @@
 
 <br />
 
-{% if user.reviewuser == post.by %} 
-<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete</a>
-<button id="editBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit</button>
-<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve</a>
-{% endif%}
 
 <br />
 
 <div id="reviewFiles">
+      {% if user.reviewuser == post.by %} 
+      <div>
+	<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
+	<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
+	<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
+      </div>
+      {% endif%}
   
 <div id="title">Post Title: {{ title }}</div>
 <div id="question">Post Question: {{ question }}</div>
 Current File: {{ file.name }} <br />
-Currently displaying: {{ file.name }}<br />
-
   <p>
-  <select onChange="window.location.href=this.value">
-    <option selected disabled>Select File</option>
-    {% for file in files %}
+    <select onChange="window.location.href=this.value">
+      <option selected disabled>Select File</option>
+      {% for file in files %}
       {% if file.folder_uuid %}
-        <option value=""><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</option>
-      {% endif%}
-      
+      <option value=""><p class="reviewFolder" data-folder="{{ file.file_uuid }}">{{ file.name }}/</option>
+	{% endif%}
+	
 
-      {% if file.file_uuid %}
+	{% if file.file_uuid %}
         {% url 'review_file' sub file.file_uuid as fileurl %}
         <option value="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}"><a href="/help/file/{{ post.post_uuid }}/{{ file.file_uuid }}">{{ file.path }}</a></option>
-      {% endif%}
-    {% endfor %}
-  </select>
-</p>
-
-<a class="btn btn-default" href="/review">Submit</a>
-
+	{% endif%}
+	{% endfor %}
+    </select>
+      </p>
+<a class="btn btn-default" href="/help/{{ course_code }}">Back</a>
 </div>
-
 
 <div id="reviewFileName">
 </div>
@@ -105,27 +129,28 @@ Currently displaying: {{ file.name }}<br />
   <div id="reviewAnnotation">
     <div>
     <!-- display all the current annotations -->
-    {% for annote, range, editForms in annotations %}
-    <p>User: {{ annote.user.djangoUser.first_name }} {{ annote.user.djangoUser.last_name }}
-    <p>Line: {{ range.start }}</p>
+    <div id="accordion">
+      <!-- display all the current annotations -->
+      {% for annote, range, editForm in annotations %}
+      <h3>Line {{ range.start }}</h3>
       <div>
-	<p id="comment">{{ annote.text }}</p>
-	<form method="post" id="editForm{{annote.id}}" action="{% url 'edit_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id%}">
-	  {% csrf_token %}
-	  {{ editForms.as_ul }}
-	  <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
-	</form>
+	<p>{{ annote.user.djangoUser.first_name }} {{ annote.user.djangoUser.last_name }}</p>
+        <p id="comment">{{ annote.text }}</p>
+        <form method="post" id="editForm{{annote.id}}" action="{% url 'edit_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id%}">
+          {% csrf_token %}
+          {{ editForm.as_ul }}
+          <input type="submit" class="btn btn-info" id="saveBtn{{annote.id}}" value="Save"/>
+        </form>
 
-	{% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
-	<a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
-	<a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
-
-	<!-- button to save changes -->
-	<a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
-	{% endif%}
+        {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
+        <a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
+        <a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
+        <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
+        <!-- button to save changes -->
+        {% endif%}
       </div>
-    {% endfor %}
-
+      {% endfor %}
+    </div>
     {% url 'create_annotation' sub uuid as annotateUrl %}
     <!-- Obfucations doesn't work on get -->
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
@@ -138,35 +163,34 @@ Currently displaying: {{ file.name }}<br />
   </div>
 </div>
 
+  <div id='startLine'>
+    {% for annote, range in annotations %}
+    <ul>{{ range.start }}</ul>
+    {% endfor %}
+  </div>
 
-<div id='startLine'>
-  {% for annote, range in annotations %}
-  <ul>{{ range.start }}</ul>
-  {% endfor %}
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edit post</h4>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'update_post' post.post_uuid %}" method="POST">
-	  {% csrf_token %}
-	  {% if editForm %}
-	  {{ editForm.as_p }}
-	  {% endif%}
-	  <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-	  </div>
-        </form>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+	<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="myModalLabel">Edit post</h4>
+	</div>
+	<div class="modal-body">
+          <form action="{% url 'update_post' post.post_uuid %}" method="POST">
+	    {% csrf_token %}
+	    {% if editForm %}
+	    {{ editForm.as_p }}
+	    {% endif%}
+	    <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+	    </div>
+          </form>
+	</div>
       </div>
     </div>
   </div>
-</div>
 
-{% endblock %}
+  {% endblock %}

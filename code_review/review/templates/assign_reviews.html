@@ -4,7 +4,9 @@
   {% block main %}
 
   <!-- This page can only be called if an assignment exists, obviously -->
+  <br />
   <h1>Assign Reviews for {{ asmt.name }}</h1>
+  <br />
 
   <form id="assign_reviews" method="post" action="">
     {% csrf_token %}

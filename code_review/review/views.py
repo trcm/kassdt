@@ -926,6 +926,8 @@ def grabFileData(request, submissionUuid, fileUuid):
             editForms.append(editAnnotationForm(instance=a))
 
         context['annotations'] = zip(sortedAnnotations, annotationRanges, editForms)
+        context['course_code'] = sub.submission_for.course_code
+        context['ass_name'] = sub.submission_for.name
         context['sub'] = submissionUuid
         context['uuid'] = fileUuid
         context['files'] = folders
@@ -1314,6 +1316,8 @@ def review(request, submissionUuid, **kwargs):
         folders = grabFiles(sub.root_folder)
 
         # return all the data for the submission to the context
+        context['ass_name'] = sub.submission_for.name
+        context['course_code'] = sub.submission_for.course_code.course_code
         context['sub'] = submissionUuid
         context['files'] = folders
         context['code'] = code

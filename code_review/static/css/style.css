@@ -5,10 +5,13 @@
   display: inline;
 }
 
+#accordion .btn{
+	float:right;
+	margin:1px;
+}
+
 /* settings div on an assignment page */
 #assignmentAdmin {
-	display: block;
-	float: right;
 	
 }
 
@@ -66,6 +69,10 @@
 	padding-left: 40px;
 	padding-right: 40px;
 }
+/*the div containing the content on the assignment submit page*/
+#assSubmitDiv {
+	margin-top: 8px;
+}
 
 /* global background */
 body {
@@ -78,9 +85,7 @@ body {
 }
 
 #courseButtons {
-	float:right;
-	display:inline;
-	bottom: 35px;
+	
 
 }
 
@@ -91,6 +96,10 @@ body {
 	display: inline;
 }
 
+#defaultLandingDiv {
+	padding-left:2px;
+	height:100%;
+}
 
 #files > ul li {
   list-style: none;
@@ -122,14 +131,14 @@ body {
 	vertical-align: middle;
 }
 
-
 /*The line numbers on the review page */
 .lineno {
 	background-color: #e5e5e5;
-	
-	
 }
 
+#student_homepage_tbody{
+	background-color: #f5f5f5;	
+}
 
 /*The line numbers on the review page */
 .click{
@@ -148,6 +157,8 @@ body {
 /* annotation pane div on review page */
 #reviewAnnotation {
   width: 40%;
+  min-height:550px;
+  background-color:#ddd;
   height:100%;
   float:right;
   padding-bottom:10px;
@@ -169,6 +180,7 @@ body {
 	display:inline:block;
 	float:left;
 	width:100%;
+	list-style:none;
 	background-color:f5f5f5;
 	
 }
@@ -189,6 +201,16 @@ body {
 	display:none;
 }
 
+/* ------------------------------------------ template - assignment_page.html ----------------------------------------- */
+
+#assignment_page_tbody{
+	background-color: white;
+}
+
+#assignment_page_thead{
+	background-color: #f5f5f5;
+}
+
 /*main div on admin create assignment page */
 #assubmitDiv {
 
@@ -200,6 +222,8 @@ body {
 /* code pane div on review page */
 #reviewCode {
   width: 60%;
+  height:550px;
+  overflow-y:auto;
   height: 100%;
   display:inline-block;
   
@@ -242,7 +266,7 @@ body {
 
 #id_text {
 
-
+	width:100%;
 }
 
 

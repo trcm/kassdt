@@ -36,6 +36,7 @@ def index(request, course_code):
     context = {}
     course_code = course_code.encode('ascii', 'ignore')
     openPosts = []
+    courses = []
     U = None
     try:
         # Get the course object for the course code
@@ -43,6 +44,7 @@ def index(request, course_code):
         # get all the open posts for the course and sort them by creation date
         openPosts = c.posts.all().filter(open=True).order_by('-created')
         U = User.objects.get(id=request.user.id)
+        courses = U.reviewuser.courses.all()
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
         error_page(request, error)
@@ -52,6 +54,7 @@ def index(request, course_code):
 
     context['user'] = U
     context['course_code'] = course_code
+    context['courses'] = courses
     context['Posts'] = openPosts
     print "help index"
     return render(request, 'help.html', context)
@@ -72,15 +75,18 @@ def newPost(request, course_code):
     context = {}
     course_code = course_code.encode('ascii', 'ignore')
     print "new post"
+    courses = []
     U = None
     try:
         U = User.objects.get(id=request.user.id)
+        courses = U.reviewuser.courses.all()
     except User.DoesNotExist:
         error = "User %s does not exist" % request.user
         error_page(request, error)
 
     form = postForm()
     context['user'] = U
+    context['courses'] = courses
     context['course_code'] = course_code
     context['form'] = form
     return render(request, 'new_post.html', context)
@@ -234,9 +240,11 @@ def viewPost(request, post_uuid):
         post = Post.objects.get(post_uuid=uuid)
 
         user = User.objects.get(id=request.session['_auth_user_id'])
+        courses = user.reviewuser.courses.all()
         folders = grabPostFiles(post.root_folder)
         # return all the data for the postmission to the context
         context['user'] = user
+        context['courses'] = courses
         context['question'] = post.question
         context['title'] = post.title
         context['post'] = post
@@ -268,6 +276,7 @@ def viewPostFile(request, post_uuid, file_uuid):
     """
     uuid = post_uuid.encode('ascii', 'ignore')
     file_uuid = file_uuid.encode('ascii', 'ignore')
+    courses = []
     context = {}
     try:
         # create the forms for creating annotations
@@ -276,9 +285,11 @@ def viewPostFile(request, post_uuid, file_uuid):
 
         currentUser = User.objects.get(id=request.session['_auth_user_id'])
         # grab the annotations on the file along with the code for the file
+        courses = currentUser.reviewuser.courses.all()
         context = grabPostFileData(request, uuid, file_uuid)
         context['form'] = annotationForm()
         context['rangeform'] = rangeForm
+        context['courses'] = courses
         context['editForm'] = editForm()
         return render(request, 'view_post.html', context)
 
@@ -322,7 +333,7 @@ def grabPostFileData(request, submissionUuid, file_uuid):
 
         # get all annotations for the current file
         # if user is the owner of the files or super user get all annotations
-        annotations = SourceAnnotation.objects.filter(source=file, user=currentUser.reviewuser)
+        annotations = SourceAnnotation.objects.filter(source=file)
 
         annotationRanges = []
 
