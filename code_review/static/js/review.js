@@ -17,7 +17,7 @@ $(function(){
     });
 
    var accordHeight = function() {
-     var h = $("p#comment").height() + 100;
+     var h = $("p#comment").height() + 200;
      return h;
    };
 });

@@ -110,6 +110,7 @@
 .ui-accordion .ui-accordion-content {
 	padding: 1em 2.2em;
 	border-top: 0;
+	
 	overflow: auto;
 }
 .ui-autocomplete {
@@ -813,7 +814,7 @@ button.ui-button::-moz-focus-inner {
 	display: block;
 	border-width: 0;
 	padding: 1em 1.4em;
-	background: none;
+	
 }
 .ui-tooltip {
 	padding: 8px;
@@ -823,10 +824,13 @@ button.ui-button::-moz-focus-inner {
 	-webkit-box-shadow: 0 0 5px #aaa;
 	box-shadow: 0 0 5px #aaa;
 	
+	
+	
 }
 body .ui-tooltip {
 	border-width: 2px;
-	color:red;
+	
+	
 }
 
 .tooltip {

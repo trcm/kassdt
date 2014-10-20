@@ -170,6 +170,7 @@ body {
 /* annotation text box on review page */
 #reviewAnnotation p {
   width: 100%;
+  
   background-color: white; 
 }
 
@@ -200,9 +201,6 @@ body {
 	
 }
 
-.annotationForm li label{
-	display:none;
-}
 
 /* ------------------------------------------ template - assignment_page.html ----------------------------------------- */
 
@@ -225,7 +223,7 @@ body {
 /* code pane div on review page */
 #reviewCode {
   width: 60%;
-  height:550px;
+  max-height:550px;
   overflow-y:auto;
   height: 100%;
   display:inline-block;

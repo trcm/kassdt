@@ -11,24 +11,16 @@
 
   <h1>Submit {{ asmt.name }}</h1>
   <br /><br />
-
-  {% if user.is_superuser %}
-  <!-- Add stuff to allow superuser to edit assignment -->
-  <div class="row">
-  	<div class="col-md-3">
-  		<div class="btn-group">
-  			<a class="btn btn-default" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
-  		</div>
-  	</div>
-  	<div class="col-md-9"></div>
-  </div>
-  {% endif %}
   
-    <div class="row">
-        <div class="col-md-8">
+    
           <h3>Repository URL</h3>
           <div class="form-group">
-              <form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+              
+					<form method="POST" action="{% url 'submit_assignment' course.course_code asmt.name %}">
+				  
+					<input class="btn btn-danger" type="submit" value="Submit Repository">				                
+				  
+			  </div>
                 {% csrf_token %}
                 <!-- When user first hits page, just display url field. -->
                     <span>
@@ -40,12 +32,12 @@
                           Password: {{ form.repoPassword }}
                       {% endif %}
                     </span>
-                    <br />
-                    <input class="btn btn-danger" type="submit" value="Submit Repository">
-                    <br />
+                    
+
+                    
               </form>
           </div>
-        </div>
+        
     </div>
 
 <div class="row">
