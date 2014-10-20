@@ -4,6 +4,11 @@
 #adminList li {
   display: inline;
 }
+/*submission list on admin page*/
+#adminSubmissions{
+	
+	padding-top:20px;
+}
 
 #accordion .btn{
 	float:right;
@@ -117,6 +122,12 @@ body {
 	background-color:red;
 	
 
+}
+
+/*main div on help topic page*/
+
+#help{
+	width:1280px;
 }
 
 /*Code for highlighting specific lines on review/annotations*/

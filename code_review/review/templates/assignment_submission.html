@@ -53,12 +53,14 @@
         <a class="btn btn-primary" href="{% url 'submission' submissions.last.submission_uuid %}">View your last submission</a>
       </div>
     {% endif %}
-    <div class="well well-sm">
+    
     {% if errMsg %}
+    <div class="well well-sm">
       <h3> ERROR! </h3>
       {{ errMsg }}
+      </div>
     {% endif %}
-     </div>
+     
   </form>
  
   </div>
