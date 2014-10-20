@@ -1,16 +1,20 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
+<div id="coursePage">
 <br />
+
 <div class="row">
+	<div class="col-md-5">
   <h1>Assignments for {{ course.course_code }} </h1>
+  </div>
   <br />
 </div>
 
 {% if user.is_staff %} 
 <div class="row">
-	<div class="col-md-7"></div>
-	<div class="col-md-5">
+	<div class="col-md-8"></div>
+	<div class="col-md-4">
 		<div class="btn-group">
       <a class="btn btn-default" id="courseButtons" href="#"><span class=" glyphicon glyphicon-wrench"></span> Settings</a>
 			<a class="btn btn-success" id="courseButtons" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
@@ -68,6 +72,6 @@
     <br />
     {% endif%}
   </div>
-
+</div>
 
   {% endblock %}

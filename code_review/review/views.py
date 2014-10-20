@@ -1437,6 +1437,8 @@ def view_submissions(request, course_code, asmt):
     course_code = course_code.encode('ascii', 'ignore')
     assign_name = asmt.encode('ascii', 'ignore')
     try:
+        U = User.objects.get(id=request.user.id)
+        context['courses'] = U.reviewuser.courses.all() 
         course = Course.objects.get(course_code=course_code)
         assignment = Assignment.objects.get(course_code=course,
                                             name=assign_name)
@@ -1454,3 +1456,10 @@ def view_submissions(request, course_code, asmt):
         print "course"
     except Assignment.DoesNotExist:
         print "assignment"
+    except Exception:
+        error_message = "An unhandled exception occured. Please contact the system admin."
+        return error_page(request, error_message)
+
+    error_message = "An unhandled exception has occured. Please contact the system admin."
+    return error_page(request, error_message)
+    

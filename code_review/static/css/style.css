@@ -77,6 +77,7 @@
 /* global background */
 body {
 	background-color: #828282;
+	
 }
 
 .highlightTable {
@@ -88,6 +89,8 @@ body {
 	
 
 }
+
+
 
 /* The title on course Assignments page */
 #courseAssignments h1 {
@@ -167,6 +170,7 @@ body {
 /* annotation text box on review page */
 #reviewAnnotation p {
   width: 100%;
+  
   background-color: white; 
 }
 
@@ -197,9 +201,6 @@ body {
 	
 }
 
-.annotationForm li label{
-	display:none;
-}
 
 /* ------------------------------------------ template - assignment_page.html ----------------------------------------- */
 
@@ -222,7 +223,7 @@ body {
 /* code pane div on review page */
 #reviewCode {
   width: 60%;
-  height:550px;
+  max-height:550px;
   overflow-y:auto;
   height: 100%;
   display:inline-block;
@@ -288,9 +289,9 @@ body {
 #wrapper {
 	margin-left: auto;
 	margin-right: auto;
-	width:1280px;
-	
-	overflow-y:scroll;
+	min-width:1280px;
+	overflow-x:auto;
+	overflow-y:auto;
 }
 
 /*******/
