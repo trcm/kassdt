@@ -104,6 +104,10 @@ body {
 	height:100%;
 }
 
+#errorDiv {
+	background-color: white;
+}
+
 #files > ul li {
   list-style: none;
 }
@@ -380,3 +384,5 @@ body {
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+
+/*tooltip*/

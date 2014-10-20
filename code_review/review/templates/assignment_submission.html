@@ -37,9 +37,9 @@
                       {% endif %}
                     
               </form>
-          </div>
+          
         
-    </div>
+    
 
 <div class="row">
   <div class="col-md-8">
@@ -53,12 +53,16 @@
         <a class="btn btn-primary" href="{% url 'submission' submissions.last.submission_uuid %}">View your last submission</a>
       </div>
     {% endif %}
+    <div class="well well-sm">
     {% if errMsg %}
       <h3> ERROR! </h3>
       {{ errMsg }}
     {% endif %}
+     </div>
   </form>
+ 
   </div>
-</div>
-</div>
+
+
+
 {% endblock %}
