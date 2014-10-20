@@ -616,7 +616,7 @@ def assignment_page(request, course_code, asmt):
         context['course'] = course
         context['asmt'] = assignment
         context['courses'] = courseList
-        context['canSubmit'] = can_submit(assignment)
+        context['canSubmit'] = can_submit(assignment) and user_can_submit(reviewUser, assignment)
         context['submissions'] = submissions
         context['canReview'] = can_review(assignment)
 
@@ -806,7 +806,7 @@ def submit_assignment(request, course_code, asmt):
                     form.fields['submission_repository'].widget.attrs['readonly'] = True
                     sub.delete()
                 elif('404' in msg or 'Failed to resolve address' in msg):
-                    context['errMsg'] = 'The URL appears incorrect... is this really your repo?' 
+                    context['errMsg'] = 'The URL appears incorrect... is this really your repo? Please also check your internet connection.' 
                     sub.delete()
                 else:
                     print msg

@@ -22,26 +22,39 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         
     publicRepo = "https://github.com/avadendas/public_test_repo.git"
     sshRepo = "https://github.com/avadendas/private_test_repo.git"
-    privateRepo = 
+    privateRepo = "https://kassdt@bitbucket.org/kassdt/private_test_repo.git"
+
     @classmethod
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
         super(AssignmentSubmissionTest, cls).setUpClass()
         cls.selenium.maximize_window()
         
+        print ReviewUser.objects.all()
+        print User.objects.all()
+        
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
         super(AssignmentSubmissionTest, cls).tearDownClass()
+   
+    def setUp(self):
+        self.student = User.objects.get(pk=86)
+        self.admin = User.objects.get(username='tom')
+        self.studentRevUser = ReviewUser.objects.get(djangoUser=self.student)
 
-    def login(self):
+    def login(self, username, password):
         self.selenium.get("%s" % self.server_url)
         username_input = self.selenium.find_element_by_id("id_username")
         password_input = self.selenium.find_element_by_id("id_password")
-        username_input.send_keys('naoise')
-        password_input.send_keys('naoise')
+        username_input.send_keys(username)
+        password_input.send_keys(password)
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
-    
+   
+    @classmethod
+    def loginStudent(self):
+        self.login('naoise', 'naoise')
+
     @classmethod
     def partialLink(self, text):
         return self.selenium.find_element_by_partial_link_text(text)
@@ -61,22 +74,57 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     
     @classmethod 
     def byId(self, text):
-        self.selenium.find_element_by_id(text)
+        return self.selenium.find_element_by_id(text)
+    
+    @classmethod 
+    def repoUrl(self, url):
+        '''Go from assignment page to submitting assignment'''
+        self.submit()
+        self.byId("id_submission_repository").send_keys(url)
+        self.byId("id_submit").click()
 
     @classmethod 
-    def submit(self, url, username=None, password=None):
+    def submit(self):
         '''@pre we are on the assignment page'''
-        self.byId("id_submission_repository").send_keys(url)
+        #self.xpath("//div[@class='panel-footer']/form/input").submit()
+        self.byId("id_submissionPage").click()
 
+    @classmethod 
+    def confirmationPage(self):
+        # Check redirected to confirmation page 
+        self.assertTrue(self.byId("//h1[text() = 'Submission Confirmed']"))
+    
+    @classmethod
+    def get_latest(self, user, asmt):
+        return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).latest()
+
+    """
     def test_00_submit_public(self):
         '''Believe this has already been done by Kieran in tests:MySeleniumTests.'''
         pass
+    """
     
     def test_01_submit_single(self):
-        self.login()
+        self.login('naoise', 'naoise')
+        # How many submissions are there already?
+        course = Course.objects.get(course_code="ABCD1234")
+        asmt = Assignment.objects.get(course_code=course, name='SingleSubmit')
+        oldSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
+        
         self.assignmentPage("ABCD1234", 'SingleSubmit')
-        submit(
+        
+        self.repoUrl(self.publicRepo)
+        # Sleep for a bit so it actually gets submitted. 
+        sleep(10)
+        # Check assignment has been created 
+        newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
+        #self.assertEqual(len(oldSubs)+1, len(newSubs))
+        #latest = get_latest(self.studentRevUser, asmt)
 
+        # Try to submit again.
+        self.repoUrl(self.publicRepo)
+
+    """
     def test_submission_not_open(self):
         pass
 
@@ -109,3 +157,4 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     def test_blank(self):
         '''Submit blank URL'''
         pass
+    """
