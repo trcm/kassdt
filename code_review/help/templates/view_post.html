@@ -83,7 +83,7 @@
 
 <br />
 
-<div class="well well-sm">
+<div class="well well-sm" title="Select the attached files from the dropdown box below.">
 	
       {% if user.reviewuser == post.by %} 
       <div>
@@ -140,7 +140,7 @@
 
 
 <div id="reviewPane">
-  <div id="reviewCode">
+  <div id="reviewCode" title="Click the line number you would like to annotate">
     <!-- render the source file in the html -->
     
     {% if code %}
@@ -177,10 +177,10 @@
     <!-- Obfucations doesn't work on get -->
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
     <!-- display forms for annotation creation if a file is selected -->
-    <form id="annotationForm" action="/review/annotation/create/{{ post.post_uuid }}/{{ uuid }}">
+    <form id="annotationForm" title="Write your annotation here, it will correspond to the line number above." action="/review/annotation/create/{{ post.post_uuid }}/{{ uuid }}">
       {{ rangeform.as_ul }}
       {{ form.as_ul }}
-      <input type="Submit" name="submit" value="Submit" />
+      <input type="Submit" name="submit" class="btn btn-info" value="Submit" />
     </form>
   </div>
 </div>
