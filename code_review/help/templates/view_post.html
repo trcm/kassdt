@@ -78,23 +78,35 @@
 </script>
 {% endif%}
 
+<body>
+<div id="wrapper">
+
 <br />
 
-
-<br />
-
-<div id="reviewFiles">
+<div class="well well-sm">
+	
       {% if user.reviewuser == post.by %} 
       <div>
-	<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
-	<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
-	<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
+		  
+		  <div class="row">
+			  <div class="col-md-8">
+			<div id="title"><h4>Post Title: {{ title }}</h4></div>
+			<div id="question"><h4>Question:</h4><div id="helpQ"> {{ question }}</div></div>
+			</div>
+			<div class="col-md-4">
+			<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
+			<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
+			<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
+			</div>
+			</div>
       </div>
       {% endif%}
   
-<div id="title">Post Title: {{ title }}</div>
-<div id="question">Post Question: {{ question }}</div>
-Current File: {{ file.name }} <br />
+
+</div>
+<div id="reviewFiles">
+<div class="row">
+ <div class="col-md-2">
   <p>
     <select onChange="window.location.href=this.value">
       <option selected disabled>Select File</option>
@@ -110,12 +122,22 @@ Current File: {{ file.name }} <br />
 	{% endif%}
 	{% endfor %}
     </select>
+    </div>
+    <div class="col-md-3">
+		Current File: {{ file.name }} 
+	</div>
       </p>
+       <div class="col-md-6"></div>
+        <div class="col-md-1">
 <a class="btn btn-default" href="/help/{{ course_code }}">Back</a>
 </div>
-
-<div id="reviewFileName">
 </div>
+
+
+</div>
+</div>
+<br />
+
 
 <div id="reviewPane">
   <div id="reviewCode">
@@ -192,5 +214,5 @@ Current File: {{ file.name }} <br />
       </div>
     </div>
   </div>
-
+</div>
   {% endblock %}

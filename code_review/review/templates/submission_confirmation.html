@@ -6,12 +6,17 @@
 <!-- Page called to tell user that submission has been successful -->
 
 {% if user.is_superuser %}
-<h2>Settings</h2>
-{% endif %}
 
-<h1>Submission Confirmed</h1>
+{% endif %}
 <div id="submissionConfirmation">
-    <h2>Your submission for {{ course.course_code }} assignment {{ asmt.name }} has been sucessfully submitted! </h2>
+<div class="well well-sm">
+
+
+    <h3>Your submission for {{ course.course_code }} assignment {{ asmt.name }} has been sucessfully submitted! </h3>
+   <br />
     <a href="/review/course/{{course.course_code}}/{{asmt.name}}/?">Return to assignment page</a>
 </div>
+</div>
+<br />
+<br />
 {% endblock %}

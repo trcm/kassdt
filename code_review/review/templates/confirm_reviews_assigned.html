@@ -2,5 +2,9 @@
 {% extends 'navbar.html' %}
 {% block main %}
 <br /><br />
-<h2>Reviews have successfully been assigned.</h2>
+<div class="well well-sm">
+<h3>Reviews have successfully been assigned.</h3>
+<br />
+<a href="/review/course/{{course.course_code}}/{{asmt.name}}/?">Return to assignment page</a>
+</div>
 {% endblock %}

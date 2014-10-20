@@ -23,10 +23,12 @@
 /*Assignment creation forms on assignment creation Page*/
 #assignmentCreation {
 	padding: 40px;
+	
 }
 
 /*Assignment creation forms on assignment creation Page*/
 #assignmentCreation ul {
+	list-style: none;
 }
 
 /*Assignment List on Default Landing Page*/
@@ -128,6 +130,12 @@ body {
 
 #help{
 	width:1280px;
+}
+
+#helpQ {
+	max-width:800px;
+	max-height: 200px;
+	overflow-y:auto;
 }
 
 /*Code for highlighting specific lines on review/annotations*/
@@ -234,12 +242,6 @@ body {
 	background-color: #f5f5f5;
 }
 
-/*main div on admin create assignment page */
-#assubmitDiv {
-
-	background-color:#ddd;
-
-}
 
 
 /* code pane div on review page */
@@ -302,6 +304,10 @@ body {
 	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
+}
+/* main div on submission confirmation page */
+#submissionConfirmation {
+	padding:40px;
 }
 
 /*********/
