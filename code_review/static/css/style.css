@@ -133,9 +133,10 @@ body {
 }
 
 #helpQ {
-	max-width:800px;
+	width:800px;
 	max-height: 200px;
 	overflow-y:auto;
+	background-color:white;
 }
 
 /*Code for highlighting specific lines on review/annotations*/
