@@ -80,14 +80,19 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     def repoUrl(self, url):
         '''Go from assignment page to submitting assignment'''
         self.submit()
+        # Enter repo URL 
         self.byId("id_submission_repository").send_keys(url)
-        self.byId("id_submit").click()
+        sleep(3)
+        # Hit submit
+        self.selenium.find_elements_by_xpath("id('assignmentList')/div[1]/div/div/form/form/span/input[2]")[0].submit()
+        #self.xpath("id('assignmentList')/div/div[2]/div/form/span/input[2]").submit()
+        #self.byId("id_submit").click()
 
     @classmethod 
     def submit(self):
         '''@pre we are on the assignment page'''
-        #self.xpath("//div[@class='panel-footer']/form/input").submit()
-        self.byId("id_submissionPage").click()
+        self.xpath("//div[@class='panel-footer']/form/input").submit()
+        #self.byId("id_submissionPage").click()
 
     @classmethod 
     def confirmationPage(self):
@@ -97,7 +102,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     @classmethod
     def get_latest(self, user, asmt):
         return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).latest()
-
+    
     """
     def test_00_submit_public(self):
         '''Believe this has already been done by Kieran in tests:MySeleniumTests.'''
@@ -112,17 +117,19 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         oldSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
         
         self.assignmentPage("ABCD1234", 'SingleSubmit')
-        
+        sleep(5)
+        #self.submit() # go to submission page.
         self.repoUrl(self.publicRepo)
+        #self.repoUrl(self.publicRepo)
         # Sleep for a bit so it actually gets submitted. 
-        sleep(10)
         # Check assignment has been created 
         newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
         #self.assertEqual(len(oldSubs)+1, len(newSubs))
         #latest = get_latest(self.studentRevUser, asmt)
 
         # Try to submit again.
-        self.repoUrl(self.publicRepo)
+        # TODO need to check that the submit button disappears when we go back.
+        xpath("//div/a[@href='/review/course/ABCD1234/SingleSubmit/").click()    
 
     """
     def test_submission_not_open(self):
