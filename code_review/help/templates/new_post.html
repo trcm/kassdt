@@ -7,15 +7,15 @@
 
 <form action="{% url 'create_post' course_code %}" method="POST">
   {% csrf_token %}
-  {{ form.title.label_tag }}
+  {{ form.title.label }}
   <br />
   {{ form.title }}
   <br />
-  {{ form.question.label_tag }}
+  {{ form.question.label }}
   <br />
   {{ form.question }}
   <br />
-  {{ form.submission_repository.label_tag }}
+  {{ form.submission_repository.label }}
   <br />
   {{ form.submission_repository }}
   <br />
