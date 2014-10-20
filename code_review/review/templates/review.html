@@ -73,7 +73,8 @@
 </script>
 
 <div id="reviewFiles">
-  <a href="/review/course/{{ course_code }}/{{ ass_name }}/" class="btn btn-info" title="Save and return to homepage">Submit</a>
+	
+  <a href="/review/course/{{course.course_code}}/{{asmt.name}}/?" class="btn btn-info" title="Save and return to assignment page">Submit</a>
   
   <p>
   <select onChange="window.location.href=this.value">
