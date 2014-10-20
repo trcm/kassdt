@@ -1415,7 +1415,7 @@ def assign_reviews(request, course_code, asmt):
 
 @login_required
 @user_passes_test(staffTest)
-def view_submissions(request, course, assign):
+def view_submissions(request, course_code, asmt):
 
     """
     view_submission returns a list of the submissions for the Staff members to view
@@ -1430,23 +1430,27 @@ def view_submissions(request, course, assign):
     HttpReponse redirecting the user to either a template listing all the submissions
     for an assignment or an error page;
     """
-    
+    context = {} 
     course = None
     assignment = None
     submissions = None
     course_code = course_code.encode('ascii', 'ignore')
-    assign_name = assign.encode('ascii', 'ignore')
+    assign_name = asmt.encode('ascii', 'ignore')
     try:
         course = Course.objects.get(course_code=course_code)
         assignment = Assignment.objects.get(course_code=course,
                                             name=assign_name)
 
-        subs = AssignmentSubmission.objects.get(submission_for=assignment)
-        users = None
+        subs = AssignmentSubmission.objects.filter(submission_for=assignment)
+        users = []
         for sub in subs:
-            users.appened(sub.by)
+            users.append(sub.by)
 
         submissions = get_latest(course, assignment, subs, users)
-            
-    except Exception:
-        pass
+        context['subs'] = submissions
+
+        return render(request, 'admin/get_submissions.html', context)
+    except Course.DoesNotExist:
+        print "course"
+    except Assignment.DoesNotExist:
+        print "assignment"
