@@ -60,3 +60,8 @@ class AssignReviewsTest(LiveServerTestCase):
 
         self.assertEqual(asmt.reviews_per_student, reviewsPerStudent)
         self.assertEqual(asmt.min_annotations, minAnnotations)
+
+        # Check correct number of reviews actually assigned.
+        reviews = AssignmentReview.objects.filter(assignment=asmt).all()
+        for review in reviews:
+            self.assertEqual(len(review.submissions.all()) == reviewsPerStudent)
