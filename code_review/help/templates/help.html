@@ -6,8 +6,14 @@
   <br />
   <h1>Help Forum</h1>
   <br />
-  <a class="btn btn-success" href="{% url 'new_post' course_code %}"><span class="glyphicon glyphicon-pencil"></span> New Post</a>
-  <br /><br />
+  <br />
+  <div class="row">
+  
+  <div class="col-md-2"><a class="btn btn-success" href="{% url 'new_post' course_code %}"><span class="glyphicon glyphicon-pencil"></span> New Post</a>
+  <div class="col-md-10"></div>
+  </div>
+  </div>
+  
   <!-- <a class="btn btn-info" href="">View Posts</a> -->
   <table class="table table-hover" id="posts">
     

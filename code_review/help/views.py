@@ -164,7 +164,7 @@ def createPost(request, course_code):
                 elif(msg == 'Unsupported URL protocol'):
                     # Means they entered rubbish in the url field
                     context['errMsg'] = 'What you entered is not a valid url; remember to include https://'
-                    sub.delete()
+                    post.delete()
 
                 elif('Connection timed out' in msg):
                     # They entered what looks like a URL but isn't an existing repo

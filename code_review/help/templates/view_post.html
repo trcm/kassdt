@@ -78,24 +78,40 @@
 </script>
 {% endif%}
 
-<br />
+<body>
 
 
 <br />
 
-<div id="reviewFiles">
+<div class="well well-sm" title="Select the attached files from the dropdown box below.">
+	
       {% if user.reviewuser == post.by %} 
       <div>
-	<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
-	<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
-	<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
+		  
+		  <div class="row">
+			  <div class="col-md-8">
+			<div id="title"><h4>Post Title: {{ title }}</h4></div>
+			<div id="question"><h4>Question:</h4><div id="helpQ"> {{ question }}</div></div>
+			</div>
+			<div class="col-md-4">
+			<div class="btn-group">
+			<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
+			<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
+			<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
+			<a class="btn btn-default" href="/help/{{ course_code }}">Back</a>
+			</div>
+			</div>
+			</div>
       </div>
       {% endif%}
   
-<div id="title">Post Title: {{ title }}</div>
-<div id="question">Post Question: {{ question }}</div>
-Current File: {{ file.name }} <br />
-  <p>
+
+</div>
+<div id="reviewFiles">
+
+	<p>
+ 
+  
     <select onChange="window.location.href=this.value">
       <option selected disabled>Select File</option>
       {% for file in files %}
@@ -110,17 +126,23 @@ Current File: {{ file.name }} <br />
 	{% endif%}
 	{% endfor %}
     </select>
+   
+    
+		Current File: {{ file.name }} 
+	
       </p>
-<a class="btn btn-default" href="/help/{{ course_code }}">Back</a>
+       
+   </div>
 </div>
 
-<div id="reviewFileName">
-</div>
+
+<br />
+
 
 <div id="reviewPane">
-  <div id="reviewCode">
+  <div id="reviewCode" title="Click the line number you would like to annotate">
     <!-- render the source file in the html -->
-    Code
+    
     {% if code %}
     {{ code | safe}} 
     {% endif%}
@@ -155,10 +177,10 @@ Current File: {{ file.name }} <br />
     <!-- Obfucations doesn't work on get -->
     <!-- <form id="annotationForm" action="{{ annotateUrl | obfuscate }}"> -->
     <!-- display forms for annotation creation if a file is selected -->
-    <form id="annotationForm" action="/review/annotation/create/{{ post.post_uuid }}/{{ uuid }}">
+    <form id="annotationForm" title="Write your annotation here, it will correspond to the line number above." action="/review/annotation/create/{{ post.post_uuid }}/{{ uuid }}">
       {{ rangeform.as_ul }}
       {{ form.as_ul }}
-      <input type="Submit" name="submit" value="Submit" />
+      <input type="Submit" name="submit" class="btn btn-info" value="Submit" />
     </form>
   </div>
 </div>
@@ -192,5 +214,5 @@ Current File: {{ file.name }} <br />
       </div>
     </div>
   </div>
-
+</div>
   {% endblock %}

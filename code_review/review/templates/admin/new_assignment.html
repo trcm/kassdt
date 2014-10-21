@@ -2,7 +2,7 @@
 {% extends 'navbar.html' %}
 
 {% block main %}
-<div id="assubmitDiv">
+
 <div id="assignmentCreation">
 
 <h1>Create a new {{ course.course_code }} Assignment</h1>
@@ -26,9 +26,10 @@
   </ul>
   {% endfor %}
 
-  <input type="submit" name="Submit" value="Submit" />
+  <input type="submit" name="Submit" class="btn btn-info" value="Submit" />
 </form>
 
 </div>
-</div>
+
+<br /> <br />
 {% endblock %}

@@ -322,6 +322,13 @@ class SeleniumAnnotations(LiveServerTestCase):
     
 
 class SeleniumReviews(LiveServerTestCase):
+    """
+    Tests that the review system works corrently.
+    ie. Reviews are counted as completed, annotations count towards
+    completed reviews, when the annotation count is met the review 
+    is complete.
+    """
+    
     server_url = 'http://localhost:8000'
     fixtures = ['assign_reviews']
     
@@ -345,6 +352,10 @@ class SeleniumReviews(LiveServerTestCase):
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_01_check_annotation_count(self):
+        """
+        Tests that when an annotation is created on a file, the counter for completed
+        annotations is incremented.
+        """
         sel = self.selenium
         self.login()
         next = sel.find_element_by_partial_link_text("Courses").click()

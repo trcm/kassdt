@@ -15,7 +15,8 @@
         <div class="col-md-9"></div>
         <div class="col-md-3" id="adminTools">
                 <div class="btn-group" id="adminToolsButtons">
-                          <a class="btn btn-default" href="assign_reviews"><span class="glyphicon glyphicon-user"></span> Assign Reviews</a>
+                  <a class="btn btn-default" href="{% url 'view_submissions' asmt.course_code.course_code asmt.name %}" span class=" glyphicon glyphicon-wrench"></span> View Submissions</a>           
+                  <a class="btn btn-default" href="assign_reviews"><span class="glyphicon glyphicon-user"></span> Assign Reviews</a>
                 </div>
         </div>
     {% endif %}

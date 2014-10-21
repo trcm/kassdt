@@ -4,6 +4,11 @@
 #adminList li {
   display: inline;
 }
+/*submission list on admin page*/
+#adminSubmissions{
+	
+	padding-top:20px;
+}
 
 #accordion .btn{
 	float:right;
@@ -18,10 +23,12 @@
 /*Assignment creation forms on assignment creation Page*/
 #assignmentCreation {
 	padding: 40px;
+	
 }
 
 /*Assignment creation forms on assignment creation Page*/
 #assignmentCreation ul {
+	list-style: none;
 }
 
 /*Assignment List on Default Landing Page*/
@@ -104,8 +111,32 @@ body {
 	height:100%;
 }
 
+#errorDiv {
+	background-color: white;
+}
+
 #files > ul li {
   list-style: none;
+}
+
+/*form on assignment submit page*/
+#form-group {
+	background-color:red;
+	
+
+}
+
+/*main div on help topic page*/
+
+#help{
+	width:1280px;
+}
+
+#helpQ {
+	width:790px;
+	max-height: 200px;
+	overflow-y:auto;
+	background-color:white;
 }
 
 /*Code for highlighting specific lines on review/annotations*/
@@ -212,12 +243,6 @@ body {
 	background-color: #f5f5f5;
 }
 
-/*main div on admin create assignment page */
-#assubmitDiv {
-
-	background-color:#ddd;
-
-}
 
 
 /* code pane div on review page */
@@ -281,6 +306,10 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 }
+/* main div on submission confirmation page */
+#submissionConfirmation {
+	padding:40px;
+}
 
 /*********/
 /* POSTS */
@@ -293,6 +322,8 @@ body {
 	overflow-x:auto;
 	overflow-y:auto;
 }
+
+
 
 /*******/
 /* BOOTSTRAP CALLOUT STYLES */
@@ -371,3 +402,5 @@ body {
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+
+/*tooltip*/

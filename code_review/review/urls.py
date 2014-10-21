@@ -61,6 +61,9 @@ urlpatterns = patterns('',
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
                            views.submit_assignment, name='submit_assignment'),
                        
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submissions/$',
+                           views.view_submissions, name='view_submissions'),
+
                        # Temporary page for assigning reviews 
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/assign_reviews/$',
                            views.assign_reviews, name='assign_reviews'),

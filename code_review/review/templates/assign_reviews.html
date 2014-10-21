@@ -7,14 +7,18 @@
   <br />
   <h1>Assign Reviews for {{ asmt.name }}</h1>
   <br />
-
+  <br />
+<div class="row">
+	<div class="col-md-6">
   <form id="assign_reviews" method="post" action="">
     {% csrf_token %}
     {{ course.code_code }}
 
     {% if errors %}
+     <div class="well well-sm">
       <h3>Something Wrong:</h3>
       <h4>{{ errors }}</h4>
+      </div>
     {% endif %}
     
     <div class="panel panel-default" id="formFields">
@@ -27,14 +31,18 @@
         <input class="btn btn-default" type="submit" value="Assign Reviews" id="submit">
       </div>
     </div>
-
+    </div>
+	<div class="col-md-6"></div>
     <br />
-    
-
+    </div>
+	
     {% if errMsg %}
+    <div class="well well-sm">
       <h3> ERROR! </h3>
       {{ errMsg }}
+        </div>
     {% endif %}
+  
   </form>
 </div>
 {% endblock %}

@@ -1411,3 +1411,55 @@ def assign_reviews(request, course_code, asmt):
     context['course'] = course
 
     return render(request, template,  context)
+
+
+@login_required
+@user_passes_test(staffTest)
+def view_submissions(request, course_code, asmt):
+
+    """
+    view_submission returns a list of the submissions for the Staff members to view
+    for a specific assignment.
+
+    Parameters:
+    request (HTTPRequest) - request from the user to view the submissions.
+    course (String) - string represetning the course code
+    assign (String) - string reperesenting the name o the assignment.
+
+    Returns:
+    HttpReponse redirecting the user to either a template listing all the submissions
+    for an assignment or an error page;
+    """
+    context = {} 
+    course = None
+    assignment = None
+    submissions = None
+    course_code = course_code.encode('ascii', 'ignore')
+    assign_name = asmt.encode('ascii', 'ignore')
+    try:
+        U = User.objects.get(id=request.user.id)
+        context['courses'] = U.reviewuser.courses.all() 
+        course = Course.objects.get(course_code=course_code)
+        assignment = Assignment.objects.get(course_code=course,
+                                            name=assign_name)
+
+        subs = AssignmentSubmission.objects.filter(submission_for=assignment)
+        users = []
+        for sub in subs:
+            users.append(sub.by)
+
+        submissions = get_latest(course, assignment, subs, users)
+        context['subs'] = submissions
+
+        return render(request, 'admin/get_submissions.html', context)
+    except Course.DoesNotExist:
+        print "course"
+    except Assignment.DoesNotExist:
+        print "assignment"
+    except Exception:
+        error_message = "An unhandled exception occured. Please contact the system admin."
+        return error_page(request, error_message)
+
+    error_message = "An unhandled exception has occured. Please contact the system admin."
+    return error_page(request, error_message)
+    

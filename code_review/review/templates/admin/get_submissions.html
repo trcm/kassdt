@@ -1,0 +1,34 @@
+{% extends 'navbar.html' %}
+
+{% block main %}
+<div id="adminSubmissions">
+
+<table cellpadding="10" class="table table-bordered">
+  <thead>
+    <th>Submission</th>
+    <th>User</th>
+    <th>Link</th>
+  </thead>
+  <tbody>
+  {% for sub in subs %}
+    <tr>
+    <td>{{ sub }}</td>
+    <td>{{ sub.by }}</td>
+    <td><a class="btn btn-primary" href="{% url 'submission' sub.submission_uuid %}">View submission</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+
+</table>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
