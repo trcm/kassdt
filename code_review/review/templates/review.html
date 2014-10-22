@@ -6,7 +6,12 @@
 {% block main %}
 
 <script>
+
  $(document).ready(function() {
+ 	$("#reviewCode").tooltip({
+			track: true
+		});
+ 	
    annotationHighlight();
    $("#annotationForm").hide();
 
