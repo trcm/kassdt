@@ -415,7 +415,7 @@ class SourceAnnotation(models.Model):
     text = models.TextField()
     quote = models.TextField()
 
-    def __str__(self):
+    def __unicode__(self):
         return '"%s" on "%s" by %s in (%s).' % (self.text, self.quote, self.user, self.source)
 
 
