@@ -1445,10 +1445,8 @@ def view_submissions(request, course_code, asmt):
                                             name=assign_name)
 
         subs = AssignmentSubmission.objects.filter(submission_for=assignment)
-        users = []
-        for sub in subs:
-            users.append(sub.by)
-
+        users = ReviewUser.objects.filter(courses=course)
+        
         submissions = get_latest(course, assignment, subs, users)
         context['subs'] = submissions
 
