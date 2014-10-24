@@ -752,8 +752,7 @@ def submit_assignment(request, course_code, asmt):
                 (absolutePath, rootFolderName) = abs_repo_path(sub, relDir)
                 username = request.POST.get('repoUsername', False)
                 password = request.POST.get('repoPassword', False)
-                print username
-                print password
+                
                 if(username and password):
                     clone(repo, absolutePath, username=username, password=password)
                 else:
