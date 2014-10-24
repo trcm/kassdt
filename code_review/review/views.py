@@ -597,7 +597,7 @@ def assignment_page(request, course_code, asmt):
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
         assignment = Assignment.objects.get(course_code=course, name=asmtName)
-        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
+        submissions = reversed(AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser).all())
 
         # Get the reviews this user has been assigned to complete.
         review = AssignmentReview.objects.filter(assignment=assignment, by=reviewUser)
