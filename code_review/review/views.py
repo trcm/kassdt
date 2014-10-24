@@ -354,7 +354,7 @@ def validateAssignment(request):
                 # test.save()
                 # print "test save"
                 return HttpResponseRedirect('/review/course_admin/')
-
+            
             except Exception as AssError:
                 # prints the exception to console
                 print AssError.args
@@ -362,8 +362,8 @@ def validateAssignment(request):
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
     # context['testForm'] = testForm
-    context['course'] = Course.objects.get(id=request.POST['course_code'])
     context['errors'] = errors
+    #context['course'] = Course.objects.get(id=request.POST['course_code'])
 
     return render(request, 'admin/new_assignment.html', context)
 
@@ -742,7 +742,6 @@ def submit_assignment(request, course_code, asmt):
             # form.save(commit=True)
             repo = form.cleaned_data['submission_repository']
             print repo
-            print "YAYAYAYAYA"
 
             # Create AssignmentSubmission object
             try:
@@ -820,11 +819,13 @@ def submit_assignment(request, course_code, asmt):
                 else:
                     print verr.message
                     context['errMsg'] = "We are sorry but we don't know what's wrong. Please contact the                                            sysadmin. Maybe you'll get an extension on your assignment?"
+                    sub.delete()
+
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
-
+            
     else:  # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
         if(not can_submit(assignment)):
