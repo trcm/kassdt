@@ -22,4 +22,4 @@ $(function(){
    };
 });
 
-$(".reviewCode").tooltip({ predelay: 0 });
+

@@ -8,9 +8,10 @@
 	<div class="col-md-5">
   <h1>Assignments for {{ course.course_code }} </h1>
   </div>
-  <br />
+  
 </div>
-
+<br />
+  <br />
 {% if user.is_staff %} 
 <div class="row">
 	<div class="col-md-9"></div>
@@ -24,16 +25,16 @@
 </div>
 {% else %}
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-9">
 		<div class="btn-group">
 			<a class="btn btn-primary" href="{% url 'help' course.course_code %}"><span class="glyphicon glyphicon-question-sign"></span> Get help</a>
 		</div>
 	</div>
-	<div class="col-md-8"></div>
+	<div class="col-md-3"></div>
 </div>
 {% endif %} 
 
-<br />
+
 
 {% if assignments %}
   <div id="courseAssignments">

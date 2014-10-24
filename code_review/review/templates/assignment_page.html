@@ -85,31 +85,49 @@
   {% endif %}
 
 <!-- Submission to review -->
-<div>
+
+	
 {% if canReview and submissionsToReview %}
-    <h3> Reviews per student: {{asmt.reviews_per_student}} reviews. </h3>
-    <h3> You have been assigned to do {{actualNumReviews }} reviews. </h3>
-    <h3> You have {{numRemaining}} reviews left to complete. </h3>
-    <h3> Submissions you have been assigned to review: </h3>
-    
-    <table id="reviewTable">
+  <h2>Reviews</h2>
+<div class="well well-sm" >  
+    <h4>Based on the minimum required amount of annotations, you have {{numRemaining}} reviews left to complete. </h4>
+
+
+    	
+    <table id="reviewTable" class="table table-bordered">
+
+
+	  <thead id="assignment_page_thead">
     <tr>
         <th>Submission number</th>
-        <th></th>
         <th>Number of annotations completed</th>
+        <th>Review Submission</th>
+        
     </tr>
+    </div>
+    
     {% for submission, numAnnotations in submissionsToReview.items %}
+    <tbody id="assignment_page_tbody">
     <tr>
         <td>{{submission.submission_uuid}}</td>
-        <td><a href="{% url 'submission' submission.submission_uuid %}">
-            <button>Review this submission</button>
-        </a>
+        <td>
+			
+			    
+			
+			Completed {{numAnnotations}} annotations of {{asmt.min_annotations}}
         </td>
-        <td>Completed {{numAnnotations}} annotations of {{asmt.min_annotations}}</td>
+        <td>
+			<form action="{% url 'submission' submission.submission_uuid %}">
+                		<input class="btn btn-default btn-primary" type="submit" value="Review Submission">
+            		</form>
+			</td>
     </tr>
     
     {% endfor %}
+   
+   </div>
     </table>
+   </div> 
 {% endif %}
-</div>
+
 {% endblock %}
