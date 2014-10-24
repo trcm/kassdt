@@ -1378,6 +1378,7 @@ def assign_reviews(request, course_code, asmt):
     assignment = Assignment.objects.get(name=asmtName)
     courseCode = course_code.encode('ascii', 'ignore')
     course = Course.objects.get(course_code=courseCode)
+    U = User.objects.get(id=request.user.id)
 
     context = {}
 
@@ -1405,7 +1406,7 @@ def assign_reviews(request, course_code, asmt):
     else:
         form = AllocateReviewsForm()
         template = "assign_reviews.html"
-
+    context['courses'] = U.reviewuser.courses.all()
     context['form'] = form
     context['asmt'] = assignment
     context['course'] = course

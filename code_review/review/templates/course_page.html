@@ -49,9 +49,11 @@
     </thead>
     {% for assignment in assignments %}
     
-
    <tr>
-      <td><p>{{ assignment.0.name}}</p></td>
+     <td><p>
+       <a href="{{assignment.0.name}}/">
+	 {{ assignment.0.name}}</p></td>
+       </a>
       <td>
         {% if assignment.1 %}
             Submited!
