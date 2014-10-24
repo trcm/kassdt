@@ -23,7 +23,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
   <tbody id="student_homepage_tbody">
     <tr>
       <td><p><a href="{% url 'coursePage' course.course_code %}">{{ course }}</a></p></td>
-      <td><p>{{ asmt.0.name }}</p></td>
+      <td><p><a href="{% url 'assignment_page' course.course_code asmt.0.name %}">{{ asmt.0.name }}</a></p></td>
       <td><p>{{ asmt.0.submission_open_date }}</p></td>
       <td><p>{{ asmt.0.submission_close_date }}</p></td>			
       <td><p>

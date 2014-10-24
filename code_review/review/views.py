@@ -354,7 +354,7 @@ def validateAssignment(request):
                 # test.save()
                 # print "test save"
                 return HttpResponseRedirect('/review/course_admin/')
-
+            
             except Exception as AssError:
                 # prints the exception to console
                 print AssError.args
@@ -362,8 +362,8 @@ def validateAssignment(request):
     # form isn't valid and needs fixing so redirect back with the form data
     context['form'] = form
     # context['testForm'] = testForm
-    context['course'] = Course.objects.get(id=request.POST['course_code'])
     context['errors'] = errors
+    #context['course'] = Course.objects.get(id=request.POST['course_code'])
 
     return render(request, 'admin/new_assignment.html', context)
 
@@ -597,7 +597,7 @@ def assignment_page(request, course_code, asmt):
         course = Course.objects.get(course_code=courseCode)
         asmtName = asmt.encode('ascii', 'ignore')
         assignment = Assignment.objects.get(course_code=course, name=asmtName)
-        submissions = AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser)
+        submissions = reversed(AssignmentSubmission.objects.filter(submission_for=assignment, by=reviewUser).all())
 
         # Get the reviews this user has been assigned to complete.
         review = AssignmentReview.objects.filter(assignment=assignment, by=reviewUser)
@@ -742,7 +742,6 @@ def submit_assignment(request, course_code, asmt):
             # form.save(commit=True)
             repo = form.cleaned_data['submission_repository']
             print repo
-            print "YAYAYAYAYA"
 
             # Create AssignmentSubmission object
             try:
@@ -753,8 +752,7 @@ def submit_assignment(request, course_code, asmt):
                 (absolutePath, rootFolderName) = abs_repo_path(sub, relDir)
                 username = request.POST.get('repoUsername', False)
                 password = request.POST.get('repoPassword', False)
-                print username
-                print password
+                
                 if(username and password):
                     clone(repo, absolutePath, username=username, password=password)
                 else:
@@ -820,11 +818,13 @@ def submit_assignment(request, course_code, asmt):
                 else:
                     print verr.message
                     context['errMsg'] = "We are sorry but we don't know what's wrong. Please contact the                                            sysadmin. Maybe you'll get an extension on your assignment?"
+                    sub.delete()
+
         else:
             print form.errors
             context['errMsg'] = "Something wrong with the values you entered; did you enter a blank URL?"
             template = 'assignment_submission.html'
-
+            
     else:  # not POST; show the submission page, if assignment submission are open.
         form = AssignmentSubmissionForm()
         if(not can_submit(assignment)):
@@ -1378,6 +1378,7 @@ def assign_reviews(request, course_code, asmt):
     assignment = Assignment.objects.get(name=asmtName)
     courseCode = course_code.encode('ascii', 'ignore')
     course = Course.objects.get(course_code=courseCode)
+    U = User.objects.get(id=request.user.id)
 
     context = {}
 
@@ -1405,7 +1406,7 @@ def assign_reviews(request, course_code, asmt):
     else:
         form = AllocateReviewsForm()
         template = "assign_reviews.html"
-
+    context['courses'] = U.reviewuser.courses.all()
     context['form'] = form
     context['asmt'] = assignment
     context['course'] = course
@@ -1444,10 +1445,8 @@ def view_submissions(request, course_code, asmt):
                                             name=assign_name)
 
         subs = AssignmentSubmission.objects.filter(submission_for=assignment)
-        users = []
-        for sub in subs:
-            users.append(sub.by)
-
+        users = ReviewUser.objects.filter(courses=course)
+        
         submissions = get_latest(course, assignment, subs, users)
         context['subs'] = submissions
 
