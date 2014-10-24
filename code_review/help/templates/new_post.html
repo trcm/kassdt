@@ -29,19 +29,24 @@
   </div>
   <div class="col-md-4">
   <!-- If requires password authentication, display it -->
-  {% if pswd_auth %}
-    <h3>Please enter your remote's username and password below:</h3>
-    Username: {{ form.repoUsername }}
-    Password: {{ form.repoPassword }}
-  {% endif %}
+ 
   
   <input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
   </div>
-  </div>
-  <br />
-</form>
+ 
 
+<br />
+</div>
+  {% if pswd_auth %}
+    <div class="well well-sm">
+    <h3>Please enter your remote's username and password below:</h3>
+    Username: {{ form.repoUsername }}
+    Password: {{ form.repoPassword }}
+    </div>
+   
+  {% endif %}
 {% if errMsg %}
+</form>
 <div class="well well-sm">
 <h3> ERROR! </h3>
 

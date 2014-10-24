@@ -85,7 +85,7 @@
 
 <div class="well well-sm" title="Select the attached files from the dropdown box below.">
 	
-      {% if user.reviewuser == post.by %} 
+      
       <div>
 		  
 		  <div class="row">
@@ -94,24 +94,23 @@
 			<div id="question"><h4>Question:</h4><div id="helpQ"> {{ question }}</div></div>
 			</div>
 			<div class="col-md-4">
+				{% if user.reviewuser == post.by %} 
 			<div class="btn-group">
 			<a class="btn btn-danger" href="{% url 'delete_post' course_code post.post_uuid %}">Delete Post</a>
 			<a id="editModalBtn" class="btn btn-info" data-toggle="modal" data-target="#myModal">Edit Post</a>
 			<a class="btn btn-primary" href="{% url 'resolve_post' course_code post.post_uuid %}" id="resolve">Resolve Post</a>
 			<a class="btn btn-default" href="/help/{{ course_code }}">Back</a>
 			</div>
+			 {% endif%}
 			</div>
 			</div>
       </div>
-      {% endif%}
+     
   
 
 </div>
 <div id="reviewFiles">
-
 	<p>
- 
-  
     <select onChange="window.location.href=this.value">
       <option selected disabled>Select File</option>
       {% for file in files %}
@@ -165,8 +164,8 @@
         </form>
 
         {% if annote.user == user.reviewuser or user.reviewuser.isStaff %}
-        <a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
-        <a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
+       <a class="btn btn-info" id="editBtn{{annote.id}}">Edit</a>
+           <a class="btn btn-danger" id="cancelBtn{{ annote.id }}">Cancel</a>
         <a class="btn btn-danger" href="{% url 'delete_annotation' submissionUuid=post.post_uuid fileUuid=file.file_uuid annoteId=annote.id %}">Delete</a>
         <!-- button to save changes -->
         {% endif%}
