@@ -452,6 +452,7 @@ def updatePost(request, post_uuid):
     HttpReponse to render with the post view or an error page
     """
 
+    currentUser = User.objects.get(id=request.session['_auth_user_id'])
     uuid = post_uuid.encode('ascii', 'ignore')
     print uuid
     if request.method == "POST":
@@ -475,6 +476,7 @@ def updatePost(request, post_uuid):
                 folders = grabPostFiles(post.root_folder)
                 # create the context dictionary with all the required information
                 context = {}
+                context['courses'] = currentUser.reviewuser.courses.all()
                 context['editForm'] = editForm(request.POST)
                 context['post'] = post
                 context['question'] = post.question
