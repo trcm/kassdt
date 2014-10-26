@@ -49,7 +49,7 @@
     	</tr>
     </thead>
     {% for assignment in assignments %}
-    
+      <tbody id="student_homepage_tbody">
    <tr>
      <td><p>
        <a href="{{assignment.0.name}}/">
@@ -69,6 +69,7 @@
         </a>
       </td>
     </tr>
+    </div>
     {% endfor %}
 	</table>
     {% else %}

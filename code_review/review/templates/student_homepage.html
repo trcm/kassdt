@@ -5,16 +5,16 @@ it will show them all upcoming assignments and allow them to navigate to the sub
 {% block main %}
 <br />
 <h1>Upcoming assignments</h1>
-<br /> <br />
+<br /> <br /> <br />
 {% if open_assignments %}
 <table cellpadding="10" class="table table-bordered">
   <thead>
     <th> Course </th>
     <th> Assignment Name </th>
-    <th> Submissions Open: </th>
-    <th> Submissions Close: </th>
+    <th> Submissions Open </th>
+    <th> Submissions Close </th>
     {% if not user.is_staff and not user.is_superuser %}
-    <th> Submission Status: </th>
+    <th> Submission Status </th>
     {% endif %}
   </thead>
   <!-- grab all upcoming assignments and display them in a table -->
@@ -36,7 +36,7 @@ it will show them all upcoming assignments and allow them to navigate to the sub
       </td>
       <td>
 	<form action="{% url 'assignment_page' course.course_code asmt.0.name %}">
-	  <input class="btn btn-default btn-block" type="submit" value="View assignment page">
+	  <input class="btn btn-default btn-primary" type="submit" value="View assignment page">
 	</form>
       </td>
       <!-- REMOVED due to feedback

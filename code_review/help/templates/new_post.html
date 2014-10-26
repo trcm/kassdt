@@ -3,9 +3,10 @@
 
 {% block main %}
 <div id="assignmentCreation">
-<br />
-<h1>New Help Post</h1>
 
+<h1>New Help Post</h1>
+<br />
+<br />
 <div class="row">
 	<div class="col-md-6">
 <form action="{% url 'create_post' course_code %}" method="POST">
@@ -37,7 +38,9 @@
 
 <br />
 </div>
+ <br />
   {% if pswd_auth %}
+ 
     <div class="well well-sm">
     <h3>Please enter your remote's username and password below:</h3>
     Username: {{ form.repoUsername }}

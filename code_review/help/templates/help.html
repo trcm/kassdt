@@ -7,6 +7,7 @@
   <h1>Help Forum</h1>
   <br />
   <br />
+    <br />
   <div class="row">
   
   <div class="col-md-2"><a class="btn btn-success" href="{% url 'new_post' course_code %}"><span class="glyphicon glyphicon-pencil"></span> New Post</a>
@@ -15,7 +16,7 @@
   </div>
   
   <!-- <a class="btn btn-info" href="">View Posts</a> -->
-  <table class="table table-hover" id="posts">
+  <table class="table table-bordered" id="posts">
     
     {% if Posts %}
     <thead>
@@ -26,6 +27,7 @@
     </thead>
 
     {% for post in Posts %}
+    <tbody id="student_homepage_tbody">
     <tr>
       <td><a href="{% url 'view_post' post.post_uuid %}"><p>{{ post.title }}</p></a></td>
       <td><p>{{ post.by.djangoUser.first_name }} {{ post.by.djangoUser.last_name }}</p></td>
@@ -39,6 +41,7 @@
 	<a class="btn btn-s btn-info" href="{% url 'view_post' post.post_uuid %}">View</a>
       </td>
     </tr>
+    </div>
     {% endfor %}
 
     {% else %}

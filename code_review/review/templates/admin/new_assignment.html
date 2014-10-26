@@ -12,12 +12,7 @@
   {% csrf_token %}
   
   <ul>
-  {% if errors %}
-    <h4>ERROR! There was something wrong with the data you've entered:</h4>
-    {%for errType, message in errors.items %}
-        <li>Error: {{ message }} </li>
-    {% endfor %}
-  {% endif %}
+  
   </ul>
 
   {% for field in form %}
@@ -28,7 +23,16 @@
 
   <input type="submit" name="Submit" class="btn btn-info" value="Submit" />
 </form>
-
+<br />
+{% if errors %}
+   <div class="well well-sm">
+    <h4>ERROR! There was something wrong with the data you've entered:</h4>
+    {%for errType, message in errors.items %}
+        <li>Error: {{ message }} </li>
+    {% endfor %}
+    </div>
+  {% endif %}
+  
 </div>
 
 <br /> <br />
