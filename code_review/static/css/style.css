@@ -260,7 +260,7 @@ body {
 #reviewCode {
   width: 60%;
   overflow-y:auto;
-  height: 700px;
+  height: 600px;
   display:inline-block;
   
    
@@ -311,7 +311,6 @@ body {
 #reviewPane {
 	background-color: #e5e5e5;
 	width:100%;
-	min-height:550px;
 	height:100%;
 	display: inline-block;
 	margin-left: auto;

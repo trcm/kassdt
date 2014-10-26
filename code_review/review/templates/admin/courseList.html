@@ -17,11 +17,13 @@
 	  			<th><span class="glyphicon glyphicon-book"></span> Assignments</th>
 	  		</tr>
 	  		{% for course in courses  %}
+	  		  <tbody id="student_homepage_tbody">
 		  	<tr>
 		  		<td>{{ course.course_code }}</td>
 		  		<td>{{ course.course_name }}</td>
 		  		<td>{{ course.assignments.count }}</td>
 		  	</tr>
+		  	</div>
 		  {% endfor %}	
 	</table>
   	</div>
