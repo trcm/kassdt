@@ -322,6 +322,10 @@ def validateAssignment(request):
                 if(review_open_date < first_display_date):
                     errors["reviewOpenDate"] = "Reviews must open after the assignment is first displayed."
                 
+                # Check reviews open after submission.
+                if(review_open_date <= submission_close_date):
+                    errors["reviewOpenDate"] = "Reviews must open after the assignment submissions close."
+                    
                 # Check there are no assignments with this name in the course.
                 if(Assignment.objects.filter(course_code=course, name=name)):
                     errors["duplicateName"] = "There is already an assignment with the name \"%s\"; please choose another name" %(name)
