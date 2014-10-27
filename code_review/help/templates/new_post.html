@@ -1,0 +1,60 @@
+{% extends 'navbar.html' %}
+
+
+{% block main %}
+<div id="assignmentCreation">
+
+<h1>New Help Post</h1>
+<br />
+<br />
+<div class="row">
+	<div class="col-md-6">
+<form action="{% url 'create_post' course_code %}" method="POST">
+  {% csrf_token %}
+  {{ form.title.label }}
+  <br />
+  {{ form.title }}
+  <br />
+  {{ form.question.label }}
+  <br />
+  {{ form.question }}
+  <br />
+  {{ form.submission_repository.label }}
+  <br />
+  </div>
+  <div class="col-md-6"></div>
+  </div>
+  <div class="row">
+  <div class="col-md-8">
+  {{ form.submission_repository }}
+  </div>
+  <div class="col-md-4">
+  <!-- If requires password authentication, display it -->
+ 
+  
+  <input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
+  </div>
+ 
+
+<br />
+</div>
+ <br />
+  {% if pswd_auth %}
+ 
+    <div class="well well-sm">
+    <h3>Please enter your remote's username and password below:</h3>
+    Username: {{ form.repoUsername }}
+    Password: {{ form.repoPassword }}
+    </div>
+   
+  {% endif %}
+{% if errMsg %}
+</form>
+<div class="well well-sm">
+<h3> ERROR! </h3>
+
+{{ errMsg }}
+</div>
+{% endif %}
+</div>
+{% endblock %}

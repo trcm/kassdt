@@ -1,0 +1,16 @@
+{% extends 'navbar.html' %}
+
+{% block main %}
+
+<!-- Page called to tell user that submission for an assignment is closed -->
+
+{% if user.is_superuser %}
+<h2>Settings</h2>
+{% endif %}
+
+<div id="cannotSubmit">
+    <h1>Cannot submit!</h2>
+    <h2>{{errorMsg}}</h2>
+</div>
+
+{% endblock %}

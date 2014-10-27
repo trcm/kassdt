@@ -1,0 +1,91 @@
+Coding Style guide for Kassdt
+
+IMPORTANT: if you make any changes to this document, please let the
+other team members know via Facebook for some other means, and point out
+what you added/deleted/changed. 
+
+NOTE: the commenting style is based on Python docstring conventions,
+with some minor adjustments. We have also added extra detail about
+style conventions where the docstring document was not specific.
+The docstring conventions: http://legacy.python.org/dev/peps/pep-0257/
+
+Other stylistic conventions follow PEP8 (I think..) 
+http://legacy.python.org/dev/peps/pep-0008/
+
+COMMENTING
+    Use common sense for explaining code. 
+
+    For classes, methods etc., refer to below. 
+    Note that the """ ending the docstring should be on its own line for multi-line
+    comments, and on the same line for single-line comments. I.e., 
+
+    """This is a beautiful single-line comment"""
+
+    and 
+
+    """This is a multi-line comment.
+
+    I say more comment-y stuff here. 
+    """
+
+    Classes:
+    
+        <example>
+        class ExampleClass(BaseClass):
+
+            """Single-line summary of what the class is for. This line can be below the quotation marks.
+        
+            More detailed description of what class does. Note we are keeping the indentation
+            level the same as the quotation marks. Also note that there is blank line between 
+            the start of the class and the docstring. Apparently this is good. But I don't think it
+            matters very much. 
+
+            Attributes:
+                attribute1 (attributeType) -- helpful description
+                attribute2 (attributeType) -- more helpful descriptions. 
+
+            Methods:
+                method_1(params) -- some helpful short description of what method_1 does.
+            
+            """
+        </example>
+
+        Note we don't yet have a specific stylistic convention for how to format 
+        notes on what classes we extend and what we expect our subclasses to do. 
+        Technically we should talk about this in models.py because all our classes
+        extend model.Model but I really don't want to.
+
+    Methods:
+
+        <example>
+        def function_yay(param1, param2, ...):
+            """A single-line summary of what this method does.
+
+            A more detailed description of what this method does. 
+            Blah blah blah. 
+
+            Arguments:
+                param1 (Param1Type) -- describe param1. 
+                param2 (Param2Type) -- describe param2. 
+
+            Returns:
+                ReturnType, which does so-and-so. 
+
+            Raises:
+                HorribleException -- helpful description.
+
+            Bugs:
+                Describe if any known.
+
+            TODO:
+                for the programmer's own convenience. 
+            """
+        </example>
+
+
+
+
+CSS naming conventions
+	-Reference in Alphabetical Order in stylesheet in camelcaps.
+		<example> sidebarBody </example>
+

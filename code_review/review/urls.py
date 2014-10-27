@@ -1,3 +1,9 @@
+"""
+urls.py - This contains all the routes for the application.
+The routes are split into groups depending on the section
+of the application they use.  This will be split into
+seperate appliations at a later date.
+"""
 from django.conf.urls import patterns, include, url
 
 from review import views
@@ -5,7 +11,7 @@ from review import views
 urlpatterns = patterns('',
                        # Default view, routes to the index page
                        url(r'^$', views.index, name='index'),
-                       
+
                        # will redirect to the login_redirect if the user isn't
                        # authenticated.  This can probably be removed
                        # url(r'login/$', views.loginUser, name='login'),
@@ -44,10 +50,58 @@ urlpatterns = patterns('',
                        url(r'generate_assignment/$',
                            views.validateAssignment,
                            name='generate_assignment'),
-		       
-                       #creation urls
+
+                       # creation urls
                        # User and course creation
                        url(r'create/user/$', views.createUser, name='create_user'),
                        url(r'validateUser/$', views.validateUser, name='validate_user'),
-		       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
+                       url(r'student_homepage/$', views.student_homepage, name= 'student_homepage'),
+
+                       # Assignment submission
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submit/$',
+                           views.submit_assignment, name='submit_assignment'),
+                       
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/submissions/$',
+                           views.view_submissions, name='view_submissions'),
+
+                       # Temporary page for assigning reviews 
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/assign_reviews/$',
+                           views.assign_reviews, name='assign_reviews'),
+
+
+                       # Course page
+                       url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
+                           views.assignment_page, name='assignment_page'),
+                       
+                       # Test route for uploading files
+                       url(r'upload', views.upload, name='upload'),
+
+                       # Creates an annotation using the submission and file uuids
+                       url(r'annotation/create/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.createAnnotation, name="create_annotation"),
+
+                       # Grabs a files from the specified submission and displays it.
+                       url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.reviewFile, name="review_file"),
+
+                       # Displays a specific submission
+                       url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
+                           views.review, name="reviews"),
+
+                       # Annotation
+                       # These urls handle the viewing of assignments and the creation of annotations
+                       # Used to create the annnotation, redirects back to the file view
+                       url(r'annotation/create/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.createAnnotation, name="create_annotation"),
+                       # Used to view a specific file for reviewing
+                       url(r'file/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',
+                           views.reviewFile, name="review_file"),
+                       # Views a particular submission
+                       url(r'submission/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/',
+                           views.review, name="submission"),
+                       url(r'delete/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<annoteId>\d+)/$',
+                           views.deleteAnnotation, name="delete_annotation"),
+                       url(r'edit/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<annoteId>\d+)/$',
+                           views.editAnnotation, name="edit_annotation"),
 )
+

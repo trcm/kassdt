@@ -1,27 +1,82 @@
-{% extends 'course.html' %}
+{% extends 'navbar.html' %}
 
-{% block assignments %}
+{% block main %}
+<div id="coursePage">
+<br />
 
-<h1>Assignments</h1>
+<div class="row">
+	<div class="col-md-5">
+  <h1>Assignments for {{ course.course_code }} </h1>
+  </div>
+  
+</div>
+<br />
+  <br />
+{% if user.is_staff %} 
+<div class="row">
+	
+	<div class="col-md-3">
+		<div class="btn-group">
+      
+			<a class="btn btn-success" id="courseButtons" href="{% url 'create_assignment' course.course_code %}"><span class="glyphicon glyphicon-pencil"></span> New assignment</a>
+			<a class="btn btn-primary" id="courseButtons" href="{% url 'help' course.course_code %}"><span class="glyphicon glyphicon-question-sign"></span> Get help</a>
+		</div>
+		<div class="col-md-9"></div>
+	</div>
+</div>
+{% else %}
+<div class="row">
+	<div class="col-md-9">
+		<div class="btn-group">
+			<a class="btn btn-primary" href="{% url 'help' course.course_code %}"><span class="glyphicon glyphicon-question-sign"></span> Get help</a>
+		</div>
+	</div>
+	<div class="col-md-3"></div>
+</div>
+{% endif %} 
 
-{% if user.is_superuser %}
-<h3><a href="{% url 'create_assignment' course.course_code %}">Create a new {{ course.course_code }} assignment</a></h3>
-{% endif%}
+
 
 {% if assignments %}
-<ul>
-  {% for assignment in assignments %}
-  <li><a href="Assignment">{{ assignment.name }} - {{ assignment.submission_close_date }}</a></li>
-  {% endfor %}
-</ul>
+  <div id="courseAssignments">
+  <table class="table table-bordered">
+    <thead>
+    	<tr>
+      		<th>Assignment Name:</th>
+      		<th>Submission Status:</th>
+      		<th>Due Date:</th>
+      		<th>View:</th>
+    	</tr>
+    </thead>
+    {% for assignment in assignments %}
+      <tbody id="student_homepage_tbody">
+   <tr>
+     <td><p>
+       <a href="{{assignment.0.name}}/">
+	 {{ assignment.0.name}}</p></td>
+       </a>
+      <td>
+        {% if assignment.1 %}
+            Submited!
+        {% else %}
+            Not yet submitted.
+        {% endif %}
+      </td>
+      <td><p>{{ assignment.0.submission_close_date }}</p></td>
+      <td>
+        <a href="{{assignment.0.name}}/">
+          <input class="btn btn-primary" type="submit" value="View Assignment">
+        </a>
+      </td>
+    </tr>
+    </div>
+    {% endfor %}
+	</table>
+    {% else %}
+    <h2>No assignments</h2>
+    <br />
+    {% endif%}
+  </div>
+</div>
 
-{% else %}
-<p><strong>No assignments</strong></p>
-{% endif%}
-
-{% if user.is_superuser %}
-<h2>Settings</h2>
-{% endif %}
-
-
-{% endblock %}
+  {% endblock %}

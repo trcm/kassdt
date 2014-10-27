@@ -49,19 +49,28 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
+#LTI INTEGRATION KEYS
+CONSUMER_KEY = 'TESTING'
+LTI_SECRET = 'TESTING'
+LTI_DEBUG = True
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'review',
     'south',
+    'lti',
+    'unfriendly',
+    'help',
+    # 'djcelery',
+    'django_nose',
     # 'ims_lti_py',
 )
 
@@ -125,3 +134,13 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
 TEMPLATE_PATH = (os.path.join(BASE_DIR, 'templates/'), )
 TEMPLATE_DIRS = [TEMPLATE_PATH,
                  os.path.join(BASE_DIR, 'templates')]
+
+
+# South seems to be breaking tests
+SKIP_SOUTH_TESTS = True
+SOUTH_TESTS_MIGRATE = False
+
+# Celery imports for database, 
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
+
+FIXTURE_DIRS = ('fixtures/', )

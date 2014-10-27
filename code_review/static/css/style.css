@@ -4,3 +4,414 @@
 #adminList li {
   display: inline;
 }
+/*submission list on admin page*/
+#adminSubmissions{
+	
+	padding-top:20px;
+}
+
+#accordion .btn{
+	float:right;
+	margin:1px;
+}
+
+/* settings div on an assignment page */
+#assignmentAdmin {
+	
+}
+
+/*Assignment creation forms on assignment creation Page*/
+#assignmentCreation {
+	padding: 40px;
+	
+}
+
+/*Assignment creation forms on assignment creation Page*/
+#assignmentCreation ul {
+	list-style: none;
+}
+
+/*Assignment List on Default Landing Page*/
+#assignmentList {
+  padding-top: 40px;
+  width: 100%;
+  background-color:#f5f5f5;
+  opacity: .92;
+ 
+}
+
+#assignmentList h1, #assignmentList h2{
+	color: #323232;
+	display:inline;
+	top: -20px;
+}
+
+/* the entire table of assignments details */
+#assignmentList table {
+	width:100%;
+	background-color: #E5E5E5;
+}
+
+/* cells within the table of assignment details */
+/*#assignmentList td {
+	padding-top: 5px;
+	border-style:solid;
+}*/
+
+/* title of a SINGLE ASSIGNMENTS details */
+#assignmentList b {
+	padding-top: 5px;
+}
+
+/*  a SINGLE ASSIGNMENTS details */
+#assignmentList p {
+	padding-top: 5px;
+}
+
+/* Assingment Submission page */
+#assignmentSubmit {
+}
+
+/* Assingment page table div */
+#assignmentView {
+  	padding-top: 40px;
+	padding-left: 40px;
+	padding-right: 40px;
+}
+/*the div containing the content on the assignment submit page*/
+#assSubmitDiv {
+	margin-top: 8px;
+}
+
+/* global background */
+body {
+	background-color: #828282;
+	
+}
+
+.highlightTable {
+  background-color: red;
+  width:512px;
+}
+
+#courseButtons {
+	
+
+}
+
+
+
+/* The title on course Assignments page */
+#courseAssignments h1 {
+	
+	float:left;
+	display: inline;
+}
+
+#defaultLandingDiv {
+	padding-left:2px;
+	height:100%;
+}
+
+#errorDiv {
+	background-color: white;
+}
+
+#files > ul li {
+  list-style: none;
+}
+
+/*form on assignment submit page*/
+#form-group {
+	background-color:red;
+	
+
+}
+
+/*main div on help topic page*/
+
+#help{
+	width:1280px;
+}
+
+#helpQ {
+	width:790px;
+	max-height: 200px;
+	overflow-y:auto;
+	background-color:white;
+}
+
+/*Code for highlighting specific lines on review/annotations*/
+.highlight {
+  background-color: yellow;
+}
+
+
+/* ------------------------------------------ template - login.html -------------------------------------------------- */
+
+.loginForm{
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.loginForm h1, .loginForm h2{
+	color: white;
+}
+
+.loginForm h4{
+	color: gray;
+}
+
+/* ------------------------------------------ template - student_homepage.html ----------------------------------------- */
+.middle{
+	vertical-align: middle;
+}
+
+/*The line numbers on the review page */
+.lineno {
+	background-color: #e5e5e5;
+}
+
+#student_homepage_tbody{
+	background-color: #f5f5f5;	
+}
+
+/*The line numbers on the review page */
+.click{
+	
+}
+
+
+/*The Navigation bar on every page */
+#sidebarBody {
+  padding-top:0px;
+}
+#startLine {
+  visibility: hidden;
+}
+
+/* annotation pane div on review page */
+#reviewAnnotation {
+  width: 40%;
+  height:700px;
+  background-color:#ddd;
+  overflow-y:auto;
+  float:right;
+  padding-bottom:10px;
+}
+
+/* annotation text box on review page */
+#reviewAnnotation p {
+  width: 100%;
+  
+  background-color: white; 
+}
+
+/* annotation line number on review page */
+#reviewAnnotation h5 {
+  
+  background-color: white; 
+}
+
+#annotationFormDiv {
+	display:inline-block;
+	float:left;
+	width:100%;
+	list-style:none;
+	background-color:f5f5f5;
+	
+}
+
+#annotationForm {
+	list-style-type:none;
+}
+
+#annotationForm textarea {
+	width:100%;
+	float:left;
+	
+}
+
+#annotationForm input[type=submit] {
+	width:13%;
+	float:left;
+	position: relative;
+	
+}
+
+
+/* ------------------------------------------ template - assignment_page.html ----------------------------------------- */
+
+#assignment_page_tbody{
+	background-color: white;
+}
+
+#assignment_page_thead{
+	background-color: #f5f5f5;
+}
+
+#reviewAllocation{
+	background-color:white;
+
+
+}
+
+/* code pane div on review page */
+#reviewCode {
+  width: 60%;
+  overflow-y:auto;
+  height: 700px;
+  
+  display:inline-block;
+  
+   
+  
+}
+
+/* div on review page that contains the file browser  */
+#reviewFiles {
+	
+	background-color:#E5E5E5;
+	display:inline-block;
+	margin-top: 12px;
+	width:100%;
+}
+
+#reviewFiles a {
+	
+	
+	float: right;
+	margin-top: 2px;
+	
+	
+}
+
+#reviewFiles p{
+		
+	float:left;
+}
+
+#reviewFiles h5{
+	padding-left: 10px;
+	display:inline;
+	float:left;
+}
+
+#comment{
+	background-color:red;
+
+}
+
+#id_text {
+
+	width:100%;
+}
+
+
+/* pane div on review page contianing both the code pane and the annotation pane */
+#reviewPane {
+	background-color: #e5e5e5;
+	width:100%;
+	height:700px;
+	overflow-y:hidden;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* main div on submission confirmation page */
+#submissionConfirmation {
+	padding:40px;
+}
+
+/*********/
+/* POSTS */
+/*********/
+
+#wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	min-width:1280px;
+	overflow-x:auto;
+	overflow-y:auto;
+}
+
+
+
+/*******/
+/* BOOTSTRAP CALLOUT STYLES */
+/*******/
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.bs-callout h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.bs-callout p:last-child {
+    margin-bottom: 0;
+}
+
+.bs-callout code {
+    border-radius: 3px;
+}
+
+.bs-callout+.bs-callout {
+    margin-top: -5px;
+}
+
+.bs-callout-default {
+    border-left-color: #777;
+}
+
+.bs-callout-default h4 {
+    color: #777;
+}
+
+.bs-callout-primary {
+    border-left-color: #428bca;
+}
+
+.bs-callout-primary h4 {
+    color: #428bca;
+}
+
+.bs-callout-success {
+    border-left-color: #5cb85c;
+}
+
+.bs-callout-success h4 {
+    color: #5cb85c;
+}
+
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+
+.bs-callout-danger h4 {
+    color: #d9534f;
+}
+
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+
+.bs-callout-warning h4 {
+    color: #f0ad4e;
+}
+
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+
+.bs-callout-info h4 {
+    color: #5bc0de;
+}
+

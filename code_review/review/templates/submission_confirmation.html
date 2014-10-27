@@ -1,0 +1,22 @@
+<!-- Simple submission confirmation template -->
+{% extends 'navbar.html' %}
+
+{% block main %}
+
+<!-- Page called to tell user that submission has been successful -->
+
+{% if user.is_superuser %}
+
+{% endif %}
+<div id="submissionConfirmation">
+<div class="well well-sm">
+
+
+    <h3>Your submission for {{ course.course_code }} assignment {{ asmt.name }} has been sucessfully submitted! </h3>
+   <br />
+    <a href="/review/course/{{course.course_code}}/{{asmt.name}}/?">Return to assignment page</a>
+</div>
+</div>
+<br />
+<br />
+{% endblock %}

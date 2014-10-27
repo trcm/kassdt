@@ -1,0 +1,134 @@
+<!-- Template for showing a specific assignment's information -->
+{% extends 'navbar.html' %}
+
+<!-- This page can only be called if an assignment exists, obviously -->
+<!-- grabs the name of the current assignment -->
+  
+{% block main %}
+<br />
+  <h1>{{ asmt.name }}</h1>
+<br />
+<br />
+<div class="row">  
+    {% if user.is_superuser or user.is_staff %}
+        <!-- Add stuff to allow superuser to edit assignment -->
+     
+        <div class="col-md-3" id="adminTools">
+                <div class="btn-group" id="adminToolsButtons">
+                  <a class="btn btn-default" href="{% url 'view_submissions' asmt.course_code.course_code asmt.name %}" span class=" glyphicon glyphicon-wrench"></span> View Submissions</a>           
+                  <a class="btn btn-default" href="assign_reviews"><span class="glyphicon glyphicon-user"></span> Assign Reviews</a>
+                </div>
+                   <div class="col-md-9"></div>
+        </div>
+    {% endif %}
+
+</div>
+
+
+
+<div class="row">
+<div class="col-md-12">
+<div class="panel panel-default">
+  <div class="panel-heading">
+  	<!-- if the assignment is still open for submission this will be viewable -->
+  	{% if canSubmit %}
+		<h3 class="panel-title">Submissions are <span class="label label-success">Open</span></h3>
+	{% else %}
+  		<h3 class="panel-title">Submissions are <span class="label label-danger">Closed</span></h3>
+  	{% endif %}
+  </div>
+  
+  <div class="panel-body">
+  	<p><b>Assignment due on: </b><br /> {{ asmt.submission_close_date }}</p> 
+  	<p><b>Review opens on: </b><br /> {{ asmt.review_open_date }}</p> 
+  	<p><b>Review closes on: </b><br /> {{ asmt.review_close_date }}</p>   
+  </div>
+  
+  {% if canSubmit %}
+  <div class="panel-footer">
+  	<form action="submit/">
+    	<input class="btn btn-default btn-danger" type="submit" value="Submit Assignment" id="id_submissionPage">
+  	</form>
+  </div>
+  {% endif %}
+</div>
+</div>
+</div>
+
+{% if submissions %}
+  <div class="panel panel-default">
+  	<div class="panel-heading">
+  		<h3 class="panel-title">Past Submissions</h3>
+  	</div>
+    <table class="table table-bordered">
+    	<thead id="assignment_page_thead">
+    		<tr>
+        		<th>Submission Time</th>
+        		<th>Submission Repository</th>
+        		<th>View Submission</th>	
+    		</tr>
+    	</thead>
+    	<tbody id="assignment_page_tbody">
+    		{% for sub in submissions %}
+    		<tr>
+        		<td>{{ sub.submission_date }} </td>
+        		<td>{{ sub.submission_repository }}</td>
+        		<td>
+            		<form action="{% url 'submission' sub.submission_uuid %}">
+                		<input class="btn btn-default btn-primary" type="submit" value="View Submission">
+            		</form>
+        		</td>
+        	</tr>
+        	{% endfor %}
+    	</tbody>
+    </table>
+  </div>
+  {% endif %}
+
+<!-- Submission to review -->
+
+	
+{% if canReview and submissionsToReview %}
+  <h2>Reviews</h2>
+<div class="well well-sm" >  
+    <h4>Based on the minimum required amount of annotations- you have {{numRemaining}} of {{actualNumReviews}} reviews left to complete. </h4>
+
+
+    	
+    <table id="reviewTable" class="table table-bordered">
+
+
+	  <thead id="assignment_page_thead">
+    <tr>
+        <th>Submission number</th>
+        <th>Number of annotations completed</th>
+        <th>Review Submission</th>
+        
+    </tr>
+    </div>
+    
+    {% for submission, numAnnotations in submissionsToReview.items %}
+    <tbody id="assignment_page_tbody">
+    <tr>
+        <td>{{submission.submission_uuid}}</td>
+        <td>
+			
+			    
+			
+			Completed {{numAnnotations}} annotations of {{asmt.min_annotations}}
+        </td>
+        <td>
+			<form action="{% url 'submission' submission.submission_uuid %}">
+                		<input class="btn btn-default btn-primary" type="submit" value="Review Submission">
+            		</form>
+			</td>
+    </tr>
+    
+    {% endfor %}
+   
+   </div>
+    </table>
+   </div> 
+{% endif %}
+
+{% endblock %}

@@ -1,19 +1,39 @@
-{% extends 'base.djhtml' %}
+<!-- Template for assignment creation -->
+{% extends 'navbar.html' %}
 
-{% block content %}
+{% block main %}
 
-<h1>New {{ course.course_code }} Assignment</h1>
+<div id="assignmentCreation">
 
-<form method="post" action="{% url 'generate_assignment' %}">
+<h1>Create a new {{ course.course_code }} Assignment</h1>
+
+<form method="post" action="{% url 'generate_assignment' %}" enctype="multipart/form-data">
+  <!-- generate csrf token and display form from context dictionary -->
   {% csrf_token %}
+  
+  <ul>
+  
+  </ul>
+
   {% for field in form %}
   <ul> 
-    <li> {{ field.errors }} {{ field.label_tag }} {{ field }}</li> 
+    <li> {{ field.errors }} {{ field.label }} {{ field }}</li> 
   </ul>
   {% endfor %}
 
-  <input type="submit" name="Submit" value="Submit" />
+  <input type="submit" name="Submit" class="btn btn-info" value="Submit" />
 </form>
+<br />
+{% if errors %}
+   <div class="well well-sm">
+    <h4>ERROR! There was something wrong with the data you've entered:</h4>
+    {%for errType, message in errors.items %}
+        <li>Error: {{ message }} </li>
+    {% endfor %}
+    </div>
+  {% endif %}
+  
+</div>
 
-
+<br /> <br />
 {% endblock %}

@@ -1,1 +1,4 @@
 *.pyc
+code_review/reports/
+code_review/tests_integration.py
+code_review/media/
