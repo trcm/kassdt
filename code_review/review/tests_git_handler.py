@@ -26,6 +26,30 @@ class RepoTests(TestCase):
         self.asmt = Assignment.objects.create(course_code=self.course, name='TestAsmt', submission_close_date=timezone.now(), review_close_date=timezone.now())
         self.sub = AssignmentSubmission.objects.create(by=self.user, submission_for=self.asmt)
     
+    def test_clone(self):
+        '''Not necessary?'''
+        pass 
+
+    def test_root_folder_name(self):
+        '''Test that the root folder name is of the form 
+        userID_Year-month-day_hour-minute-seconds
+        '''
+        pass 
+
+    def test_add_source_folder(self):
+        '''Not necessary?'''
+        pass
+
+    def test_add_source_file(self):
+        '''Also possibly not necessary'''
+        pass 
+
+    def test_traverse_tree(self):
+        '''Test that the database is updated correctly after cloning.
+        I.e., check that the folder structures all match.
+        '''
+        pass 
+
     '''
         Test precondition: ssh has been setup correctly.
         Which really means this test is pretty meaningless, because the problems are
@@ -76,7 +100,7 @@ class RepoTests(TestCase):
 
         self.assertEqual(file1.name, 'folder1_testfile.txt')
         dir = os.path.join(relDir, studentRepo)
-        self.assertEqual(repr(file1.file), '<FieldFile: ' + dir + '/folder1>') 
+        self.assertEqual(repr(file1.file), '<FieldFile: ' + dir + '/folder1/folder1_testfile.txt>') 
         self.assertEqual(file1.folder, folders[1])
         
         file2 = files[1]
@@ -130,17 +154,22 @@ class RepoTests(TestCase):
         # Check all the files are correct
         files = SourceFile.objects.all()
         self.assertEqual(len(files), 4)
-        file1 = files[0]
+        
+        file0 = files[0]
+        self.assertEqual(file0.name, 'rootfile.txt')
+        # Make sure file was in root directory
+        self.assertEqual(file0.folder.name, studentRepo)
 
+        file1 = files[1]
         self.assertEqual(file1.name, 'folder1_testfile.txt')
         dir = os.path.join(relDir, studentRepo)
-        self.assertEqual(repr(file1.file), '<FieldFile: ' + dir + '/folder1>') 
+        self.assertEqual(repr(file1.file), '<FieldFile: ' + dir + '/folder1/folder1_testfile.txt>') 
         self.assertEqual(file1.folder, folders[1])
         
-        file2 = files[1]
+        file2 = files[2]
         self.assertEqual(file2.name, 'folder1-sub-testfile.py')
         self.assertEqual(file2.folder, folders[2])
         
-        file3 = files[2]
+        file3 = files[3]
         self.assertEqual(file3.name, 'folder2_testfile.py')
         self.assertEqual(file3.folder, folders[3])
