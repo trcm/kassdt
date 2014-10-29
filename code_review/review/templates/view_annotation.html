@@ -1,0 +1,28 @@
+{% extends 'sources.html' %}
+
+{% block annotation %}
+
+<h1>Annotations</h1>
+
+{% if annotated %}
+<ul>
+  {% for annotation in annotated %}
+  	<li>
+  		By: {{ annotation.user }} <br />
+  		Created: {{ annotation.created }} <br />
+  		Updated: {{ annotation.updated }} <br />
+  		Code quoted: {{ annotation.quote }} <br />
+  		Annotation: {{ annotation.text }} <br />
+  		Tags: 
+  			{% for tags in SourceAnnotation %}
+  				{{ tags.tag }} &nbsp;
+			{% endfor %}
+  	</li>
+  {% endfor %}
+</ul>
+
+{% else %}
+<p><strong>No annotations</strong></p>
+{% endif%}
+
+{% endblock %}
