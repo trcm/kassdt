@@ -1,5 +1,14 @@
 """
-Functional tests for submitting assignments
+Functional tests for submitting assignments.
+
+This covers the git submission system as well as restrictions
+such as not being able to submit an assignment unless it's open,
+and the due date has not gone by.
+
+WARNINGS:
+    -- test_ssh will only work if ssh is set up. 
+    -- test_nonrepo_url will take a long time (in the order of 30 seconds
+       to a minute) to run. Feel free to skip this test. It works.
 """
 
 from django.test import TestCase
@@ -17,8 +26,8 @@ from review.tests import *
 from time import sleep
 
 class AssignmentSubmissionTest(LiveServerTestCase):
-    server_url = 'http://localhost:8000'
     fixtures = ['assign_reviews']
+    server_url = 'http://localhost:8000'
         
     publicRepo = "https://github.com/avadendas/public_test_repo.git"
     # Obviously, ssh test only works if you have it set up.
@@ -104,6 +113,17 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
         self.assertTrue("submitted" in message)
     
+    @classmethod  
+    def getError(self):
+        '''Get the error message on the submission page.
+        Preconditions:
+            we are at the assignment submission page and an error has appeared.
+        Returns:
+            A string error message.
+        '''
+        err = self.xpath("//*[@id='assSubmitDiv']/div[2]/div/form/div[2]").text
+        return str(err)
+
     @classmethod 
     def submitViaPassword(self, username, password):
         '''@pre we have already submitted the repo and are at the username prompt'''
@@ -218,6 +238,74 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         # username and password. 
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
+    
+    def test_nonexistent_repo(self):
+        '''Try submitting a repo that is a well-formed URL but which is not
+        an actual, existing repo.
+        
+        NB github and bitbucket behave differently here. Github will first ask
+        you for your credentials, THEN realise the repo doesn't exist. 
+        Bitbucket will immediately kick back saying the repo doesn't exist.
+        '''
+        self.login('naoise', 'naoise')
+        notarepo = "https://kassdt@bitbucket.org/kassdt/notarepo.git"
+        self.submitAssignment('ABCD1234', 'Learning 1', notarepo)
+        expectedErr = "ERROR!\nThe URL appears incorrect... is this really your repo? Please also check your internet connection."
+        self.assertEqual(expectedErr, self.getError())
+    
+    def test_bad_protocol(self):
+        '''Try to submit a URL which has a non-existent protocol;
+        in this case we will use httomps instead of https.
+        '''
+        self.login('naoise', 'naoise')
+        badProtocol= "httomps://kassdt@bitbucket.org/kassdt/private_test_repo.git"
+        self.submitAssignment('ABCD1234', 'Learning 1', badProtocol)
+        expectedErr = "ERROR!\nSomething went wrong! Please check your URL (for instance, did you put a non-existent protocol like httppp instead of https?). If that doesn't work, please contact sysadmin."
+        self.assertEqual(expectedErr, self.getError())
+        sleep(5)
+
+    def test_bad_url(self):
+        '''Test a badly-formed URL: https://www.google.com
+        (should have a / at the end; also, obviously not a repo.
+        '''
+        self.login('naoise', 'naoise')
+        badURL = "https://google.com"
+        self.submitAssignment('ABCD1234', 'ASMT1', badURL)
+        expectedErr = "ERROR!\nPlease check your URL"
+        self.assertEqual(expectedErr, self.getError())
+
+    def test_nonrepo_url(self):
+        '''Test a well-formed URL which is not even an existing address.
+        Need this test on top of all the other bad URL tests because they
+        all raise different exceptions!
+        '''
+        self.login('naoise', 'naoise')
+        badURL = "https://blahblahblahblahblah.com/"
+        self.submitAssignment('ABCD1234', 'ASMT1', badURL)
+        expectedErr = "ERROR!\nConnection timed out. Please check your URL."
+        self.assertEqual(expectedErr, self.getError())
+
+    def test_nonsense(self):
+        '''Try putting in total gibberish that doesn't even resemble a URL.
+        If people leave out https, it will raise the same exception.
+        It only likes perfectly-written URLs.
+        '''
+        self.login('naoise', 'naoise')
+        badURL = "dflkajdf"
+        self.submitAssignment('ABCD1234', 'ASMT1', badURL)
+        expectedErr = "ERROR!\nWhat you entered is not a valid url; remember to include https://"
+        self.assertEqual(expectedErr, self.getError())
+        badURL = "kassdt@bitbucket.org/kassdt/private_test_repo.git"
+        self.submitAssignment('ABCD1234', 'ASMT1', badURL)
+        self.assertEqual(expectedErr, self.getError())
+
+    def test_blank_url(self):
+        '''Hit submit assignment without putting in anything in the url field.'''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('ABCD1234', 'ASMT1', '')
+        expectedErr = "ERROR!\nWhat you entered is not a valid url; remember to include https://"
+        self.assertEqual(expectedErr, self.getError())
+
 
     """
     def test_submit_single(self):
@@ -233,14 +321,6 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     def test_multiple_submit(self):
        pass
 
-    def test_bad_transport(self):
-        '''Test non-existent protocol httomps://'''
-        pass
-
-
-    def test_bad_password(self):
-        '''Test submitting private repo with incorrect password'''
-        pass
 
     def test_junk(self):
         '''Test submitting junk in the URL field, like aldkjadlkfj'''
