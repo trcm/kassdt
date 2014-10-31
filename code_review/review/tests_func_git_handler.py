@@ -22,7 +22,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         
     publicRepo = "https://github.com/avadendas/public_test_repo.git"
     # Obviously, ssh test only works if you have it set up.
-    sshRepo = "https://github.com/avadendas/private_test_repo.git"
+    sshRepo = "git@github.com:avadendas/private_test_repo.git"
     privateRepo = "https://kassdt@bitbucket.org/kassdt/private_test_repo.git"
 
     @classmethod
@@ -96,21 +96,27 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.xpath("//div[@class='panel-footer']/form/input").submit()
         #self.byId("id_submissionPage").click()
 
-    @classmethod 
-    def confirmationPage(self):
+    def confirmSubmission(self):
         # Check redirected to confirmation page 
-        self.assertTrue(self.byId("//h1[text() = 'Submission Confirmed']"))
+        message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
+        self.assertTrue("submitted" in message)
     
     @classmethod
     def get_latest(self, user, asmt):
         return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).latest()
     
-    """
+    @classmethod 
+    def submitAssignment(self, course, asmt, url):
+        '''Starting from the home page, navigate through and click submit repo'''
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text(course).click()
+        self.selenium.find_element_by_xpath("//a[@href='%s/']" %asmt).click()
+        self.selenium.find_element_by_id("id_submissionPage").click()
+        self.selenium.find_element_by_id("id_submission_repository").send_keys(url)
+        self.selenium.find_element_by_id("id_submitRepo").click()
+
     def test_00_submit_public(self):
-        pass
-    """
-    
-    def test_01_submit_single(self):
+        '''Test submitting a public repository, with URL correct.'''
         self.login('naoise', 'naoise')
         # How many submissions are there already?
         course = Course.objects.get(course_code="ABCD1234")
@@ -124,12 +130,24 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         #self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_element_by_id("id_submission_repository").send_keys('https://github.com/xagefu/test.git')
         self.selenium.find_element_by_id("id_submitRepo").click()
+
+        '''Make sure the confirmation text appears'''
         message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
         message = str(message)
         print(message)
         self.assertTrue("submitted" in message)
         
+    def test_ssh(self):
+        '''Test private repo submission via ssh'''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.sshRepo)
+        self.confirmSubmission()
+
     """
+    def test_submit_single(self):
+        '''Only one submission allowed; user should be blocked from trying to submit.'''
+        pass
+
     def test_submission_not_open(self):
         pass
 
