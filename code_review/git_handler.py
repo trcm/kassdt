@@ -44,7 +44,7 @@ import pygit2
 from pygit2 import UserPass
 
 def clone(url, directory, username=None, password=None):
-    """Clone a repo from url to directory and return the Repo object.
+    """Clone a repo from url to directory and return the directory.
     
     Arugments:
         url (String) -- the url of the repo to clone. 
@@ -55,7 +55,14 @@ def clone(url, directory, username=None, password=None):
         directory (String) -- absolute path to the directory to which
         to clone this repo; directory must be an empty folder, otherwise
         git will cause the method to raise an exception.
-    
+
+        username (String) -- the username for the repo, if applicable. 
+
+        password (String) -- the password for the repo, if applicable.
+
+    Preconditions:
+        directory is an empty folder
+
     Returns:
         the absolute path of the cloned repo.
 
@@ -198,6 +205,23 @@ def traverse_tree(tree, thisFolder, path, submission):
     return
 
 def abs_repo_path(asmtSubmission, directory):
+    '''Return the absolute path to the directory that will contain 
+    asmtSubmission, given its parent directory.
+
+    Arguments:
+        asmtSubmission (AssignmentSubmission) -- the assignment submission
+        for which to get the absolute path. 
+
+        directory (String) -- the parent directory of the root folder for
+        the assignment submission. 
+
+    Returns:
+        A two-tuple (rootFolderPath, rootFolderName) of type 
+        (String, String), where rootFolderPath is the absolute
+        path of the root folder for asmtSubmission, and rootFolderName
+        is the name of the root folder.
+    '''
+
     rootFolderName = root_folder_name(asmtSubmission)
 
     #  rootFolderPath is absolute path, necessary for cloning;
@@ -211,10 +235,19 @@ def abs_repo_path(asmtSubmission, directory):
 def populate_from_local(absolutePath, rootFolderName, asmtSubmission, directory):
     '''Populate database from a local git repo at absolutePath
 
-    absolutePath (String) -- absolute path of the repository 
-    rootFolderName (String)
-    asmtSub (AssignmentSubmission)
+    Create the appropriate SourceFolder and SourceFile objects in the 
+    database to match the directory structure of the local git repository. 
+    
+    Arguments:
+        absolutePath (String) -- absolute path of the repository 
+        rootFolderName (String) -- the name of the root folder 
+        asmtSub (AssignmentSubmission) -- the assignment submission 
+    
+    Precondition: 
+        This method has not been called on this repo. 
 
+    Returns:
+        Nothing
     '''
 
     repo = Repo(absolutePath)
@@ -245,6 +278,8 @@ def populate_db(asmtSubmission, directory):
     Preconditions:
         asmtSubmission must have non-null values for by, submission_repository
         and submission_for. 
+
+        The repository does not require username-password authentication.
 
     Arguments:
         asmtSubmission (AssignmentSubmission) -- the student's submission;

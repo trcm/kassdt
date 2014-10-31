@@ -21,6 +21,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     fixtures = ['assign_reviews']
         
     publicRepo = "https://github.com/avadendas/public_test_repo.git"
+    # Obviously, ssh test only works if you have it set up.
     sshRepo = "https://github.com/avadendas/private_test_repo.git"
     privateRepo = "https://kassdt@bitbucket.org/kassdt/private_test_repo.git"
 
@@ -66,9 +67,10 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     @classmethod
     def assignmentPage(self, course, asmt):
         '''Go to the assignment page of asmt'''
-        '''Submit to a single-submission only assignment and attempt to resubmit'''
+        # Go to course page
         self.partialLink("Courses").click()
         self.partialLink(course).click()
+        # Go to assignment page
         path = "//a[@href='%s/']" %(asmt)
         self.xpath(path).click()
     
@@ -105,7 +107,6 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     
     """
     def test_00_submit_public(self):
-        '''Believe this has already been done by Kieran in tests:MySeleniumTests.'''
         pass
     """
     
@@ -122,7 +123,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.selenium.find_element_by_id("id_submissionPage").click()
         #self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_element_by_id("id_submission_repository").send_keys('https://github.com/xagefu/test.git')
-        self.selenium.find_elements_by_id("id_submit")[0].submit()
+        self.selenium.find_element_by_id("id_submitRepo").click()
         self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
 	
 	"""        
