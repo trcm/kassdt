@@ -25,6 +25,9 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     sshRepo = "git@github.com:avadendas/private_test_repo.git"
     privateRepo = "https://kassdt@bitbucket.org/kassdt/private_test_repo.git"
 
+    username = "kassdt"
+    password = "kassdtIsAwesome"
+
     @classmethod
     def setUpClass(cls):
         cls.selenium = webdriver.WebDriver()
@@ -142,7 +145,16 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.sshRepo)
         self.confirmSubmission()
-
+    
+    def test_correct_password_auth(self):
+        '''Test submitting private repo with username and password'''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.xpath("//*[@id='id_repoUsername']").send_keys(self.username)
+        self.xpath("//*[@id='id_repoPassword']").send_keys(self.password)
+        self.xpath("//*[@id='id_submitRepo']").click()
+        self.confirmSubmission()
+        
     """
     def test_submit_single(self):
         '''Only one submission allowed; user should be blocked from trying to submit.'''
@@ -161,13 +173,6 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         '''Test non-existent protocol httomps://'''
         pass
 
-    def test_ssh(self):
-        '''Test private repo submission via ssh'''
-        pass
-
-    def test_password_auth(self):
-        '''Test submitting private repo with username and password'''
-        pass
 
     def test_bad_password(self):
         '''Test submitting private repo with incorrect password'''
