@@ -76,38 +76,10 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     def xpath(self,text):
         return self.selenium.find_element_by_xpath(text)
     
-    @classmethod
-    def assignmentPage(self, course, asmt):
-        '''Go to the assignment page of asmt'''
-        # Go to course page
-        self.partialLink("Courses").click()
-        self.partialLink(course).click()
-        # Go to assignment page
-        path = "//a[@href='%s/']" %(asmt)
-        self.xpath(path).click()
-    
     @classmethod 
     def byId(self, text):
         return self.selenium.find_element_by_id(text)
     
-    @classmethod 
-    def repoUrl(self, url):
-        '''Go from assignment page to submitting assignment'''
-        self.submit()
-        # Enter repo URL 
-        self.byId("id_submission_repository").send_keys(url)
-        sleep(3)
-        # Hit submit
-        self.selenium.find_elements_by_xpath("id('assignmentList')/div[1]/div/div/form/form/span/input[2]")[0].submit()
-        #self.xpath("id('assignmentList')/div/div[2]/div/form/span/input[2]").submit()
-        #self.byId("id_submit").click()
-
-    @classmethod 
-    def submit(self):
-        '''@pre we are on the assignment page'''
-        self.xpath("//div[@class='panel-footer']/form/input").submit()
-        #self.byId("id_submissionPage").click()
-
     def confirmSubmission(self):
         # Check redirected to confirmation page 
         message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
@@ -359,29 +331,37 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         expectedErr = "Submissions are closed"
         actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
         self.assertEqual(expectedErr, actualErr)
-        sleep(5) 
+    
+    def test_multiple_submissions(self):
+        '''Check that students can submit multiple times to assignments 
+        as long as submissions are still open (i.e., deadline has not passed)
+        '''
+
+        # Make the submission 
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+        # Do it again.
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+
 
     """
-    def test_submit_single(self):
-        '''Only one submission allowed; user should be blocked from trying to submit.'''
-        pass
+    def test_single_submission(self):
+        '''For some assignments, lecturers may not allow multiple submissions.
+        Make sure this is indeed the case.
+        '''
+        # Make the submission 
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'SingleSubmit', self.privateRepo)
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+        
+        # Check can't submit again. 
 
-    def test_submission_not_open(self):
-        pass
+        # Delete submission. 
 
-    def test_submission_closed(self):
-        pass
-
-    def test_multiple_submit(self):
-       pass
-
-
-    def test_junk(self):
-        '''Test submitting junk in the URL field, like aldkjadlkfj'''
-        pass
-
-    def test_blank(self):
-        '''Submit blank URL'''
-        pass
     """
 
