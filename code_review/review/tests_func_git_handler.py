@@ -104,6 +104,15 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
         self.assertTrue("submitted" in message)
     
+    @classmethod 
+    def submitViaPassword(self, username, password):
+        '''@pre we have already submitted the repo and are at the username prompt'''
+        self.xpath("//*[@id='id_repoUsername']").clear()
+        self.xpath("//*[@id='id_repoUsername']").send_keys(username)
+        self.xpath("//*[@id='id_repoPassword']").clear()
+        self.xpath("//*[@id='id_repoPassword']").send_keys(password)
+        self.xpath("//*[@id='id_submitRepo']").click()
+
     @classmethod
     def get_latest(self, user, asmt):
         return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).latest()
@@ -147,14 +156,69 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.confirmSubmission()
     
     def test_correct_password_auth(self):
-        '''Test submitting private repo with username and password'''
+        '''Test submitting private repo with (correct) username and password'''
         self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.xpath("//*[@id='id_repoUsername']").send_keys(self.username)
         self.xpath("//*[@id='id_repoPassword']").send_keys(self.password)
         self.xpath("//*[@id='id_submitRepo']").click()
         self.confirmSubmission()
-        
+    
+    def test_incorrect_username(self):
+        '''Submit with incorrect username first time, then correct next time'''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.submitViaPassword('notkassdt', self.password)
+        # Get the displayed error message
+        err = self.xpath("//*[@id='assSubmitDiv']/div[2]/div/form/div[2]").text
+        err = str(err)
+        self.assertEquals(err, "ERROR!\nUsername and/or password incorrect.")
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+
+    def test_incorrect_password(self):
+        '''Submit with incorrect password and correct username first time.
+        Make sure right error message displayed. 
+        Then submit with everything correct.
+        '''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.submitViaPassword(self.username, "kassdtIsNotAwesome")
+        # Get the displayed error message
+        err = self.xpath("//*[@id='assSubmitDiv']/div[2]/div/form/div[2]").text
+        err = str(err)
+        self.assertEquals(err, "ERROR!\nUsername and/or password incorrect.")
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+
+    def test_incorrect_credentials(self):
+        '''Submit with neither password nor username correct first time.
+        Make sure error message is correct.
+        Then submit with both correct.
+        '''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        self.submitViaPassword("kasddt", "kassdtIsNotAwesome")
+        # Get the displayed error message
+        err = self.xpath("//*[@id='assSubmitDiv']/div[2]/div/form/div[2]").text
+        err = str(err)
+        self.assertEquals(err, "ERROR!\nUsername and/or password incorrect.")
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+
+    def test_blank_credentials(self):
+        '''Try submitting without entering in anything in username and password.
+        The fields should just stay there. 
+        '''
+        self.login('naoise', 'naoise')
+        self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
+        # Leave both fields blank 
+        self.submitViaPassword('', '')
+        # Nothing terrible should have happened, we can now submit the actual
+        # username and password. 
+        self.submitViaPassword(self.username, self.password)
+        self.confirmSubmission()
+
     """
     def test_submit_single(self):
         '''Only one submission allowed; user should be blocked from trying to submit.'''
