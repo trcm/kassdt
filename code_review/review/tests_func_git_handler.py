@@ -306,6 +306,60 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         expectedErr = "ERROR!\nWhat you entered is not a valid url; remember to include https://"
         self.assertEqual(expectedErr, self.getError())
 
+    def test_submission_not_yet_open(self):
+        '''Make sure students can't submit until the submission open date.
+        This means making sure submission is closed on assignment page
+        and also that they can't get to the submission page by entering the
+        URL in directly.
+        '''
+        # First check that assignment page shows submissions to be closed.
+        # Importantly, make sure there is no submit button!
+        self.login('naoise', 'naoise')
+        submitButtonExists = True
+
+        try:
+            self.submitAssignment('ABCD1234', 'NotOpen', '')
+        except Exception as e:
+            expected = "Unable to locate element"
+            print e
+            self.assertTrue(expected in str(e))
+            submitButtonExists = False     
+        
+        self.assertFalse(submitButtonExists)
+        
+        # Now try going to the usual submission URL and ensure that the 
+        # tricksy user is met with a nasty error message. 
+        self.selenium.get("http://localhost:8000/review/course/ABCD1234/NotOpen/submit/")
+        expectedErr = "Submissions are closed"
+        actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
+        self.assertEqual(expectedErr, actualErr)
+
+    def test_deadline_gone(self):
+        '''Make sure students can't submit once the deadline has rolled by.
+        This means making sure submission is closed on assignment page
+        and also that they can't get to the submission page by entering the
+        URL in directly.
+        '''
+        self.login('naoise', 'naoise')
+        submitButtonExists = True
+
+        try:
+            self.submitAssignment('ABCD1234', 'DeadlineGone', '')
+        except Exception as e:
+            expected = "Unable to locate element"
+            print e
+            self.assertTrue(expected in str(e))
+            submitButtonExists = False     
+        
+        self.assertFalse(submitButtonExists)
+        
+        # Now try going to the usual submission URL and ensure that the 
+        # tricksy user is met with a nasty error message. 
+        self.selenium.get("http://localhost:8000/review/course/ABCD1234/DeadlineGone/submit/")
+        expectedErr = "Submissions are closed"
+        actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
+        self.assertEqual(expectedErr, actualErr)
+        sleep(5) 
 
     """
     def test_submit_single(self):
