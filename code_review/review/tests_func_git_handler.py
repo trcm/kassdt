@@ -50,7 +50,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     def tearDownClass(cls):
         cls.selenium.quit()
         super(AssignmentSubmissionTest, cls).tearDownClass()
-   
+    
     def setUp(self):
         self.student = User.objects.get(pk=86)
         self.admin = User.objects.get(username='tom')
@@ -112,7 +112,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     @classmethod 
     def submitAssignment(self, course, asmt, url):
         '''Starting from the home page, navigate through and click submit repo'''
-        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text(course).click()
         self.selenium.find_element_by_xpath("//a[@href='%s/']" %asmt).click()
         self.selenium.find_element_by_id("id_submissionPage").click()
@@ -141,24 +141,24 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         print(message)
         self.assertTrue("submitted" in message)
         
-    def test_ssh(self):
+    def test_01_ssh(self):
         '''Test private repo submission via ssh'''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.sshRepo)
         self.confirmSubmission()
     
-    def test_correct_password_auth(self):
+    def test_02_correct_password_auth(self):
         '''Test submitting private repo with (correct) username and password'''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.xpath("//*[@id='id_repoUsername']").send_keys(self.username)
         self.xpath("//*[@id='id_repoPassword']").send_keys(self.password)
         self.xpath("//*[@id='id_submitRepo']").click()
         self.confirmSubmission()
     
-    def test_incorrect_username(self):
+    def test_03_incorrect_username(self):
         '''Submit with incorrect username first time, then correct next time'''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.submitViaPassword('notkassdt', self.password)
         # Get the displayed error message
@@ -168,12 +168,12 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
 
-    def test_incorrect_password(self):
+    def test_04_incorrect_password(self):
         '''Submit with incorrect password and correct username first time.
         Make sure right error message displayed. 
         Then submit with everything correct.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.submitViaPassword(self.username, "kassdtIsNotAwesome")
         # Get the displayed error message
@@ -183,12 +183,12 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
 
-    def test_incorrect_credentials(self):
+    def test_05_incorrect_credentials(self):
         '''Submit with neither password nor username correct first time.
         Make sure error message is correct.
         Then submit with both correct.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.submitViaPassword("kasddt", "kassdtIsNotAwesome")
         # Get the displayed error message
@@ -198,11 +198,11 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
 
-    def test_blank_credentials(self):
+    def test_06_blank_credentials(self):
         '''Try submitting without entering in anything in username and password.
         The fields should just stay there. 
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         # Leave both fields blank 
         self.submitViaPassword('', '')
@@ -211,7 +211,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
     
-    def test_nonexistent_repo(self):
+    def test_07_nonexistent_repo(self):
         '''Try submitting a repo that is a well-formed URL but which is not
         an actual, existing repo.
         
@@ -219,50 +219,50 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         you for your credentials, THEN realise the repo doesn't exist. 
         Bitbucket will immediately kick back saying the repo doesn't exist.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         notarepo = "https://kassdt@bitbucket.org/kassdt/notarepo.git"
         self.submitAssignment('ABCD1234', 'Learning 1', notarepo)
         expectedErr = "ERROR!\nThe URL appears incorrect... is this really your repo? Please also check your internet connection."
         self.assertEqual(expectedErr, self.getError())
     
-    def test_bad_protocol(self):
+    def test_08_bad_protocol(self):
         '''Try to submit a URL which has a non-existent protocol;
         in this case we will use httomps instead of https.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         badProtocol= "httomps://kassdt@bitbucket.org/kassdt/private_test_repo.git"
         self.submitAssignment('ABCD1234', 'Learning 1', badProtocol)
         expectedErr = "ERROR!\nSomething went wrong! Please check your URL (for instance, did you put a non-existent protocol like httppp instead of https?). If that doesn't work, please contact sysadmin."
         self.assertEqual(expectedErr, self.getError())
         sleep(5)
 
-    def test_bad_url(self):
+    def test_09_bad_url(self):
         '''Test a badly-formed URL: https://www.google.com
         (should have a / at the end; also, obviously not a repo.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         badURL = "https://google.com"
         self.submitAssignment('ABCD1234', 'ASMT1', badURL)
         expectedErr = "ERROR!\nPlease check your URL"
         self.assertEqual(expectedErr, self.getError())
 
-    def test_nonrepo_url(self):
+    def test_10_nonrepo_url(self):
         '''Test a well-formed URL which is not even an existing address.
         Need this test on top of all the other bad URL tests because they
         all raise different exceptions!
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         badURL = "https://blahblahblahblahblah.com/"
         self.submitAssignment('ABCD1234', 'ASMT1', badURL)
         expectedErr = "ERROR!\nConnection timed out. Please check your URL."
         self.assertEqual(expectedErr, self.getError())
 
-    def test_nonsense(self):
+    def test_11_nonsense(self):
         '''Try putting in total gibberish that doesn't even resemble a URL.
         If people leave out https, it will raise the same exception.
         It only likes perfectly-written URLs.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         badURL = "dflkajdf"
         self.submitAssignment('ABCD1234', 'ASMT1', badURL)
         expectedErr = "ERROR!\nWhat you entered is not a valid url; remember to include https://"
@@ -271,14 +271,14 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitAssignment('ABCD1234', 'ASMT1', badURL)
         self.assertEqual(expectedErr, self.getError())
 
-    def test_blank_url(self):
+    def test_12_blank_url(self):
         '''Hit submit assignment without putting in anything in the url field.'''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('ABCD1234', 'ASMT1', '')
         expectedErr = "ERROR!\nWhat you entered is not a valid url; remember to include https://"
         self.assertEqual(expectedErr, self.getError())
 
-    def test_submission_not_yet_open(self):
+    def test_13_submission_not_yet_open(self):
         '''Make sure students can't submit until the submission open date.
         This means making sure submission is closed on assignment page
         and also that they can't get to the submission page by entering the
@@ -286,7 +286,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         '''
         # First check that assignment page shows submissions to be closed.
         # Importantly, make sure there is no submit button!
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         submitButtonExists = True
 
         try:
@@ -306,13 +306,13 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
         self.assertEqual(expectedErr, actualErr)
 
-    def test_deadline_gone(self):
+    def test_14_deadline_gone(self):
         '''Make sure students can't submit once the deadline has rolled by.
         This means making sure submission is closed on assignment page
         and also that they can't get to the submission page by entering the
         URL in directly.
         '''
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         submitButtonExists = True
 
         try:
@@ -332,13 +332,13 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
         self.assertEqual(expectedErr, actualErr)
     
-    def test_multiple_submissions(self):
+    def test_15_multiple_submissions(self):
         '''Check that students can submit multiple times to assignments 
         as long as submissions are still open (i.e., deadline has not passed)
         '''
 
         # Make the submission 
-        self.login('naoise', 'naoise')
+        #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()

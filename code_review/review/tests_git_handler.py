@@ -50,12 +50,12 @@ class RepoTests(TestCase):
         '''
         pass 
 
-    '''
+    def test_private_populate_db(self):
+        '''
         Test precondition: ssh has been setup correctly.
         Which really means this test is pretty meaningless, because the problems are
         going to happen with ssh not being set up correctly.
-    '''
-    def test_private_populate_db(self):
+        '''
         url = "git@github.com:avadendas/private_test_repo.git"
         sub = self.sub
         sub.submission_repository = url
