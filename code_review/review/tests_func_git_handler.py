@@ -124,25 +124,11 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         #self.selenium.find_elements_by_xpath("//div[@class='panel-footer']/form/input")[0].submit()
         self.selenium.find_element_by_id("id_submission_repository").send_keys('https://github.com/xagefu/test.git')
         self.selenium.find_element_by_id("id_submitRepo").click()
-        self.assertTrue(self.selenium.find_element_by_xpath("//h1[text() ='Submission Confirmed']"))
-	
-	"""        
-	self.assignmentPage("ABCD1234", 'SingleSubmit')
-        sleep(5)
-        #self.submit() # go to submission page.
-        self.repoUrl(self.publicRepo)
-        #self.repoUrl(self.publicRepo)
-        # Sleep for a bit so it actually gets submitted. 
-        # Check assignment has been created 
-        newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
-        #self.assertEqual(len(oldSubs)+1, len(newSubs))
-        #latest = get_latest(self.studentRevUser, asmt)
-
-        # Try to submit again.
-        # TODO need to check that the submit button disappears when we go back.
-        xpath("//div/a[@href='/review/course/ABCD1234/SingleSubmit/").click()    
-	"""
-
+        message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
+        message = str(message)
+        print(message)
+        self.assertTrue("submitted" in message)
+        
     """
     def test_submission_not_open(self):
         pass
@@ -177,3 +163,4 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         '''Submit blank URL'''
         pass
     """
+
