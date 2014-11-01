@@ -784,7 +784,7 @@ def submit_assignment(request, course_code, asmt):
 
                 elif('Connection timed out' in msg):
                     # They entered what looks like a URL but isn't an existing repo
-                    context['errMsg'] = 'Please check your url.' 
+                    context['errMsg'] = 'Connection timed out. Please check your URL.' 
                     sub.delete()
 
                 elif(msg == u"This transport isn\'t implemented. Sorry"):
@@ -817,10 +817,10 @@ def submit_assignment(request, course_code, asmt):
 
             except ValueError as verr:
                 if('invalid url' in verr.message):
-                    context['errMsg'] = "The URL is not correct."
+                    context['errMsg'] = "Please check your URL"
                     sub.delete()
                 else:
-                    print verr.message
+                    print err.message
                     context['errMsg'] = "We are sorry but we don't know what's wrong. Please contact the                                            sysadmin. Maybe you'll get an extension on your assignment?"
                     sub.delete()
 
