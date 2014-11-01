@@ -331,8 +331,8 @@ class SeleniumReviews(LiveServerTestCase):
         self.selenium.get("%s" % self.server_url)
         username_input = self.selenium.find_element_by_id("id_username")
         password_input = self.selenium.find_element_by_id("id_password")
-        username_input.send_keys('tom')
-        password_input.send_keys('tom')
+        username_input.send_keys('fionn')
+        password_input.send_keys('fionn')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
     def test_01_check_annotation_count(self):
@@ -343,9 +343,9 @@ class SeleniumReviews(LiveServerTestCase):
         sel = self.selenium
         self.login()
         next = sel.find_element_by_partial_link_text("Courses").click()
-        sel.find_element_by_partial_link_text("CSSE2310").click()
-        sel.find_element_by_xpath("//a[@href='Assignment 4/']").click()
-        sel.find_element_by_xpath("//table[@id='reviewTable']/tbody/tr[2]/td[2]/a/button").click()
+        sel.find_element_by_partial_link_text("COMP3301").click()
+        sel.find_element_by_xpath("//a[@href='Test1/']").click()
+        sel.find_element_by_xpath("//tbody[@id='assignment_page_tbody']/tr/td[2]/form/input").click()
         sel.find_element_by_tag_name("select").click()
         sel.find_elements_by_tag_name("option")[1].click()
         sel.find_elements_by_class_name('lineno')[0].click()
@@ -354,5 +354,29 @@ class SeleniumReviews(LiveServerTestCase):
         text_input.send_keys('selenium test')
         sel.find_element_by_xpath("//input[@value='Submit']").click()
         sel.find_element_by_partial_link_text("Submit").click()
-        completed = sel.find_element_by_xpath("id('reviewTable')/tbody/tr[2]/td[3]").text
-        self.assertEqual(completed, "Completed 1 annotations of 3")
+        completed = sel.find_element_by_xpath("id('reviewTable')/tbody/tr/td[1]").text
+        self.assertEqual(completed, "Completed 1 annotations of 1")
+
+    def test_02_check_reviews_count(self):
+        """ Check that the counter for reviews left as decremented and then delete the review"""
+        sel = self.selenium
+        reviews_left = sel.find_element_by_xpath("id('assignmentList')/div[4]/h4").text
+        self.assertEqual(reviews_left, "Based on the minimum required amount of annotations- you have 0 of 1 reviews left to complete.")
+        # clean up the annotation created
+        sel.find_element_by_xpath("//tbody[@id='assignment_page_tbody']/tr/td[2]/form/input").click()
+        sel.find_element_by_tag_name("select").click()
+        sel.find_elements_by_tag_name("option")[1].click()
+        sel.find_element_by_xpath("id('ui-id-2')/a[3]").click()
+
+    def test_03_can_view_reviews(self):
+        """ Check that reviews can be seen on submissions"""
+        sel = self.selenium
+        next = sel.find_element_by_partial_link_text("Courses").click()
+        sel.find_element_by_partial_link_text("COMP3301").click()
+        sel.find_element_by_xpath("//a[@href='Test1/']").click()
+        sel.find_element_by_xpath("id('assignment_page_tbody')/tr/td[3]/form/input").click()
+        sel.find_element_by_tag_name("select").click()
+        sel.find_elements_by_tag_name("option")[1].click()
+        
+        commentText = sel.find_element_by_xpath("id('comment')").text
+        self.assertEqual("Test", commentText)

@@ -6,7 +6,7 @@ such as not being able to submit an assignment unless it's open,
 and the due date has not gone by.
 
 WARNINGS:
-    -- test_ssh will only work if ssh is set up. 
+    -- test_ssh will only work if ssh is set up.
     -- test_nonrepo_url will take a long time (in the order of 30 seconds
        to a minute) to run. Feel free to skip this test. It works.
 """
@@ -28,7 +28,7 @@ from time import sleep
 class AssignmentSubmissionTest(LiveServerTestCase):
     fixtures = ['assign_reviews']
     server_url = 'http://localhost:8000'
-        
+
     publicRepo = "https://github.com/avadendas/public_test_repo.git"
     # Obviously, ssh test only works if you have it set up.
     sshRepo = "git@github.com:avadendas/private_test_repo.git"
@@ -42,15 +42,15 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         cls.selenium = webdriver.WebDriver()
         super(AssignmentSubmissionTest, cls).setUpClass()
         cls.selenium.maximize_window()
-        
+
         print ReviewUser.objects.all()
         print User.objects.all()
-        
+
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
         super(AssignmentSubmissionTest, cls).tearDownClass()
-    
+
     def setUp(self):
         self.student = User.objects.get(pk=86)
         self.admin = User.objects.get(username='tom')
@@ -63,7 +63,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         username_input.send_keys(username)
         password_input.send_keys(password)
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
-   
+
     @classmethod
     def loginStudent(self):
         self.login('naoise', 'naoise')
@@ -71,21 +71,21 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     @classmethod
     def partialLink(self, text):
         return self.selenium.find_element_by_partial_link_text(text)
-    
+
     @classmethod
-    def xpath(self,text):
+    def xpath(self, text):
         return self.selenium.find_element_by_xpath(text)
-    
-    @classmethod 
+
+    @classmethod
     def byId(self, text):
         return self.selenium.find_element_by_id(text)
-    
+
     def confirmSubmission(self):
-        # Check redirected to confirmation page 
+        # Check redirected to confirmation page
         message = self.xpath("//*[@id='submissionConfirmation']/div/h3").text.encode('ascii', 'ignore')
         self.assertTrue("submitted" in message)
-    
-    @classmethod  
+
+    @classmethod
     def getError(self):
         '''Get the error message on the submission page.
         Preconditions:
@@ -96,7 +96,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         err = self.xpath("//*[@id='assSubmitDiv']/div[2]/div/form/div[2]").text
         return str(err)
 
-    @classmethod 
+    @classmethod
     def submitViaPassword(self, username, password):
         '''@pre we have already submitted the repo and are at the username prompt'''
         self.xpath("//*[@id='id_repoUsername']").clear()
@@ -108,8 +108,8 @@ class AssignmentSubmissionTest(LiveServerTestCase):
     @classmethod
     def get_latest(self, user, asmt):
         return AssignmentSubmission.objects.filter(by=user, submission_for=asmt).latest()
-    
-    @classmethod 
+
+    @classmethod
     def submitAssignment(self, course, asmt, url):
         '''Starting from the home page, navigate through and click submit repo'''
         self.selenium.find_element_by_partial_link_text("Courses").click()
@@ -126,7 +126,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         course = Course.objects.get(course_code="ABCD1234")
         asmt = Assignment.objects.get(course_code=course, name='SingleSubmit')
         oldSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
-        
+
 	next = self.selenium.find_element_by_partial_link_text("Courses").click()
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
         self.selenium.find_element_by_xpath("//a[@href='Learning 1/']").click()
@@ -140,13 +140,13 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         message = str(message)
         print(message)
         self.assertTrue("submitted" in message)
-        
+
     def test_01_ssh(self):
         '''Test private repo submission via ssh'''
         #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.sshRepo)
         self.confirmSubmission()
-    
+
     def test_02_correct_password_auth(self):
         '''Test submitting private repo with (correct) username and password'''
         #self.login('naoise', 'naoise')
@@ -155,7 +155,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.xpath("//*[@id='id_repoPassword']").send_keys(self.password)
         self.xpath("//*[@id='id_submitRepo']").click()
         self.confirmSubmission()
-    
+
     def test_03_incorrect_username(self):
         '''Submit with incorrect username first time, then correct next time'''
         #self.login('naoise', 'naoise')
@@ -170,7 +170,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
 
     def test_04_incorrect_password(self):
         '''Submit with incorrect password and correct username first time.
-        Make sure right error message displayed. 
+        Make sure right error message displayed.
         Then submit with everything correct.
         '''
         #self.login('naoise', 'naoise')
@@ -200,23 +200,23 @@ class AssignmentSubmissionTest(LiveServerTestCase):
 
     def test_06_blank_credentials(self):
         '''Try submitting without entering in anything in username and password.
-        The fields should just stay there. 
+        The fields should just stay there.
         '''
         #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
-        # Leave both fields blank 
+        # Leave both fields blank
         self.submitViaPassword('', '')
         # Nothing terrible should have happened, we can now submit the actual
-        # username and password. 
+        # username and password.
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
-    
+
     def test_07_nonexistent_repo(self):
         '''Try submitting a repo that is a well-formed URL but which is not
         an actual, existing repo.
-        
+
         NB github and bitbucket behave differently here. Github will first ask
-        you for your credentials, THEN realise the repo doesn't exist. 
+        you for your credentials, THEN realise the repo doesn't exist.
         Bitbucket will immediately kick back saying the repo doesn't exist.
         '''
         #self.login('naoise', 'naoise')
@@ -224,7 +224,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         self.submitAssignment('ABCD1234', 'Learning 1', notarepo)
         expectedErr = "ERROR!\nThe URL appears incorrect... is this really your repo? Please also check your internet connection."
         self.assertEqual(expectedErr, self.getError())
-    
+
     def test_08_bad_protocol(self):
         '''Try to submit a URL which has a non-existent protocol;
         in this case we will use httomps instead of https.
@@ -295,12 +295,12 @@ class AssignmentSubmissionTest(LiveServerTestCase):
             expected = "Unable to locate element"
             print e
             self.assertTrue(expected in str(e))
-            submitButtonExists = False     
-        
+            submitButtonExists = False
+
         self.assertFalse(submitButtonExists)
-        
-        # Now try going to the usual submission URL and ensure that the 
-        # tricksy user is met with a nasty error message. 
+
+        # Now try going to the usual submission URL and ensure that the
+        # tricksy user is met with a nasty error message.
         self.selenium.get("http://localhost:8000/review/course/ABCD1234/NotOpen/submit/")
         expectedErr = "Submissions are closed"
         actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
@@ -321,23 +321,23 @@ class AssignmentSubmissionTest(LiveServerTestCase):
             expected = "Unable to locate element"
             print e
             self.assertTrue(expected in str(e))
-            submitButtonExists = False     
-        
+            submitButtonExists = False
+
         self.assertFalse(submitButtonExists)
-        
-        # Now try going to the usual submission URL and ensure that the 
-        # tricksy user is met with a nasty error message. 
+
+        # Now try going to the usual submission URL and ensure that the
+        # tricksy user is met with a nasty error message.
         self.selenium.get("http://localhost:8000/review/course/ABCD1234/DeadlineGone/submit/")
         expectedErr = "Submissions are closed"
         actualErr = str(self.xpath("//*[@id='cannotSubmit']/h2").text)
         self.assertEqual(expectedErr, actualErr)
-    
+
     def test_15_multiple_submissions(self):
-        '''Check that students can submit multiple times to assignments 
+        '''Check that students can submit multiple times to assignments
         as long as submissions are still open (i.e., deadline has not passed)
         '''
 
-        # Make the submission 
+        # Make the submission
         #self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.submitViaPassword(self.username, self.password)
@@ -353,15 +353,14 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         '''For some assignments, lecturers may not allow multiple submissions.
         Make sure this is indeed the case.
         '''
-        # Make the submission 
+        # Make the submission
         self.login('naoise', 'naoise')
         self.submitAssignment('COMP3301', 'SingleSubmit', self.privateRepo)
         self.submitViaPassword(self.username, self.password)
         self.confirmSubmission()
-        
-        # Check can't submit again. 
 
-        # Delete submission. 
+        # Check can't submit again.
+
+        # Delete submission.
 
     """
-
