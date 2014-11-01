@@ -16,7 +16,7 @@ from review.models import *
 from review.helpers import *
 
 from django.test import LiveServerTestCase
-from selenium.webdriver.firefox import webdriver
+from selenium.webdriver.chrome import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 def setup_group(self):
@@ -169,22 +169,6 @@ class AnnotationTests(TestCase):
         self.assertIn(annotation, SourceAnnotation.objects.all())
         self.assertIn(rangeA, SourceAnnotationRange.objects.all())
 
-        
-    # def test_delete_annotation(self):
-    #     # self.createAnnotation()
-    #     pass
-
-    # def test_delete_invalid_annotation(self):
-    #     pass
-
-    # def test_edit_annotaion(self):
-    #     pass
-
-    # def test_create_annotation_invalid_line_number(self):
-    #     pass 
-
-    # def test_create_annotation_blank_comment(self):
-    #     pass
         
 class MySeleniumTests(LiveServerTestCase):
     fixtures = ['fixtures/dump.json']
@@ -361,7 +345,6 @@ class SeleniumReviews(LiveServerTestCase):
         next = sel.find_element_by_partial_link_text("Courses").click()
         sel.find_element_by_partial_link_text("CSSE2310").click()
         sel.find_element_by_xpath("//a[@href='Assignment 4/']").click()
-        # eviews = sel.find_element_by_id("reviewTable")
         sel.find_element_by_xpath("//table[@id='reviewTable']/tbody/tr[2]/td[2]/a/button").click()
         sel.find_element_by_tag_name("select").click()
         sel.find_elements_by_tag_name("option")[1].click()
