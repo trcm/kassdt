@@ -306,13 +306,14 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         '''
         # First check that assignment page shows submissions to be closed.
         # Importantly, make sure there is no submit button!
-        #self.login('naoise', 'naoise')
+        # self.login('naoise', 'naoise')
         submitButtonExists = True
 
         try:
             self.submitAssignment('ABCD1234', 'NotOpen', '')
+            sleep(5)
         except Exception as e:
-            expected = "Unable to locate element"
+            expected = "no such element"
             print e
             self.assertTrue(expected in str(e))
             submitButtonExists = False
@@ -338,7 +339,7 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         try:
             self.submitAssignment('ABCD1234', 'DeadlineGone', '')
         except Exception as e:
-            expected = "Unable to locate element"
+            expected = "no such element"
             print e
             self.assertTrue(expected in str(e))
             submitButtonExists = False
