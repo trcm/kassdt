@@ -140,21 +140,41 @@ class AssignmentSubmissionTest(LiveServerTestCase):
         message = str(message)
         print(message)
         self.assertTrue("submitted" in message)
+       
+        # check an assignment submission object has been created.
+        newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
+        self.assertEqual(len(oldSubs)+1, len(newSubs))
+        # Make sure the root folder is there now. 
+        self.assertTrue(get_latest(self.studentUser, asmt).root_folder)
 
     def test_01_ssh(self):
         '''Test private repo submission via ssh'''
         #self.login('naoise', 'naoise')
+        oldSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
         self.submitAssignment('COMP3301', 'OperatingSystems', self.sshRepo)
         self.confirmSubmission()
+        
+        # check an assignment submission object has been created.
+        newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
+        self.assertEqual(len(oldSubs)+1, len(newSubs))
+        # Make sure the root folder is there now. 
+        self.assertTrue(get_latest(self.studentUser, asmt).root_folder)
 
     def test_02_correct_password_auth(self):
         '''Test submitting private repo with (correct) username and password'''
         #self.login('naoise', 'naoise')
+        oldSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
         self.submitAssignment('COMP3301', 'OperatingSystems', self.privateRepo)
         self.xpath("//*[@id='id_repoUsername']").send_keys(self.username)
         self.xpath("//*[@id='id_repoPassword']").send_keys(self.password)
         self.xpath("//*[@id='id_submitRepo']").click()
         self.confirmSubmission()
+        
+        # check an assignment submission object has been created.
+        newSubs = AssignmentSubmission.objects.filter(submission_for=asmt, by=self.studentRevUser)
+        self.assertEqual(len(oldSubs)+1, len(newSubs))
+        # Make sure the root folder is there now. 
+        self.assertTrue(get_latest(self.studentUser, asmt).root_folder)
 
     def test_03_incorrect_username(self):
         '''Submit with incorrect username first time, then correct next time'''
