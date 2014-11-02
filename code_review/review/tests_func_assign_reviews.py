@@ -65,3 +65,47 @@ class AssignReviewsTest(LiveServerTestCase):
         reviews = AssignmentReview.objects.filter(assignment=asmt).all()
         for review in reviews:
             self.assertEqual(len(review.submissions.all()) == reviewsPerStudent)
+
+    def test_01_reduce_assigned_annotations(self):
+        reviewsPerStudent = 3
+        initialAnnotations = 5
+        finalAnnotations = 3
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("COMP3301").click()
+        self.selenium.find_element_by_xpath("//a[@href='OperatingSystems/']").click()
+        self.selenium.find_element_by_xpath("//div[@id='adminTools']/div[@id='adminToolsButtons']/a[@href='assign_reviews']").click()
+        
+        self.selenium.find_element_by_name('reviews_per_student').clear()
+        self.selenium.find_element_by_name('reviews_per_student').send_keys(str(reviewsPerStudent))
+
+        self.selenium.find_element_by_name('min_annotations').clear()
+        self.selenium.find_element_by_name('min_annotations').send_keys(str(initialAnnotations))
+        self.selenium.find_element_by_id("submit").click()
+
+        # Check assignment has been updated correctly.
+        asmt = Assignment.objects.get(name="OperatingSystems")
+
+        self.assertEqual(asmt.reviews_per_student, reviewsPerStudent)
+        self.assertEqual(asmt.min_annotations, initialAnnotations)
+
+        next = self.selenium.find_element_by_partial_link_text("Courses").click()
+        self.selenium.find_element_by_partial_link_text("COMP3301").click()
+        self.selenium.find_element_by_xpath("//a[@href='OperatingSystems/']").click()
+        self.selenium.find_element_by_xpath("//div[@id='adminTools']/div[@id='adminToolsButtons']/a[@href='assign_reviews']").click()
+
+        self.selenium.find_element_by_name('reviews_per_student').clear()
+        self.selenium.find_element_by_name('reviews_per_student').send_keys(str(reviewsPerStudent))
+
+        self.selenium.find_element_by_name('min_annotations').clear()
+        self.selenium.find_element_by_name('min_annotations').send_keys(str(finalAnnotations))
+        self.selenium.find_element_by_id("submit").click()
+
+        asmt = Assignment.objects.get(name="OperatingSystems")
+
+        self.assertEqual(asmt.reviews_per_student, reviewsPerStudent)
+        self.assertEqual(asmt.min_annotations, initialAnnotations)
+
+        # Check correct number of reviews actually assigned.
+        reviews = AssignmentReview.objects.filter(assignment=asmt).all()
+        for review in reviews:
+            self.assertEqual(len(review.submissions.all()) == reviewsPerStudent)
