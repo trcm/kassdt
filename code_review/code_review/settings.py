@@ -50,6 +50,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 #LTI INTEGRATION KEYS
+# CHANGE TO SUIT YOUR LTI SYSTEM
 CONSUMER_KEY = 'TESTING'
 LTI_SECRET = 'TESTING'
 LTI_DEBUG = True
@@ -69,9 +70,7 @@ INSTALLED_APPS = (
     'lti',
     'unfriendly',
     'help',
-    # 'djcelery',
     'django_nose',
-    # 'ims_lti_py',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,7 +88,6 @@ WSGI_APPLICATION = 'code_review.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -140,7 +138,5 @@ TEMPLATE_DIRS = [TEMPLATE_PATH,
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
 
-# Celery imports for database, 
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
 
 FIXTURE_DIRS = ('fixtures/', )

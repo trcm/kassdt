@@ -137,7 +137,7 @@ class SeleniumHelp(LiveServerTestCase):
     def test_02_edit_post(self):
         ''' check for editing of posts'''
         self.selenium.find_element_by_partial_link_text("Selenium").click()
-        self.selenium.find_element_by_id("editBtn").click()
+        self.selenium.find_element_by_id("editModalBtn").click()
         alert = self.selenium.switch_to_alert()
         self.selenium.implicitly_wait(10)
         editText = alert.driver.find_element_by_id("id_question")
@@ -148,7 +148,7 @@ class SeleniumHelp(LiveServerTestCase):
         sel.back()
         sel.find_element_by_partial_link_text("Selenium").click()
         sel.find_element_by_id("resolve").click()
-        resolved = sel.find_element_by_xpath("//table/tbody/tr[2]/td[4]")
+        resolved = sel.find_element_by_xpath("//table/tbody/tr[1]/td[4]/p")
         self.assertEqual("True", resolved.text)
         sel.find_elements_by_partial_link_text("Delete")[0].click()
         error = False

@@ -1452,8 +1452,18 @@ def view_submissions(request, course_code, asmt):
         users = ReviewUser.objects.filter(courses=course)
         
         submissions = get_latest(course, assignment, subs, users)
-        context['subs'] = submissions
 
+        # get the submissions and the users for statistics purposes
+        
+        students = []
+        for user in ReviewUser.objects.all():
+            if course in user.courses.all():
+                students.append(user)
+            
+        context['student_count'] = len(students)
+        context['sub_count'] = len(submissions)
+        context['subs'] = submissions
+        
         return render(request, 'admin/get_submissions.html', context)
     except Course.DoesNotExist:
         print "course"

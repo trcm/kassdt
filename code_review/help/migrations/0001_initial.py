@@ -12,12 +12,16 @@ class Migration(SchemaMigration):
         db.create_table(u'help_post', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('post_uuid', self.gf('django.db.models.fields.CharField')(max_length=36, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['review.ReviewUser'])),
+            ('by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['review.ReviewUser'])),
+            ('course_code', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['review.Course'])),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('question', self.gf('django.db.models.fields.TextField')()),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('root_folder', self.gf('django.db.models.fields.related.OneToOneField')(related_name='code', unique=True, null=True, to=orm['review.SourceFolder'])),
+            ('open', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('resolved', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('submission_repository', self.gf('django.db.models.fields.TextField')()),
         ))
         db.send_create_signal(u'help', ['Post'])
 
@@ -66,14 +70,18 @@ class Migration(SchemaMigration):
         },
         u'help.post': {
             'Meta': {'object_name': 'Post'},
+            'by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': u"orm['review.ReviewUser']"}),
+            'course_code': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': u"orm['review.Course']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'open': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'post_uuid': ('django.db.models.fields.CharField', [], {'max_length': '36', 'blank': 'True'}),
             'question': ('django.db.models.fields.TextField', [], {}),
+            'resolved': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'root_folder': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'code'", 'unique': 'True', 'null': 'True', 'to': u"orm['review.SourceFolder']"}),
+            'submission_repository': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': u"orm['review.ReviewUser']"})
+            'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         u'review.course': {
             'Meta': {'object_name': 'Course'},
