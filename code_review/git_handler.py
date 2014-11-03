@@ -242,7 +242,10 @@ def populate_from_local(absolutePath, rootFolderName, asmtSubmission, directory)
         absolutePath (String) -- absolute path of the repository 
         rootFolderName (String) -- the name of the root folder 
         asmtSub (AssignmentSubmission) -- the assignment submission 
-    
+        directory (String) -- the path to the parent of the rootFolder, 
+        relative to MEDIA_ROOT. This would be something like 
+        courseCode/assignmentName
+
     Precondition: 
         This method has not been called on this repo. 
 
