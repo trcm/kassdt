@@ -335,13 +335,30 @@ class SeleniumReviews(LiveServerTestCase):
         password_input.send_keys('fionn')
         self.selenium.find_element_by_xpath("//input[@value='Login']").click()
 
-    def test_01_check_annotation_count(self):
+    def test_01_ensure_user_only_sees_own_comments(self):
+        """ tests that when the user starts reviewing an assigment they only see their
+        own annotations"""
+        sel = self.selenium
+        self.login()
+
+        error = False
+        
+        next = sel.find_element_by_partial_link_text("Courses").click()
+        sel.find_element_by_partial_link_text("COMP3301").click()
+        sel.find_element_by_xpath("//a[@href='Test1/']").click()
+        sel.find_element_by_xpath("//tbody[@id='assignment_page_tbody']/tr/td[2]/form/input").click()
+        sel.find_element_by_tag_name("select").click()
+        sel.find_elements_by_tag_name("option")[1].click()
+        annotes = sel.find_elements_by_xpath("id('comment')")
+        self.assertEqual(len(annotes), 0)
+
+        
+    def test_02_check_annotation_count(self):
         """
         Tests that when an annotation is created on a file, the counter for completed
         annotations is incremented.
         """
         sel = self.selenium
-        self.login()
         next = sel.find_element_by_partial_link_text("Courses").click()
         sel.find_element_by_partial_link_text("COMP3301").click()
         sel.find_element_by_xpath("//a[@href='Test1/']").click()
@@ -357,7 +374,7 @@ class SeleniumReviews(LiveServerTestCase):
         completed = sel.find_element_by_xpath("id('reviewTable')/tbody/tr/td[1]").text
         self.assertEqual(completed, "Completed 1 annotations of 1")
 
-    def test_02_check_reviews_count(self):
+    def test_03_check_reviews_count(self):
         """ Check that the counter for reviews left as decremented and then delete the review"""
         sel = self.selenium
         reviews_left = sel.find_element_by_xpath("id('assignmentList')/div[4]/h4").text
@@ -368,7 +385,7 @@ class SeleniumReviews(LiveServerTestCase):
         sel.find_elements_by_tag_name("option")[1].click()
         sel.find_element_by_xpath("id('ui-id-2')/a[3]").click()
 
-    def test_03_can_view_reviews(self):
+    def test_04_can_view_reviews(self):
         """ Check that reviews can be seen on submissions"""
         sel = self.selenium
         next = sel.find_element_by_partial_link_text("Courses").click()
@@ -380,3 +397,6 @@ class SeleniumReviews(LiveServerTestCase):
         
         commentText = sel.find_element_by_xpath("id('comment')").text
         self.assertEqual("Test", commentText)
+
+    def test_05_view_user_annotations(self):
+        """Checks that the user can only view their own annotations on a submission"""
