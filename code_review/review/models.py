@@ -87,7 +87,7 @@ class ReviewUser(models.Model):
     user_uuid = UUIDField()
     djangoUser = models.OneToOneField(Django_User, unique=True)
     isStaff = models.BooleanField(default=False)
-    courses = models.ManyToManyField('Course')
+    courses = models.ManyToManyField('Course', blank=True)
     firstLogin = models.BooleanField(default=True)
 
     def __unicode__(self):
