@@ -495,6 +495,18 @@ def updatePost(request, post_uuid):
 
 
 def grabPostFiles(dir, prefix=""):
+    
+    """
+    Grabs all the files for a submission
+    
+    Parameters:
+        dir (SourceFolder) -- Directory being scraped.
+        prefix (String) -- Prefix for adding the file strings to the 
+        return list.
+    Returns:
+    A list of all the files in the folder.
+    """
+    
     files = []
     
     for folder in dir.folders.all():

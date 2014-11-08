@@ -1178,76 +1178,6 @@ def editAnnotation(request, submissionUuid, fileUuid, annoteId):
                                         submissionUuid +
                                         '/' + fileUuid + '/')
                 
-        
-@login_required(login_url='/review/login_redirect/')
-def grabFile(request):
-    """
-    this just grabs the file, pygmetizes it and returns it in,
-    this gets sent to the ajax request
-
-    This was used in the Ajax version of this application but
-    it isn't currently used.
-    """
-    # print request.session['_auth_user_id']
-    # # get current user
-    # currentUser = User.objects.get(id=request.session['_auth_user_id'])
-    # print currentUser
-    # if request.is_ajax():
-    #     try:
-    #         toGrab = request.GET['uuid']
-    #         path = SourceFile.objects.get(file_uuid=toGrab)
-    #         # get root folder
-    #         iter = path.folder
-    #         while iter.parent is not None:
-    #             iter = iter.parent
-    #         # get owner id
-    #         owner = AssignmentSubmission.objects.get(root_folder=iter).by
-    #         # formatted = path.content
-    #         formatted = highlight(path.content, guess_lexer(path.content),
-    #                               HtmlFormatter(linenos="table", style="friendly"))
-
-    #         # get all annotations for the current file
-    #         # if user is the owner of the files or super user get all annotations
-    #         if currentUser.is_staff or currentUser == owner:
-    #             annotations = SourceAnnotation.objects.filter(source=path)
-    #         else:
-    #             annotations = Sou
-    #             rceAnnotation.objects.filter(source=path, user=currentUser.reviewuser)
-
-    #         annotationRanges = []
-    #         aDict = []
-
-    #         for a in annotations:
-    #             annotationRanges.append(model_to_dict(SourceAnnotationRange.objects.get(range_annotation=a)))
-    #             aDict.append(model_to_dict(a))
-
-    #         # create the array to return
-    #         ret = []
-    #         ret.append(formatted)
-    #         # zip up the two annotation lists so they can be called one after each other
-    #         ret.append(zip(aDict, annotationRanges))
-    #         # send the formatted file and the current annotations to the ajax call
-    #         return HttpResponse(json.dumps(ret))
-    #     except SourceFile.doesNotExist:
-    #         print "Source file doesn't not exist"
-    #         raise Http404
-
-# This is just a test view for uploading files, will be deleted
-def upload(request):
-    """
-    Test view for uploading files, not needed in the final version
-    """
-    # print "upload"
-    # if request.method == "POST":
-    #     form = uploadFile(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         print "valid"
-    #         form.save()
-    #         return HttpResponse("Upload")
-    # else:
-    #     return HttpResponse("Fail")
-
-
 @login_required(login_url='/review/login_redirect/')
 def reviewFile(request, submissionUuid, fileUuid):
     """
@@ -1333,6 +1263,16 @@ def review(request, submissionUuid, **kwargs):
 
 
 def grabFiles(dir, prefix=""):
+    """
+    Grabs all the files for a submission
+    
+    Parameters:
+        dir (SourceFolder) -- Directory being scraped.
+        prefix (String) -- Prefix for adding the file strings to the 
+        return list.
+    Returns:
+    A list of all the files in the folder.
+    """
     files = []
     
     for folder in dir.folders.all():

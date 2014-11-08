@@ -72,9 +72,6 @@ urlpatterns = patterns('',
                        # Course page
                        url(r'course/(?P<course_code>[A-Z]{4}[0-9]{4})/(?P<asmt>.+)/$',
                            views.assignment_page, name='assignment_page'),
-                       
-                       # Test route for uploading files
-                       url(r'upload', views.upload, name='upload'),
 
                        # Creates an annotation using the submission and file uuids
                        url(r'annotation/create/(?P<submissionUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/(?P<fileUuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/$',

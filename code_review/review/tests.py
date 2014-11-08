@@ -24,7 +24,6 @@ def setup_group(self):
 
 # Initializes the user with a username and password
 
-
 def setup_user(self):
 
     username = "test"
@@ -36,7 +35,9 @@ def setup_user(self):
 
 
 class UserTests(TestCase):
-
+    """
+    Tests database user creation and alteration
+    """
     def test_user_is_a_student(self):
         setup_group(self)
         setup_user(self)
@@ -115,6 +116,7 @@ class UserTests(TestCase):
 class AnnotationTests(TestCase):
     
     """
+    Tests for creating, altering and deleting Annotations.
     Test SourceAnnotation and SourceAnnotationRange together, they're never created
    separately
     """
@@ -171,6 +173,9 @@ class AnnotationTests(TestCase):
 
         
 class MySeleniumTests(LiveServerTestCase):
+    """ 
+    Functional tests for basic application features
+    """
     fixtures = ['fixtures/dump.json']
     server_url = 'http://localhost:8000'
 
@@ -219,6 +224,9 @@ class MySeleniumTests(LiveServerTestCase):
 
 
 class SeleniumAnnotations(LiveServerTestCase):
+    """
+    Functional tests for creating annotations.
+    """
     server_url = 'http://localhost:8000'
     
     @classmethod

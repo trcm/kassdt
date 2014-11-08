@@ -1,4 +1,0 @@
-#+title: Help system breakdown
-#+author: Tom Midson
-#+email: midson.trc@gmail.com
-

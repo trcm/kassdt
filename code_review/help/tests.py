@@ -11,6 +11,9 @@ from selenium.webdriver.chrome import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 class PostTest(TestCase):
+    """
+    Tests for post database operations
+    """
     fixtures = ['fixtures/dump.json']
 
     def setUp(self):
@@ -23,10 +26,10 @@ class PostTest(TestCase):
                                 submission_repository="https://github.com/avadendas/public_test_repo.git"
         )
 
-    def test_pass(self):
-        self.assertTrue(True)
-
     def test_post_creation(self):
+        """
+        Ensure a regular test post can be created
+        """
         c = Course.objects.get(course_code="ABCD1234")
         ru = ReviewUser.objects.get(id=1)
         p = Post.objects.create(course_code=c,
@@ -40,10 +43,13 @@ class PostTest(TestCase):
         self.assertIn(p, Post.objects.all())
 
     def test_post_creation_with_invalid_user(self):
+        """
+        Ensure that a post with an invalid user won't be created
+        """
         error = False
         try:
 
-            ru = User.objects.get(username="DOesn't exit").reviewuser
+            ru = User.objects.get(username="Doesn't exit").reviewuser
             c = Course.objects.get(course_code="ABCD1234")
             p = Post.objects.create(course_code=c,
                                     by=ru,
@@ -58,7 +64,9 @@ class PostTest(TestCase):
         self.assertTrue(error)
 
     def test_post_creation_with_invalid_title_question(self):
-        # TODO alter
+        """
+        Ensure that a post with an invalid title and question won't be created
+        """
         ru = ReviewUser.objects.get(id=1)
         c = Course.objects.get(course_code="ABCD1234")
         p = Post.objects.create(course_code=c,
@@ -70,13 +78,18 @@ class PostTest(TestCase):
         p.save()
 
     def test_post_deletion(self):
-
+        """
+        Test post deletion
+        """
         p = Post.objects.get(title="Default")
         p.delete()
 
         self.assertNotIn(p, Post.objects.all())
 
     def test_post_deletion_invalid_post(self):
+        """
+        Ensure post deletion won't happen with an invalid question
+        """
         error = False
         try:
             p = Post.objects.get(title="I dont exist")
@@ -87,7 +100,9 @@ class PostTest(TestCase):
         self.assertTrue(error)
 
     def test_editing_post(self):
-
+        """ 
+        Ensure that post titles can be changed
+        """
 
         p = Post.objects.get(title="Default")
         p.title = "Changed"
@@ -97,6 +112,10 @@ class PostTest(TestCase):
 
 
 class SeleniumHelp(LiveServerTestCase):
+    """
+    Functional tests for the Help system
+    """
+
     server_url = 'http://localhost:8000'
 
     @classmethod
@@ -110,11 +129,9 @@ class SeleniumHelp(LiveServerTestCase):
         super(SeleniumHelp, cls).tearDownClass()
 
     def login(self):
-
         """
         login - Log the user in and proceed to the help page for Learning 1
         """
-
         self.selenium.get("%s" % self.server_url)
         username_input = self.selenium.find_element_by_id("id_username")
         password_input = self.selenium.find_element_by_id("id_password")
@@ -125,6 +142,9 @@ class SeleniumHelp(LiveServerTestCase):
         self.selenium.find_element_by_partial_link_text("ABCD1234").click()
 
     def test_01_create_post(self):
+        """
+        Test post creation
+        """
         self.login()
         sel = self.selenium
         sel.find_element_by_partial_link_text("Get help").click()
@@ -135,7 +155,9 @@ class SeleniumHelp(LiveServerTestCase):
         self.selenium.find_element_by_name("submit").click()
 
     def test_02_edit_post(self):
-        ''' check for editing of posts'''
+        """
+        Test post editing
+        """
         self.selenium.find_element_by_partial_link_text("Selenium").click()
         self.selenium.find_element_by_id("editModalBtn").click()
         alert = self.selenium.switch_to_alert()
@@ -144,6 +166,9 @@ class SeleniumHelp(LiveServerTestCase):
         self.selenium.implicitly_wait(10)
 
     def test_03_resolve_and_delete(self):
+        """
+        Test resolving and deleting posts
+        """
         sel = self.selenium
         sel.back()
         sel.find_element_by_partial_link_text("Selenium").click()

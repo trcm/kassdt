@@ -1,3 +1,5 @@
+# Routes file for the Help system application
+
 from django.conf.urls import patterns, include, url
 from help import views
 from review.views import deleteAnnotation
