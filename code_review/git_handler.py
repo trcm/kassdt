@@ -15,6 +15,14 @@ Methods:
     
     traverse_tree(tree, thisFolder, path) --
     Traverse a git repo tree and populate the database appropriately.
+    
+    abs_repo_path(asmtSubmission, directory) -- 
+    Return the absolute path, given the parent directory of the root folder
+    of the assignment submission relative to MEDIA_ROOT.
+
+    populate_from_local(absolutePath, rootFolderName, asmtSubmission, directory) --
+    populate the database with appropriate SourceFolder and SourceFile objects
+    from an existing, local repository (i.e., without cloning from a remote)
 
     populate_db(asmtSubmission, directory) -- 
     Store the folders and files associated with asmtSubmission to the database.
@@ -65,8 +73,13 @@ def clone(url, directory, username=None, password=None):
 
     Returns:
         the absolute path of the cloned repo.
+    
+    Raises:
+        GitError, if there is an error in cloning due to incorrect credentials,
+        incorrect URL etc.
 
     """
+
     if(username and password):
         credentials = UserPass(username, password)
         # clone the repo 

@@ -723,10 +723,8 @@ def submit_assignment(request, course_code, asmt):
         re-renders the submission page with appropriate error messages
         (e.g., URL entered does not exist) if the submission is unsuccessful.
 
-    TODO - handle multiple submission and single-submission assignments
-           differently
     """
-    # Duplicated code... not good.
+
     context = {}
     U = User.objects.get(id=request.user.id)
     courseList = U.reviewuser.courses.all()
@@ -1318,6 +1316,27 @@ def get_list(root_folder, theList):
 @login_required
 @user_passes_test(staffTest)
 def assign_reviews(request, course_code, asmt):
+    """Randomly allocate submissions for students to review. 
+    
+    The course administrator specifies the number of submissions
+    each student must review, and the number of annotations they must
+    make per submission for a review to be considered complete. 
+    The system then randomly assigns submissions to students, which
+    appear on their assignment page along with the number of annotations
+    they have made on each submission so far.
+
+    Arguments:
+        request (HttpRequest) -- the HTTP request object asking to assign
+        reviews to students.
+        course_code (String) -- the course code of the course
+        asmt (Assignment) -- the assignment for which we want to assign reviews.
+
+    Returns:
+        A HttpResponse object which renders a confirmation page if reviews
+        were successfully allocated, or which re-renders the page with 
+        appropriate error messages.
+    """
+
     asmtName = asmt.encode('ascii', 'ignore')
     assignment = Assignment.objects.get(name=asmtName)
     courseCode = course_code.encode('ascii', 'ignore')

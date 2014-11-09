@@ -21,10 +21,20 @@ class AllocateReviewsForm(ModelForm):
         fields = ['reviews_per_student', 'min_annotations']
 
 class AssignmentSubmissionForm(ModelForm):
+    '''
+    Form for submitting assignments.
+    '''
+
+    # The address of the remote repository to clone from; http or ssh
     submission_repository = forms.CharField(label='repo_address', required=False)
+    
+    # The username for this repository
     repoUsername = forms.CharField(label='repo_username', required=False)
+    
+    # The password for this repository
     repoPassword = forms.CharField(widget=forms.PasswordInput(), label='repo_password',
                                required=False)
+
     def clean_url(self):
         cleaned_data = self.cleaned_data
     class Meta:
